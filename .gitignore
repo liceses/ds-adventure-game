@@ -1,0 +1,9 @@
+.idea/
+*.iml
+*.ipr
+*.iws
+target/
+.DS_Store
+*.class
+hs_err_pid*
+replay_pid*
