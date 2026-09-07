@@ -7,3 +7,4 @@ target/
 *.class
 hs_err_pid*
 replay_pid*
+docs/私人/
