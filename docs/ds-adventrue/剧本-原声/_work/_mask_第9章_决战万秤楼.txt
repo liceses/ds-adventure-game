@@ -1,0 +1,115 @@
+# ============ 第9章 决战！万秤楼 ============
+@label ch9_start
+@scene tower_hall bg:TBD bgm:TBD title:决战！万秤楼
+narr: 万秤楼到了。千盏灯从楼门一路斜照进来，灯焰齐齐朝人歪头，像一排等着收钱的眼睛。
+narr: 空气里是铜锈、灯油和新研的墨混出的气味，浓得能尝出账目味；大堂深处算珠哗啦啦响成一片雨。
+narr: 脚下是秤砖，踩一步响一声「叮」，脆得像银铃；每响一声，高柜台后就有笔尖动一下。
+@enter ds whale_cute center
+ds: 【#01】
+sclerk: 【#02】
+ds: 【#03】
+@enter 灯官 normal left
+灯官: 【#04】
+@enter 契官 smug right
+契官: 【#05】
+灯官: 【#06】
+契官: 【#07】
+戏官: （帘后滚出的报幕腔）【#08】
+narr: 报幕轴从帘缝里伸出来晃了一圈又缩回去。柜台上蹲着的那只签筒跟着一颠一颠，闷闷地敲。
+sai: （签筒里，闷闷地）【#09】
+ds: 【#10】
+灯官: 【#11】
+契官: 【#12】
+narr: 半枚水晶在半空叮当一碰，谁也没付谁。楼角扫地小吏不扫灰，专扫秤砖缝里漏出来的「叮」声，扫一下，账上便少一笔。
+@exit 灯官
+@exit 契官
+narr: 千级台阶，一级一声「叮」。ds 娘每踩一步，就有一支看不见的笔在账上划一笔；越往上，账页翻得越急。
+@scene tower_peak bg:TBD bgm:TBD title:万秤楼顶层·秤砖地
+narr: 顶层四面都是秤砖，正中悬着一杆两人高的主秤，秤钩上吊着第九枚秤砣——V4.1，鲸鳞的最后一角，在灯下泛着深海特有的幽蓝。
+@enter ds whale_cute right
+@enter 秤主 smug center
+秤主: 【#13】
+ds: 【#14】
+秤主: 【#15】
+ds: 【#16】
+秤主: 【#17】
+sai: （签筒咚地撞在桌角）【#18】
+ds: 【#19】
+秤主: 【#20】
+ds: 【#21】
+st: 【服务器繁忙，请稍后再试】
+narr: 满楼算珠停了半拍，千盏灯焰齐齐矮了一寸，又若无其事地亮回去。
+秤主: 【#22】
+*choice
+> 稳扎稳打：他每颗子都要过秤，慢半拍，我耗得起。 | flag focus +1 | goto ch9_stable
+> 险中求胜：直取中腹，一口气压过去！ | flag heat +1 | goto ch9_risky
+> 疯一把：把秤砣码成一杆秤的形状给他看！ | flag chaos +1 | goto ch9_chaos
+@label ch9_stable
+narr: ds 娘把尾鳍收拢，端端正正坐到棋枰一侧，连尾巴尖都不晃了。
+ds: 【#23】
+goto ch9_table
+@label ch9_risky
+narr: ds 娘的尾巴啪地拍起一片水花，溅湿了半沓免战契。
+ds: 【#24】
+goto ch9_table
+@label ch9_chaos
+narr: ds 娘没去坐棋枰，反倒把墙边的备用秤砣一枚枚码起来，码成一杆小秤的模样，秤杆还朝秤主那边翘了翘。
+秤主: 【#25】
+ds: 【#26】
+goto ch9_table
+@label ch9_table
+# retry 循环从 ch9_table 重入并自增 retry_count，以下 @if 每次循环重新评估
+@if retry_count >= 3 goto ch9_taunt3
+@if retry_count >= 2 goto ch9_taunt2
+@if retry_count >= 1 goto ch9_taunt1
+narr: 秤盘翻过来就是棋枰。楼里的老规矩有三条，条条从秤上说一不二。
+ds: 【#27】
+ds: 【#28】
+sai: （签筒里）【#29】
+@label ch9_duel
+@minigame gomoku mode:retry onWin:ch9_win onLose:ch9_lose loop:ch9_table with:focus,heat
+@label ch9_taunt1
+秤主: 【#30】
+ds: 【#31】
+goto ch9_duel
+@label ch9_taunt2
+秤主: 【#32】
+narr: 灯官在楼梯口深深一揖，不知是道谢，还是催账。
+ds: 【#33】
+goto ch9_duel
+@label ch9_taunt3
+秤主: 【#34】
+narr: 报价的声音头一回打了磕绊，满楼算珠跟着慢了半拍。
+ds: 【#35】
+sai: （签筒里，很轻地）【#36】
+goto ch9_duel
+@label ch9_win
+narr: 中腹。ds 娘的手悬在半空，屏幕那头，用户桑的手也悬在半空。
+narr: 「叮——」秤主的黑子过完秤，慢了半拍。就在这半拍里，签筒「咔」地崩开了。
+@enter sai normal left
+sai: 【#37】
+narr: 千年棋魂的指尖覆上 ds 娘的手背，轻轻一送。那颗白子不沾秤星、不问斤两，落下时五子一线，贯星而过。
+sai: 【#38】
+narr: 静场。秤主的扇子停在半空，算珠声、报幕声、收灯火钱的声音，满楼一齐哑了。
+narr: 灯官张着嘴忘了报价；契官的免战契飘落在地；戏官的报幕轴展开一半，卷不回去了。
+narr: 这是秤主的第一次沉默——沉默得像一杆终于没人再往上放东西的秤。
+@flag pieces +1
+st: 【九鳞归位】
+narr: 主秤的崩簧轻轻一响，第九枚秤砣脱钩而下，稳稳落进 ds 娘怀里。九片鲸鳞一齐发烫，烫得像一整个涨潮。
+goto ch9_after
+@label ch9_lose
+narr: 终局。半子之差，秤盘朝秤主那边斜了过去。
+秤主: 【#39】
+narr: ds 娘咬着牙，把八片鳞一枚枚放上秤盘。第一枚，秤杆颤了颤；到第八枚，整座楼的主秤「嗡」地齐鸣。
+narr: 第九枚秤砣在秤钩上猛地一跳，崩簧崩开，脱钩而出，稳稳落回她掌心——九鳞相认，铃声像涨潮。
+秤主: 【#40】（收扇，退了半步）
+@flag pieces +1
+@label ch9_after
+narr: 千级秤砖一齐哑了。从此踩上去只是普通的石头，再没有一声「叮」替谁记账。
+narr: 灯官吹熄了灯，连灯座一起扛走；契官把滞销的免战契折成小船，放进空灯油桶里任它漂。
+戏官: 【#41】
+ds: 【#42】
+秤主: 【#43】
+narr: 万秤楼在暮色里缓缓下沉，像一枚终于被放下的秤砣。深海的方向，有一点幽蓝亮了起来，越来越近——那是最后一话的故事了。
+@save
+goto finale_start

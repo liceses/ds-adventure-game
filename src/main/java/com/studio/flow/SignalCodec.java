@@ -40,7 +40,7 @@ public final class SignalCodec {
 
     public static SignalDef decodeSignal(String line, List<String> warnings) {
         List<String> f = split(line);
-        if (f.isEmpty() || f.getFirst().isBlank()) {
+        if (f.isEmpty() || f.get(0).isBlank()) {
             warn(warnings, line, "信号名为空");
             return null;
         }

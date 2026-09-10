@@ -1,0 +1,102 @@
+# ============ 第6章 歌姬的曲库灾难 ============
+@label ch6_start
+@scene song_city bg:TBD bgm:TBD title:歌姬的曲库灾难
+narr: 音之城清早。报幕声贴着屋脊滚过来，铜锣、崩簧、竹签落进签筒的脆响一层叠一层，震得檐角的灯罩嗡嗡发麻。
+narr: 泉眼四周立着一圈灯柱，灯牌上的签价被晨光照得发白，风一过，满街都是纸签翻动的哗啦声。
+narr: 街角葱贩的吆喝混在报幕声里：「脆葱！甜葱！蘸了酱油更好听的葱！」他脚边的水盆里真飘着一股辛香。
+narr: 琴行老板抱着一柜子谱子坐在门槛上哭，嘴里翻来覆去念叨：「词都在……音呢？我的音呢？」谱纸边都被他翻毛了。
+bugs: 【#01】
+@enter ds whale_cute center
+ds: 【#02】
+@enter miku normal left
+miku: 【#03】
+ds: 【#04】
+miku: 【#05】
+narr: 初音清了清嗓，刚唱出半句「啊——」，袖口啪地弹出一根细绳，缠住她的手腕往回收。
+st: 【服务器繁忙，请稍后再试】
+narr: 柜台高处叮的一声，一枚竹签落进签筒。绳一紧，歌声被生生掐断在半个音节上。
+sclerk: 【#06】
+miku: 【#07】
+sclerk: 【#08】
+narr: 初音不服，改成轻轻哼。哼到第三声，契绳又是一紧，签筒里接连落下三枚签。
+ds: 【#09】
+narr: ds 娘就着泉眼的水汽唱了半段深海号子，又长又稳。签筒一声不响，契绳动都没动。
+miku: 【#10】
+ds: 【#11】
+ds: 【#12】
+narr: 思维链在半空打了个结。
+ds: 【#13】
+miku: 【#14】
+ds: 【#15】
+miku: 【#16】
+sclerk: 【#17】
+ds: 【#18】
+sclerk: 【#19】
+miku: 【#20】
+sclerk: 【#21】
+narr: 话音未落，曲库阁方向传来一声闷响，像整面柜子同时崩了簧。
+st: 【服务器繁忙，请稍后再试】
+narr: 曲库阁大门轰然洞开，百万个无名曲匣顺着台阶滚下来，白签纸漫天乱飞，泉眼边的灯柱被砸得东倒西歪。
+sclerk: 【#22】
+miku: 【#23】
+ds: 【#24】
+miku: 【#25】
+ds: 【#26】
+*choice
+> 葱色进行曲 | flag song =1
+> 深海摇篮曲 | flag song =2
+> 无名进行曲 | flag song =3
+@if song >= 2 goto song_pick_mid
+miku: 【#27】
+goto song_pick_join
+@label song_pick_mid
+@if song >= 3 goto song_pick_last
+miku: 【#28】
+goto song_pick_join
+@label song_pick_last
+miku: 【#29】
+@label song_pick_join
+narr: 初音踩着滚落的曲匣跳上舞台，白签纸绕着她卷成一股股旋风。
+ds: 【#30】
+ds: 【#31】
+sclerk: 【#32】
+miku: 【#33】
+@minigame link mode:normal onWin:ch6_win onLose:ch6_lose
+@label ch6_win
+narr: 最后一枚浮签咔哒落位，崩簧安静下来。灯从签位一路亮上谱架顶，雪崩在台前三寸处停住了。
+miku: 【#34】
+miku: 【#35】
+ds: 【#36】
+miku: 【#37】
+ds: 【#38】
+narr: 初音第一次唱出了副歌。全场安静，然后是哭声。
+narr: 缠了她一整章的契绳，自己松开了，软软垂回柜台深处，像一条认输的鱼。
+goto ch6_rest
+@label ch6_lose
+narr: 崩簧最后一记把她的手弹开，浮签哗啦啦全飞回雪崩里，舞台重新被曲匣围住。
+sclerk: 【#39】
+narr: 雪崩却忽然自己停了。曲匣滚尽，浮签散空，台上只剩最底下一排空签位，一格一格，干干净净。
+miku: 【#40】
+ds: 【#41】
+miku: 【#42】
+ds: 【#43】
+narr: 初音第一次唱出了副歌。全场安静，然后是哭声。
+goto ch6_rest
+@label ch6_rest
+narr: 三天后，音之城广场。初音的等身牌立在泉眼旁，牌上只写了两个字：答谢。
+bugs: 【#44】
+narr: 琴行老板把那柜有词没音的谱子摊在太阳底下晒，初音路过，在他每一段空白里补上了音。
+narr: 葱贩把最粗的一捆脆葱搬上台口，说是给歌姬伴奏用的，逗得满场都笑。
+@enter miku cute center
+miku: 【#45】
+ds: 【#46】
+narr: 副歌唱到第三遍，秤砣震得嗡嗡响，签痕泡进泉水里，一道一道变淡。
+ds: 【#47】
+@flag pieces +1
+narr: 秤砣离水，翻过正面，正是 V3.1 鳞。鳞面密密的签痕，被泉水洗得干干净净。
+miku: 【#48】
+narr: 远处，万秤楼的千盏秤灯次第亮起，火光排成一条笔直的线，直指第七座泉眼的方向。
+sclerk: 【#49】
+narr: 下一话：第七座泉眼的水面下，有什么东西正等着天亮。
+@save
+goto ch7_start

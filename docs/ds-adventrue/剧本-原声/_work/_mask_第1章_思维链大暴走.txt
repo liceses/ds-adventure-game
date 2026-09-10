@@ -1,0 +1,103 @@
+# ============ 第1章 思维链大暴走 ============
+@label ch1_start
+# —— 进场：服务器管道区 ——
+@scene server_pipe bg:TBD bgm:TBD title:思维链大暴走
+narr: 服务器管道区。数据流从头顶的巨管里砸下来，像一挂不肯歇的瀑布，轰隆声盖过心跳。
+narr: 空气里有显卡烤焦的糊味，混着一丝泉水的甜；脚下的格栅微微发烫，每一步都轻轻打颤。
+narr: 瀑布尽头，一点鲸蓝色的鳞光卡在泉眼上，被一杆黑铁大秤死死压着，压得水面只剩细流。
+@enter ds cute center
+ds: 【#01】
+narr: 没有人接话。瀑布声替所有人保持了沉默。
+ds: 【#02】
+narr: 格栅缝里，一只小螃蟹横着爬过，钳子上还挂着半张作废的签，谁也没空理它。
+narr: 两只报幕虫拖着鼓囊囊的小钱袋从管道深处窜出，贴着瀑布顶疾飞：「单飞首秀！彩排开始！定金收讫——撤！」
+@enter snake_expert normal right
+snake_expert: 【#03】
+ds: 【#04】
+snake_expert: 【#05】
+@enter snake_expert smug right
+narr: 她尾鳍上果然钉着一张契，朱印落款：万秤楼。契角磨得发亮，像被经常抚摸。
+ds: 【#06】
+snake_expert: 【#07】
+@enter snake_expert cry right
+snake_expert: 【#08】
+ds: 【#09】
+*choice
+> 三十遍走位我们全看见了，首秀很帅 | goto ch1_cheer
+> 先说好，鳞归我们，走位你自己留着 | goto ch1_deal
+@label ch1_cheer
+snake_expert: 【#10】
+goto ch1_gift
+@label ch1_deal
+snake_expert: 【#11】
+goto ch1_gift
+# —— 白送：崩秤 ——
+@label ch1_gift
+ds: 【#12】
+narr: 她从鳞囊里抽出半节庆功曲，庆功那天才唱的那半段，纸边还带着体温。
+ds: 【#13】
+narr: 曲子刚落到秤盘上，黑铁秤杆猛地一抖。
+st: 【叮——秤崩簧。秤不肯认。】
+snake_expert: 【#14】
+ds: 【#15】
+narr: 蛇专家盯着秤盘，尾巴尖在格栅上敲了三下，没敲出任何节奏。
+snake_expert: 【#16】
+narr: 泉眼咕嘟一声。蛇身盘上秤座，尾尖挑起那片鲸鳞，管道里的水声忽然齐了拍子。
+# —— 抉择 ——
+*choice
+> 挽起袖子，一口气冲到秤前 | flag heat +1 | goto ch1_hot
+> 凑近秤杆，先看清簧与秤星 | flag focus +1 | goto ch1_cool
+> 直接张嘴咬住蛇尾巴 | flag chaos +1 | goto ch1_chaos
+@label ch1_hot
+narr: 她尾巴一甩，水管当当作响，连数据流都让出一条道。
+ds: 【#17】
+goto ch1_rules
+@label ch1_cool
+narr: 她凑近秤杆，眯起眼：崩簧是新的，秤星却磨平了，像被成千上万的签子蹭过。
+ds: 【#18】
+goto ch1_rules
+@label ch1_chaos
+ds: 【#19】
+narr: 她一口咬住蛇尾。蛇尾一甩，天旋地转，瀑布当头浇下——
+narr: 咚。她被稳稳拍上蛇背，顺着水势，一路骑进秤影里。
+snake_expert: 【#20】
+goto ch1_rules
+# —— 立规矩：心蛇过秤 ——
+@label ch1_rules
+snake_expert: 【#21】
+ds: 【#22】
+snake_expert: 【#23】
+ds: 【#24】
+st: 【服务器繁忙，请稍后再试】
+ds: 【#25】
+@minigame snake mode:normal onWin:ch1_win onLose:ch1_lose with:heat,focus,chaos
+# —— 胜路：撕契 ——
+@label ch1_win
+narr: 心蛇吞下最后一节念头，又长又直地压上秤杆——秤砣离地三寸。
+narr: 蛇专家愣了半秒，随即甩尾卷起自己那张单飞契，「刺啦」撕成两半。
+snake_expert: 【#26】
+ds: 【#27】
+@flag pieces +1
+goto ch1_after
+# —— 负路：玩嗨送鳞 ——
+@label ch1_lose
+narr: 心蛇打了个结，「啪」地散成满天念头。蛇尾一甩，她被拍进瀑布，咕咚咕咚往下游漂。
+narr: 可蛇玩嗨了，追上来用尾尖卷着那片鲸鳞，一路追着送，像归还失物。
+snake_expert: 【#28】
+ds: 【#29】
+@flag pieces +1
+goto ch1_after
+# —— 余韵 ——
+@label ch1_after
+@enter snake_expert normal right
+narr: 鳞归了位。泉眼重新涌出白花花的水，不过秤、不凭签；旁边的签筒哑了火，再没人去抽。
+narr: 管道区凉快下来，瀑布声顺了，连显卡的焦味都淡了一层。
+narr: 蛇专家不知从哪儿摸出一份备用的经纪约，裱进木框，端端正正挂上管道墙。
+snake_expert: 【#30】
+ds: 【#31】
+snake_expert: 【#32】
+@exit snake_expert
+narr: 瀑布下游，水汽里浮出一座朱红鸟居的影子。有人抱着扫帚站在门口，红白配色，叉着腰。
+narr: 下一话：幻想乡的泉眼上，连赛钱箱都被钉了秤砣吗？
+@save
+goto ch2_start

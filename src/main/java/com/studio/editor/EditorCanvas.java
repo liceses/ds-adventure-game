@@ -114,8 +114,8 @@ public class EditorCanvas extends StackPane {
             for (NodeType t : new NodeType[]{NodeType.TEXT, NodeType.CHARACTER, NodeType.BUTTON,
                     NodeType.DIALOG, NodeType.NAME, NodeType.BACKGROUND, NodeType.MUSIC}) {
                 MenuItem add = new MenuItem(t.icon() + " 添加" + t.display() + "节点");
-                final double x = Math.clamp(p.getX(), 0, CW);
-                final double y = Math.clamp(p.getY(), 0, CH);
+                final double x = Math.max(0, Math.min(CW, p.getX()));
+                final double y = Math.max(0, Math.min(CH, p.getY()));
                 add.setOnAction(ev -> hub.createNodeAt(t.code(), x, y));
                 menu.getItems().add(add);
             }
@@ -246,7 +246,7 @@ public class EditorCanvas extends StackPane {
         wrapper.setLayoutY(node.getY());
         // 只替换内部“内容层”的视觉，避免子节点越积越多
         if (!wrapper.getChildren().isEmpty()) {
-            javafx.scene.Node content = wrapper.getChildren().getFirst();
+            javafx.scene.Node content = wrapper.getChildren().get(0);
             if (content instanceof StackPane sp) {
                 Region view = EditorNodeViews.create(
                         hub.project() == null ? null : hub.project().rootDir(), node);
@@ -282,7 +282,7 @@ public class EditorCanvas extends StackPane {
 
     private void setZoomManual(double z) {
         autoFit = false;
-        zoom = Math.clamp(z, 0.2, 4.0);
+        zoom = Math.max(0.2, Math.min(4.0, z));
         applyZoom();
     }
 

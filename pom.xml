@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
   剧情游戏编辑器(Studio) 与 剧情游戏读取器(Player) —— 工程构建文件
-  JDK 21 + JavaFX 21（纯 Java 代码构建 UI，无 FXML）
+  JDK 17 + JavaFX 17（纯 Java 代码构建 UI，无 FXML）
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -13,15 +13,15 @@
   <version>1.0.0</version>
   <packaging>jar</packaging>
 
-  <name>Visual Novel Studio &amp; Player</name>
-  <description>剧情游戏可视化编辑器（Studio）与剧情游戏读取器（Player），基于 Java 21 + JavaFX 21</description>
+  <name>ds-adventure (Visual Novel Studio &amp; Player)</name>
+  <description>剧情游戏可视化编辑器（Studio）与剧情游戏读取器（Player），基于 Java 17 + JavaFX 17</description>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
     <!-- JavaFX 平台分类器：win / linux / mac / linux-aarch64 ... 换平台时用 -Djavafx.platform=xxx 覆盖 -->
-    <javafx.version>21.0.5</javafx.version>
+    <javafx.version>17.0.20</javafx.version>
     <javafx.platform>win</javafx.platform>
 
     <!-- 默认启动类为编辑器；运行播放器： mvn -Pplayer javafx:run -->
@@ -55,18 +55,25 @@
       <version>${javafx.version}</version>
       <classifier>${javafx.platform}</classifier>
     </dependency>
+    <!-- 单元测试（检查项：mvn test 通过） -->
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <version>5.11.4</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <build>
-    <finalName>visual-novel-studio</finalName>
+    <finalName>ds-adventure</finalName>
     <plugins>
-      <!-- 编译器：Java 21 -->
+      <!-- 编译器：Java 17（需求规格 3.5；本机可用 JDK 21 编译） -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.13.0</version>
         <configuration>
-          <release>21</release>
+          <release>17</release>
           <encoding>UTF-8</encoding>
           <showWarnings>true</showWarnings>
           <compilerArgs>

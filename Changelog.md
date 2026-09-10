@@ -1,4 +1,14 @@
 # 更新日志 (Changelog)
+## [v1.0-adapt]（PR#1 吸收改造）
+
+### Changed
+- 按《需求规格说明书 v1.1》与实训检查项对齐：编译目标 Java 21 → 17，JavaFX 21.0.5 → 17.0.20（LTS 17）
+- 回归 JUnit 5 + surefire（P0-8：mvn test 通过），新增 ScriptParserTest（解析/往返/未知键透传/告警 4 项）
+- 恢复 Maven Wrapper（mvnw.cmd）、docs/ds-adventrue 玩法文档、assets 目录；恢复 .gitignore 的 docs/私人/ 忽略行
+- artifactId 对齐仓库名：ds-adventure
+
+### Fixed
+- Java 21 API 降级为 17：Math.clamp → Math.max/min、SequencedCollection.getFirst() → get(0)
 
 ## [v0.4]
 

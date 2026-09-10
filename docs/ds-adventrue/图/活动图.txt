@@ -1,0 +1,76 @@
+flowchart LR
+  %% 样式定义（提升视觉层次）
+  classDef actor fill:#4A90E2,color:white,stroke:#333,stroke-width:2px;
+  classDef core fill:#E8F4F8,stroke:#333,stroke-width:1px,color:#000;
+  classDef mini fill:#FFF3E0,stroke:#FF9800,stroke-width:2px,color:#E65100;
+  classDef auto fill:#E8F5E9,stroke:#4CAF50,stroke-width:2px,stroke-dasharray: 5 5;
+
+  subgraph System["ds-adventure 游戏系统边界"]
+      subgraph Galgame["Galgame 文字剧情主框架"]
+          direction TB
+          A(单击推进剧情):::core
+          B(点击跳过剧情):::core
+          C(点击加速文本):::core
+          D(点击自动播放):::core
+          E(点击暂停游戏):::core
+          F(点击存档):::core
+          G(点击读档):::core
+          H(点击回忆查看历史):::core
+          I(点击设置):::core
+          J(点击退出游戏):::core
+          K(做出选项决策):::core
+      end
+
+      subgraph MiniGames["特殊演出 · 小游戏池（9种独立玩法）"]
+          direction TB
+          Entry(进行小游戏特殊演出):::mini
+          M1(贪吃蛇):::mini
+          M2(飞机大战):::mini
+          M3(2048):::mini
+          M4(打砖块):::mini
+          M5(记忆翻牌):::mini
+          M6(连连看):::mini
+          M7(扫雷):::mini
+          M8(推箱子):::mini
+          M9(五子棋):::mini
+          Entry --> M1
+          Entry --> M2
+          Entry --> M3
+          Entry --> M4
+          Entry --> M5
+          Entry --> M6
+          Entry --> M7
+          Entry --> M8
+          Entry --> M9
+      end
+
+      subgraph AutoLogic["系统自动执行逻辑"]
+          direction TB
+          S1(玩家长时间不决策时\n执行第三种隐藏默认选项):::auto
+      end
+
+      %% 系统自动逻辑与决策的关联（扩展关系）
+      K -.-> |决策超时触发| S1
+      
+      %% 小游戏操作说明（约束）
+      Note1[小游戏层具体操作\n由各小游戏自有规则决定] -.-> Entry
+  end
+
+  %% 参与者
+  Player([玩家]):::actor
+
+  %% 玩家与 Galgame 主框架的关联
+  Player --> A
+  Player --> B
+  Player --> C
+  Player --> D
+  Player --> E
+  Player --> F
+  Player --> G
+  Player --> H
+  Player --> I
+  Player --> J
+  Player --> K
+
+  %% 玩家与小游戏入口的关联（切入特殊演出）
+  Player --> Entry

@@ -16,3 +16,4 @@ logic/*.jar
 # 本地探针/临时编译输出
 .out-*/
 .*test*/
+docs/私人/
