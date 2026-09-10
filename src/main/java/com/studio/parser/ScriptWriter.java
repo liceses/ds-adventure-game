@@ -87,7 +87,16 @@ public final class ScriptWriter {
             for (Map.Entry<String, String> e : scene.props().entrySet()) {
                 writeKeyValue(sb, e.getKey(), e.getValue());
             }
-            if (!scene.props().isEmpty()) sb.append('\n');
+            // 场景级信号 / 槽（可重复行；编码器自带转义，不再走通用转义）
+            for (com.studio.flow.SignalDef sig : scene.signals()) {
+                sb.append("signal = ").append(com.studio.flow.SignalCodec.encode(sig)).append('\n');
+            }
+            for (com.studio.flow.SlotDef slot : scene.slots()) {
+                sb.append("slot = ").append(com.studio.flow.SignalCodec.encode(slot)).append('\n');
+            }
+            if (!scene.props().isEmpty() || !scene.signals().isEmpty() || !scene.slots().isEmpty()) {
+                sb.append('\n');
+            }
             for (StoryNode node : scene.nodes()) {
                 writeNode(sb, node);
             }
@@ -104,6 +113,13 @@ public final class ScriptWriter {
         LinkedHashMap<String, String> attrs = node.toScriptMap();
         for (Map.Entry<String, String> e : attrs.entrySet()) {
             writeKeyValue(sb, e.getKey(), e.getValue());
+        }
+        // 信号 / 槽（可重复行；编码器自带转义）
+        for (com.studio.flow.SignalDef sig : node.signals()) {
+            sb.append("signal = ").append(com.studio.flow.SignalCodec.encode(sig)).append('\n');
+        }
+        for (com.studio.flow.SlotDef slot : node.slots()) {
+            sb.append("slot = ").append(com.studio.flow.SignalCodec.encode(slot)).append('\n');
         }
         sb.append("}\n");
     }

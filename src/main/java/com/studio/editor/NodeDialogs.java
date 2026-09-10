@@ -1,11 +1,16 @@
 package com.studio.editor;
 
+import com.studio.flow.SignalCodec;
+import com.studio.flow.SignalDef;
+import com.studio.flow.SlotDef;
 import com.studio.model.GameProject;
 import com.studio.model.NodeType;
 import com.studio.model.StoryNode;
 import com.studio.ui.Ui;
+import com.studio.util.Logs;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.control.Accordion;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
@@ -13,8 +18,10 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TitledPane;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
@@ -62,11 +69,19 @@ final class NodeDialogs {
         grid.setHgap(10);
         grid.setVgap(8);
         grid.setPadding(new Insets(12));
+
         ColumnConstraints c1 = new ColumnConstraints();
         c1.setPercentWidth(24);
         ColumnConstraints c2 = new ColumnConstraints();
         c2.setPercentWidth(76);
         grid.getColumnConstraints().addAll(c1, c2);
+        grid.setStyle(
+                "-fx-background-color: #23242F;" +
+                        "-fx-background-insets: 0;" +
+                        "-fx-background-radius: 0;" +
+                        "-fx-border-color: #23242F;" +
+                        "-fx-border-width: 1;"
+        );
 
         // 类型
         ComboBox<String> typeBox = new ComboBox<>();
@@ -174,15 +189,16 @@ final class NodeDialogs {
         actionBox.getSelectionModel().select(actionIndexFor(node.getAction()));
         actionBox.valueProperty().addListener((o, a, b) -> {
             node.setAction(actionCodeFor(actionBox.getSelectionModel().getSelectedIndex()));
-            targetBox.setDisable(!needsTargetValue(node.getAction()));
+            targetBox.setDisable(!targetEnabled(node));
             refresh.run();
         });
-        boolean needTarget = needsTargetValue(node.getAction());
+        boolean needTarget = targetEnabled(node);
         Label targetLabel = new Label("目标 (target)");
         addRow(grid, 11, "动作 (action)", actionBox,
                 "target=跳场景; save/load=存档文件名; event=运行插件");
         addRow(grid, 12, targetLabel.getText(), targetBox,
-                "action=target 填场景名；action=save/load 填存档文件名（留空=slot1.txt）");
+                "动作=target 填场景名；save/load 填存档文件名（留空=slot1.txt）；"
+                        + "对话节点：此处填“对话结束后的下一个场景”（点击对话走完即跳转）");
         targetBox.setDisable(!needTarget);
 
         // 可见/字号/对齐/透明度
@@ -217,7 +233,68 @@ final class NodeDialogs {
         });
         addRow(grid, 16, "透明度 (opacity)", opacityField, "0.05 ~ 1.0");
 
-        dialog.getDialogPane().setContent(grid);
+        // 过渡动画（引擎补间）
+        TextField transitionField = new TextField(node.getTransition());
+        transitionField.setPromptText("如 scale/opacity:300ms（留空=立即生效）");
+        transitionField.textProperty().addListener((o, a, b) -> { node.setTransition(b); refresh.run(); });
+        addRow(grid, 20, "过渡动画 (transition)", transitionField,
+                "本节点属性被改变时做简单补间：支持 scale/opacity/rotation/x/y，"
+                        + "格式 属性[/属性]:毫秒（省略毫秒默认 300）");
+
+        // ---------- 信号（可重复行；渲染层监听鼠标/键盘后发出） ----------
+        TextArea signalsArea = new TextArea(signalsToText(node.signals()));
+        signalsArea.setWrapText(true);
+        signalsArea.setPrefRowCount(2);
+        Label sigCount = new Label();
+        signalsArea.textProperty().addListener((o, a, b) -> {
+            applySignals(node.signals(), b);
+            sigCount.setText("已识别 " + node.signals().size() + " 条信号");
+            refresh.run();
+        });
+        sigCount.setText("已识别 " + node.signals().size() + " 条信号");
+        sigCount.setStyle("-fx-text-fill: #8fe3ff; -fx-font-size: 11px;");
+        Button addClickSig = template("＋点击信号", signalsArea, "点击 | mouse | click");
+        Button addReleaseSig = template("＋鼠标释放", signalsArea, "松开 | mouse | release");
+        Button addKeySig = template("＋按键信号(F)", signalsArea, "按键F | key | F | press");
+        HBox sigTpl = new HBox(6, addClickSig, addReleaseSig, addKeySig, sigCount);
+        sigTpl.setAlignment(Pos.CENTER_LEFT);
+        addRow(grid, 18, "信号 (signal)", new VBox(4, signalsArea, sigTpl),
+                "格式：名称 | mouse|key | click/release/按键码 | press|release | 参数k=v,参数k=v");
+
+        // ---------- 槽（订阅信号并执行；call 动作转给逻辑层） ----------
+        TextArea slotsArea = new TextArea(slotsToText(node.slots()));
+        slotsArea.setWrapText(true);
+        slotsArea.setPrefRowCount(3);
+        Label slotCount = new Label();
+        slotsArea.textProperty().addListener((o, a, b) -> {
+            applySlots(node.slots(), b);
+            slotCount.setText("已识别 " + node.slots().size() + " 个槽");
+            refresh.run();
+        });
+        slotCount.setText("已识别 " + node.slots().size() + " 个槽");
+        slotCount.setStyle("-fx-text-fill: #8fe3ff; -fx-font-size: 11px;");
+        Button tplSet = template("＋改样式槽", slotsArea, "点击 | set | @self | style | value=-fx-opacity:0.35;");
+        Button tplEmit = template("＋发信号槽", slotsArea, "点击 | emit | 目标节点id | 被触发的信号名");
+        Button tplCall = template("＋逻辑槽(call)", slotsArea, "点击 | call | | signallab | 说明=转给逻辑层");
+        Button tplToggle = template("＋显隐槽", slotsArea, "点击 | toggle | 目标节点id | visible");
+        Button tplTransition = template("＋过渡槽", slotsArea,
+                "点击 | set | @self | scale | value=1.08 | transition=scale:300ms");
+        HBox slotTpl = new HBox(6, tplSet, tplEmit, tplToggle, tplTransition, tplCall, slotCount);
+        slotTpl.setAlignment(Pos.CENTER_LEFT);
+        addRow(grid, 19, "槽 (slot)", new VBox(4, slotsArea, slotTpl),
+                "动作：set改属性 / toggle显隐 / emit发信号 / goto跳场景 / save / load / call逻辑 / log；目标可写 @self");
+
+        // ---------- 保持原来的单列平铺样式；内容超出时用鼠标滚轮上下滚动 ----------
+        ScrollPane scroll = new ScrollPane(grid);
+        scroll.setFitToWidth(true);
+        scroll.setPrefViewportHeight(520);
+        scroll.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        scroll.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+        scroll.setPannable(true);
+
+        dialog.setResizable(true);
+        dialog.getDialogPane().setPrefSize(800, 640);
+        dialog.getDialogPane().setContent(scroll);
         dialog.getDialogPane().getStylesheets().addAll(
                 Ui.class.getResource("/styles/studio.css").toExternalForm());
 
@@ -240,6 +317,11 @@ final class NodeDialogs {
         node.setTarget(snapshot.getTarget()); node.setVisible(snapshot.isVisible());
         node.setFontSize(snapshot.getFontSize()); node.setAlign(snapshot.getAlign());
         node.setOpacity(snapshot.getOpacity());
+        node.setTransition(snapshot.getTransition());
+        node.signals().clear();
+        node.signals().addAll(snapshot.signals());
+        node.slots().clear();
+        node.slots().addAll(snapshot.slots());
         node.extras().clear();
         node.extras().putAll(snapshot.extras());
     }
@@ -247,6 +329,11 @@ final class NodeDialogs {
     /** 需要填写 target 的动作：跳转场景 / 存档文件名 / 读档文件名 */
     public static boolean needsTargetValue(String action) {
         return "target".equals(action) || "save".equals(action) || "load".equals(action);
+    }
+
+    /** target 输入框是否可用：上述动作，或“对话类型”（target 表示对话结束后的下一个场景） */
+    public static boolean targetEnabled(StoryNode node) {
+        return needsTargetValue(node.getAction()) || node.getType() == NodeType.DIALOG;
     }
 
     /** 供检查器复用：动作索引 → 动作代码 */
@@ -292,6 +379,109 @@ final class NodeDialogs {
             f.setStyle("-fx-border-color: #ff6b6b;");
             return false;
         }
+    }
+
+    // =====================================================================
+    // 信号 / 槽 文本 ⇄ 列表（编辑器与检查器共用）
+    // =====================================================================
+
+    public static String signalsToText(java.util.List<SignalDef> list) {
+        StringBuilder sb = new StringBuilder();
+        for (SignalDef s : list) {
+            if (sb.length() > 0) sb.append('\n');
+            sb.append(SignalCodec.encode(s));
+        }
+        return sb.toString();
+    }
+
+    public static String slotsToText(java.util.List<SlotDef> list) {
+        StringBuilder sb = new StringBuilder();
+        for (SlotDef s : list) {
+            if (sb.length() > 0) sb.append('\n');
+            sb.append(SignalCodec.encode(s));
+        }
+        return sb.toString();
+    }
+
+    /** 把多行文本解析进信号列表（宽容：非法行忽略并记日志） */
+    public static void applySignals(java.util.List<SignalDef> target, String text) {
+        java.util.List<String> warnings = new java.util.ArrayList<>();
+        java.util.List<SignalDef> parsed = new java.util.ArrayList<>();
+        for (String line : text.split("\n", -1)) {
+            String t = line.strip();
+            if (t.isEmpty() || t.startsWith("#")) continue;
+            SignalDef def = SignalCodec.decodeSignal(t, warnings);
+            if (def != null) parsed.add(def);
+        }
+        target.clear();
+        target.addAll(parsed);
+        if (!warnings.isEmpty()) Logs.warn("信号解析: " + warnings);
+    }
+
+    /** 把多行文本解析进槽列表 */
+    public static void applySlots(java.util.List<SlotDef> target, String text) {
+        java.util.List<String> warnings = new java.util.ArrayList<>();
+        java.util.List<SlotDef> parsed = new java.util.ArrayList<>();
+        for (String line : text.split("\n", -1)) {
+            String t = line.strip();
+            if (t.isEmpty() || t.startsWith("#")) continue;
+            SlotDef def = SignalCodec.decodeSlot(t, warnings);
+            if (def != null) parsed.add(def);
+        }
+        target.clear();
+        target.addAll(parsed);
+        if (!warnings.isEmpty()) Logs.warn("槽解析: " + warnings);
+    }
+
+    /** 模板按钮：点击后在文本框末尾追加一行示例 */
+    private static Button template(String label, TextArea area, String line) {
+        Button b = new Button(label);
+        b.getStyleClass().add("tool-button");
+        b.setOnAction(e -> {
+            String cur = area.getText();
+            if (!cur.isEmpty() && !cur.endsWith("\n")) cur += "\n";
+            area.setText(cur + line);
+        });
+        return b;
+    }
+
+    /**
+     * 把源 GridPane 中指定行号的（标签+字段）节点搬到一个新的 GridPane。
+     * （保留工具方法：供将来需要分组显示时使用）
+     */
+    private static GridPane regroup(GridPane src, int... rows) {
+        java.util.Set<Integer> wanted = new java.util.HashSet<>();
+        for (int r : rows) wanted.add(r);
+        java.util.List<javafx.scene.Node> moved = new java.util.ArrayList<>();
+        for (javafx.scene.Node child : new java.util.ArrayList<>(src.getChildren())) {
+            Integer r = GridPane.getRowIndex(child);
+            int row = r == null ? 0 : r;
+            if (!wanted.contains(row)) continue;
+            src.getChildren().remove(child);
+            moved.add(child);
+        }
+        GridPane g = new GridPane();
+        g.setHgap(10);
+        g.setVgap(8);
+        g.setPadding(new Insets(10, 6, 10, 6));
+        ColumnConstraints c1 = new ColumnConstraints();
+        c1.setPercentWidth(26);
+        ColumnConstraints c2 = new ColumnConstraints();
+        c2.setPercentWidth(74);
+        g.getColumnConstraints().addAll(c1, c2);
+        int outRow = 0;
+        // 两个一组：标签(第0列) + 字段(第1列)
+        for (int i = 0; i < moved.size(); i += 2) {
+            javafx.scene.Node label = moved.get(i);
+            javafx.scene.Node field = (i + 1 < moved.size()) ? moved.get(i + 1) : null;
+            g.add(label, 0, outRow);
+            if (field != null) {
+                g.add(field, 1, outRow);
+                GridPane.setHgrow(field, Priority.ALWAYS);
+            }
+            outRow++;
+        }
+        return g;
     }
 
     /** 逐字显示开关下拉：默认/开启/关闭 → null/TRUE/FALSE */

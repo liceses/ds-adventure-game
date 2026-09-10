@@ -1,5 +1,10 @@
 package com.studio.reader;
 
+import com.studio.flow.FlowHost;
+import com.studio.flow.FlowVariables;
+import com.studio.flow.LogicLoader;
+import com.studio.flow.SignalBus;
+import com.studio.flow.SignalDef;
 import com.studio.model.GameProject;
 import com.studio.model.GameScene;
 import com.studio.model.NodeType;
@@ -38,6 +43,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.text.TextFlow;
@@ -46,6 +52,7 @@ import javafx.util.Duration;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -66,7 +73,7 @@ import java.util.regex.Pattern;
  *       上方提供统一的【返回】标题栏 —— 浏览器标签页式无缝跳转。</li>
  * </ol>
  */
-public class ReaderView extends BorderPane implements SavePortal {
+public class ReaderView extends BorderPane implements SavePortal, FlowHost {
 
     /** 逻辑画布尺寸（与 MapTemplateFactory 一致） */
     public static final double CW = 1280.0, CH = 720.0;
@@ -104,6 +111,7 @@ public class ReaderView extends BorderPane implements SavePortal {
 
     /** 一段对话框的显示状态：支持“--- ”分隔的多段台词逐段切换 */
     private static final class DialogParagraph {
+        final StoryNode node;           // 所属节点（取“对话结束后跳转”的 target）
         final TextFlow flow;            // 内容流
         final String[] paragraphs;      // 按独立一行 --- 分隔的段落
         final double baseSize;
@@ -112,8 +120,9 @@ public class ReaderView extends BorderPane implements SavePortal {
         int index;                      // 当前段落
         boolean busy;                   // 正在逐字
         Timeline timer;
-        DialogParagraph(TextFlow flow, String[] paragraphs, double baseSize,
+        DialogParagraph(StoryNode node, TextFlow flow, String[] paragraphs, double baseSize,
                         String color, boolean typeOn) {
+            this.node = node;
             this.flow = flow;
             this.paragraphs = paragraphs;
             this.baseSize = baseSize;
@@ -133,6 +142,14 @@ public class ReaderView extends BorderPane implements SavePortal {
     // ---- 存档 ----
     private GameSaveManager saveManager;
     private final java.util.ArrayList<SaveHook> saveHooks = new java.util.ArrayList<>();
+
+    // ---- 信号/槽 与逻辑层 ----
+    private LogicLoader logicLoader;
+    private SignalBus signalBus;
+    private final FlowVariables flowVars = new FlowVariables();
+    /** 节点 id → 视图（供槽动作即时重绘） */
+    private final Map<String, Node> nodeViews = new LinkedHashMap<>();
+    private boolean keyListenerInstalled = false;
 
     // =====================================================================
     // 构造 / 启动
@@ -235,10 +252,26 @@ public class ReaderView extends BorderPane implements SavePortal {
             }
             pluginLoader = PluginLoader.fromConfig(config);
             saveManager = new GameSaveManager(mapDir);
+            // 信号/槽：逻辑类加载器（工程根/logic 与 地图/logic）+ 信号总线
+            logicLoader = new LogicLoader(new File(System.getProperty("user.dir")), mapDir);
+            signalBus = new SignalBus(this, logicLoader);
+            // 引擎自身也是存档参与者：把运行期变量（地图/节点/属性覆盖）写入存档，读档时恢复
+            saveHooks.add(new SaveHook() {
+                @Override
+                public void onEngineSave(SaveData data) {
+                    flowVars.writeTo(data);
+                }
+
+                @Override
+                public void onEngineLoad(SaveData data) {
+                    flowVars.readFrom(data);
+                }
+            });
             volume = clamp(project.option().volume(), 0, 1);
             double cfgSpeed = config.getDouble("typewriter.speed", 14);
             double mapSpeed = project.option().typewriterSpeed();
             typeSpeed = mapSpeed > 0 ? mapSpeed : cfgSpeed;
+            installGlobalKeyListener();
 
             GameScene initial = project.initialScene();
             if (initial == null) {
@@ -287,6 +320,7 @@ public class ReaderView extends BorderPane implements SavePortal {
         this.scene = target;
 
         board.getChildren().clear();
+        nodeViews.clear();
         FxAssets.clearCache();
 
         // 背景底色来自 [option]
@@ -297,12 +331,17 @@ public class ReaderView extends BorderPane implements SavePortal {
 
         int index = 0;
         for (StoryNode node : scene.nodes()) {
+            applyStoredOverrides(node); // 读档/上次逻辑改动过的属性优先生效
             Node view = buildNode(node);
             if (view == null) continue;
             view.setLayoutX(node.getX());
             view.setLayoutY(node.getY());
             view.setOpacity(clamp(node.getOpacity(), 0.05, 1.0));
+            view.setVisible(node.isVisible());
             board.getChildren().add(view);
+            if (!node.getId().isBlank()) nodeViews.put(node.getId(), view);
+            installMouseSignals(view, node);
+            applyViewProps(view, node);
             if (animate && node.needsVisual()) {
                 FxAnim.entrance(view, 60 + index * 70, 380);
             }
@@ -446,7 +485,7 @@ public class ReaderView extends BorderPane implements SavePortal {
         flow.setTextAlignment(alignment(node.getAlign()));
         panel.getChildren().add(flow);
 
-        DialogParagraph st = new DialogParagraph(flow, splitParagraphs(node.getText()),
+        DialogParagraph st = new DialogParagraph(node, flow, splitParagraphs(node.getText()),
                 fs, color, node.typewriterEffective());
         dialogs.add(st);
 
@@ -457,7 +496,7 @@ public class ReaderView extends BorderPane implements SavePortal {
         return panel;
     }
 
-    /** 点击对话框：逐字中=显示全文；否则切换到下一段（若还有） */
+    /** 点击对话框：逐字中=显示全文；否则切下一段；已是最后一段 → 跳转“下一个场景” */
     private void onDialogClicked(DialogParagraph st) {
         if (st.busy) {
             finishParagraph(st);
@@ -465,7 +504,23 @@ public class ReaderView extends BorderPane implements SavePortal {
         }
         if (st.index + 1 < st.paragraphs.length) {
             showParagraph(st, st.index + 1);
+            return;
         }
+        // 对话结束：跳转到节点 target 设置的“下一个场景”（没有则用场景 next）
+        String next = st.node.getTarget() == null ? "" : st.node.getTarget().trim();
+        if (next.isEmpty() && scene != null && scene.next() != null) {
+            next = scene.next().trim();
+        }
+        if (next.isEmpty()) {
+            toast("对话结束（可在节点属性里设置“下一个场景”）");
+            return;
+        }
+        if (project == null || !project.hasScene(next)) {
+            toast("对话结束：目标场景不存在 " + next);
+            return;
+        }
+        Logs.info("[Player] 对话结束 → 跳转场景 [" + next + "]");
+        renderScene(next, true, true);
     }
 
     private Button buildButton(StoryNode node) {
@@ -537,6 +592,10 @@ public class ReaderView extends BorderPane implements SavePortal {
     private void showParagraph(DialogParagraph st, int idx) {
         if (idx < 0 || idx >= st.paragraphs.length) return;
         st.index = idx;
+        // 把“当前段落序号”写入变量：地图逻辑层可据此实现轮流高亮等效果
+        if (st.node != null && !st.node.getId().isBlank()) {
+            flowVars.set("对话段." + st.node.getId(), String.valueOf(idx));
+        }
         if (st.timer != null) {
             st.timer.stop();
             st.timer = null;
@@ -634,8 +693,13 @@ public class ReaderView extends BorderPane implements SavePortal {
                 }
             }
             default -> {
-                Logs.info("[Player] 节点 " + node.getId() + " 动作<" + action + ">：占位（无绑定行为，仅记录日志）");
-                toast("动作 " + action + "（占位）");
+                if (action.isBlank()) {
+                    // 没有 action：该节点只靠“信号/槽”驱动，引擎保持安静
+                    Logs.info("[Player] 节点 " + node.getId() + " 无 action（交由信号/槽处理）");
+                } else {
+                    Logs.info("[Player] 节点 " + node.getId() + " 动作<" + action + ">：占位（无绑定行为，仅记录日志）");
+                    toast("动作 " + action + "（占位）");
+                }
             }
         }
     }
@@ -836,10 +900,342 @@ public class ReaderView extends BorderPane implements SavePortal {
     }
 
     // =====================================================================
+    // 信号 / 槽 引擎侧（FlowHost 实现）
+    // =====================================================================
+
+    /** 全局键盘监听：把按键信号按“场景信号定义 + 各节点按键信号定义”分发 */
+    private void installGlobalKeyListener() {
+        Scene sc = stage.getScene();
+        if (sc == null || keyListenerInstalled) return;
+        keyListenerInstalled = true;
+        sc.addEventFilter(KeyEvent.KEY_PRESSED, e -> dispatchKey(e, "press"));
+        sc.addEventFilter(KeyEvent.KEY_RELEASED, e -> dispatchKey(e, "release"));
+    }
+
+    private void dispatchKey(KeyEvent e, String phase) {
+        if (project == null || scene == null || pluginMode()) return;
+        String code = e.getCode() == null ? "" : e.getCode().name();
+        LinkedHashMap<String, Object> params = new LinkedHashMap<>();
+        params.put("key", code);
+        params.put("keyText", e.getText());
+        params.put("phase", phase);
+        // 场景级键盘信号
+        for (SignalDef def : scene.signals()) {
+            if (def.getKind() != SignalDef.Kind.KEY) continue;
+            if (!def.getKey().equalsIgnoreCase(code)) continue;
+            if (!def.getKeyPhase().equalsIgnoreCase(phase)) continue;
+            signalBus.emitFromScene(def.getName(), new LinkedHashMap<>(params));
+        }
+        // 节点级键盘信号
+        for (StoryNode n : scene.nodes()) {
+            for (SignalDef def : n.signals()) {
+                if (def.getKind() != SignalDef.Kind.KEY) continue;
+                if (!def.getKey().equalsIgnoreCase(code)) continue;
+                if (!def.getKeyPhase().equalsIgnoreCase(phase)) continue;
+                signalBus.emitFromNode(n, def.getName(), new LinkedHashMap<>(params));
+            }
+        }
+    }
+
+    /** 给节点视图挂鼠标信号（click / release），与按钮自身 action 互不影响。
+     *  使用事件过滤器：即使控件（如 Button）在冒泡阶段 consume 了事件也能收到。 */
+    private void installMouseSignals(Node view, StoryNode node) {
+        if (node.signals().isEmpty()) return;
+        for (SignalDef def : node.signals()) {
+            if (def.getKind() != SignalDef.Kind.MOUSE) continue;
+            if ("release".equalsIgnoreCase(def.getMouse())) {
+                view.addEventFilter(javafx.scene.input.MouseEvent.MOUSE_RELEASED, e -> {
+                    if (pluginMode()) return;
+                    LinkedHashMap<String, Object> p = new LinkedHashMap<>();
+                    p.put("button", e.getButton() == null ? "" : e.getButton().name());
+                    signalBus.emitFromNode(node, def.getName(), p);
+                });
+            } else {
+                view.addEventFilter(javafx.scene.input.MouseEvent.MOUSE_CLICKED, e -> {
+                    if (pluginMode()) return;
+                    LinkedHashMap<String, Object> p = new LinkedHashMap<>();
+                    p.put("button", e.getButton() == null ? "" : e.getButton().name());
+                    p.put("clickCount", e.getClickCount());
+                    signalBus.emitFromNode(node, def.getName(), p);
+                });
+            }
+        }
+    }
+
+    /** 进入场景时把存档中记录的属性覆盖重新应用到模型 */
+    private void applyStoredOverrides(StoryNode node) {
+        if (node.getId().isBlank()) return;
+        Map<String, String> props = flowVars.propsOf(node.getId());
+        for (Map.Entry<String, String> e : props.entrySet()) {
+            applyPropToModel(node, e.getKey(), e.getValue());
+        }
+    }
+
+    /** 修改模型属性（不改渲染）；返回是否有变化 */
+    private static void applyPropToModel(StoryNode n, String prop, String value) {
+        switch (prop == null ? "" : prop) {
+            case "style" -> n.setStyle(value);
+            case "text" -> n.setText(value);
+            case "path" -> n.setPath(value);
+            case "audio" -> n.setAudio(value);
+            case "visible" -> n.setVisible(StoryNode.parseBoolSafe(value, true));
+            case "opacity" -> n.setOpacity(StoryNode.parseDoubleSafe(value, 1.0));
+            case "x" -> n.setX(StoryNode.parseDoubleSafe(value, n.getX()));
+            case "y" -> n.setY(StoryNode.parseDoubleSafe(value, n.getY()));
+            case "width" -> n.setWidth(StoryNode.parseDoubleSafe(value, n.getWidth()));
+            case "height" -> n.setHeight(StoryNode.parseDoubleSafe(value, n.getHeight()));
+            case "fontSize" -> n.setFontSize(StoryNode.parseDoubleSafe(value, 0));
+            case "align" -> n.setAlign(value);
+            case "event" -> n.setEvent(value);
+            case "action" -> n.setAction(value);
+            case "target" -> n.setTarget(value);
+            case "scale" -> { /* 视图层属性：由 applyViewProps / setProperty 处理，模型不存 */ }
+            case "rotation" -> { /* 同上 */ }
+            default -> Logs.warn("[Flow] 不支持的属性名: " + prop);
+        }
+    }
+
+    /** 即时重绘某节点（槽/逻辑层改属性后立即生效） */
+    private void refreshNodeView(StoryNode node) {
+        if (node == null || node.getId().isBlank()) return;
+        Node old = nodeViews.get(node.getId());
+        if (old == null) return;
+        int idx = board.getChildren().indexOf(old);
+        if (idx < 0) return;
+        Node fresh = buildNode(node);
+        if (fresh == null) return;
+        fresh.setLayoutX(node.getX());
+        fresh.setLayoutY(node.getY());
+        fresh.setOpacity(clamp(node.getOpacity(), 0.05, 1.0));
+        fresh.setVisible(node.isVisible());
+        installMouseSignals(fresh, node);
+        applyViewProps(fresh, node);
+        board.getChildren().set(idx, fresh);
+        nodeViews.put(node.getId(), fresh);
+    }
+
+    // ---------- FlowHost 实现 ----------
+
+    @Override
+    public GameScene scene() { return scene; }
+
+    @Override
+    public StoryNode node(String id) {
+        if (id == null || id.isBlank() || scene == null) return null;
+        for (StoryNode n : scene.nodes()) {
+            if (id.equals(n.getId())) return n;
+        }
+        return null;
+    }
+
+    @Override
+    public String property(String nodeId, String prop) {
+        StoryNode n = node(nodeId);
+        if (n == null) return "";
+        return switch (prop == null ? "" : prop) {
+            case "style" -> n.getStyle();
+            case "text" -> n.getText();
+            case "path" -> n.getPath();
+            case "audio" -> n.getAudio();
+            case "visible" -> String.valueOf(n.isVisible());
+            case "opacity" -> StoryNode.trimDouble(n.getOpacity());
+            case "x" -> StoryNode.trimDouble(n.getX());
+            case "y" -> StoryNode.trimDouble(n.getY());
+            case "width" -> StoryNode.trimDouble(n.getWidth());
+            case "height" -> StoryNode.trimDouble(n.getHeight());
+            case "fontSize" -> StoryNode.trimDouble(n.getFontSize());
+            case "align" -> n.getAlign();
+            case "event" -> n.getEvent();
+            case "action" -> n.getAction();
+            case "target" -> n.getTarget();
+            case "scale" -> flowVars.prop(nodeId, "scale", "1");
+            case "rotation" -> flowVars.prop(nodeId, "rotation", "0");
+            default -> "";
+        };
+    }
+
+    /** 把“视图层属性”（缩放/旋转）应用到节点视图（渲染后/重绘后调用） */
+    private void applyViewProps(Node view, StoryNode node) {
+        if (view == null || node == null || node.getId().isBlank()) return;
+        String scale = flowVars.prop(node.getId(), "scale", "");
+        if (!scale.isEmpty()) {
+            double s = StoryNode.parseDoubleSafe(scale, 1.0);
+            view.setScaleX(s);
+            view.setScaleY(s);
+        }
+        String rot = flowVars.prop(node.getId(), "rotation", "");
+        if (!rot.isEmpty()) {
+            view.setRotate(StoryNode.parseDoubleSafe(rot, 0));
+        }
+    }
+
+    @Override
+    public void setProperty(String nodeId, String prop, String value) {
+        StoryNode n = node(nodeId);
+        if (n == null) {
+            Logs.warn("[Flow] setProperty 找不到节点: " + nodeId);
+            return;
+        }
+        // 节点上配置了默认过渡（如 transition = scale/opacity:300ms）时，自动走动画分支
+        String def = n.getTransition();
+        if (!def.isEmpty() && isTransitionProp(def, prop)) {
+            setPropertyAnimated(nodeId, prop, value, def);
+            return;
+        }
+        // 视图层属性（缩放/旋转）：不落在模型上，直接作用于视图并记录覆盖
+        if ("scale".equals(prop) || "rotation".equals(prop)) {
+            applyViewOnly(nodeId, prop, value);
+            return;
+        }
+        applyPropToModel(n, prop, value);
+        refreshNodeView(n);
+        flowVars.recordProp(nodeId, prop, value); // 随存档保存，读档后自动恢复
+        Logs.info("[Flow] 节点 " + nodeId + "." + prop + " ← " + value);
+    }
+
+    /** 带过渡动画地设置属性：transitionSpec 形如 {@code scale/opacity:300ms} */
+    @Override
+    public void setPropertyAnimated(String nodeId, String prop, String value, String transitionSpec) {
+        StoryNode n = node(nodeId);
+        if (n == null) {
+            Logs.warn("[Flow] setPropertyAnimated 找不到节点: " + nodeId);
+            return;
+        }
+        Node view = nodeViews.get(nodeId);
+        boolean animatable = isTransitionProp(transitionSpec, prop) && view != null
+                && (switch (prop) {
+                    case "scale", "opacity", "rotation", "x", "y" -> true;
+                    default -> false;
+                });
+        if (!animatable) {
+            setProperty(nodeId, prop, value);
+            return;
+        }
+        double ms = parseTransitionMs(transitionSpec, 300);
+        applyPropToModel(n, prop, value);          // 模型先行，重绘/读档以最终值为准
+        flowVars.recordProp(nodeId, prop, value);
+        animateViewProp(view, prop, value, ms);
+        Logs.info("[Flow] 节点 " + nodeId + "." + prop + " ← " + value + "（过渡 " + ms + "ms）");
+    }
+
+    /** 直接把“视图层属性”应用到视图并记录（scale / rotation） */
+    private void applyViewOnly(String nodeId, String prop, String value) {
+        Node v = nodeViews.get(nodeId);
+        if ("scale".equals(prop)) {
+            double s = StoryNode.parseDoubleSafe(value, 1.0);
+            if (v != null) {
+                v.setScaleX(s);
+                v.setScaleY(s);
+            }
+            flowVars.recordProp(nodeId, "scale", StoryNode.trimDouble(s));
+        } else {
+            double r = StoryNode.parseDoubleSafe(value, 0);
+            if (v != null) v.setRotate(r);
+            flowVars.recordProp(nodeId, "rotation", StoryNode.trimDouble(r));
+        }
+        Logs.info("[Flow] 节点 " + nodeId + "." + prop + " ← " + value);
+    }
+
+    /** 对视图属性做简单补间动画 */
+    private void animateViewProp(Node view, String prop, String value, double ms) {
+        javafx.animation.KeyValue kv;
+        switch (prop) {
+            case "scale" -> {
+                double s = StoryNode.parseDoubleSafe(value, view.getScaleX());
+                javafx.animation.Timeline t = new javafx.animation.Timeline(
+                        new javafx.animation.KeyFrame(Duration.millis(ms),
+                                new javafx.animation.KeyValue(view.scaleXProperty(), s, javafx.animation.Interpolator.EASE_BOTH),
+                                new javafx.animation.KeyValue(view.scaleYProperty(), s, javafx.animation.Interpolator.EASE_BOTH)));
+                t.play();
+                return;
+            }
+            case "opacity" -> kv = new javafx.animation.KeyValue(view.opacityProperty(),
+                    clamp(StoryNode.parseDoubleSafe(value, view.getOpacity()), 0, 1),
+                    javafx.animation.Interpolator.EASE_BOTH);
+            case "rotation" -> kv = new javafx.animation.KeyValue(view.rotateProperty(),
+                    StoryNode.parseDoubleSafe(value, view.getRotate()), javafx.animation.Interpolator.EASE_BOTH);
+            case "x" -> kv = new javafx.animation.KeyValue(view.layoutXProperty(),
+                    StoryNode.parseDoubleSafe(value, view.getLayoutX()), javafx.animation.Interpolator.EASE_BOTH);
+            case "y" -> kv = new javafx.animation.KeyValue(view.layoutYProperty(),
+                    StoryNode.parseDoubleSafe(value, view.getLayoutY()), javafx.animation.Interpolator.EASE_BOTH);
+            default -> {
+                return;
+            }
+        }
+        javafx.animation.Timeline timeline = new javafx.animation.Timeline(
+                new javafx.animation.KeyFrame(Duration.millis(ms), kv));
+        timeline.play();
+    }
+
+    /** transitionSpec 里是否包含某属性：{@code scale/opacity:300ms} → scale、opacity */
+    static boolean isTransitionProp(String spec, String prop) {
+        if (spec == null || spec.isBlank()) return false;
+        String head = spec.trim();
+        int colon = head.lastIndexOf(':');
+        if (colon > 0) head = head.substring(0, colon);
+        for (String p : head.split("[/,;|\\s]+")) {
+            if (p.trim().equalsIgnoreCase(prop)) return true;
+        }
+        return false;
+    }
+
+    /** 解析过渡时长：{@code scale:250ms} / {@code scale/opacity:300} / 无 → 默认值 */
+    static double parseTransitionMs(String spec, double def) {
+        if (spec == null) return def;
+        java.util.regex.Matcher m = Pattern.compile("(\\d+(?:\\.\\d+)?)\\s*ms", Pattern.CASE_INSENSITIVE)
+                .matcher(spec);
+        if (m.find()) return Double.parseDouble(m.group(1));
+        java.util.regex.Matcher m2 = Pattern.compile(":\\s*(\\d+(?:\\.\\d+)?)\\s*$").matcher(spec.trim());
+        if (m2.find()) return Double.parseDouble(m2.group(1));
+        return def;
+    }
+
+    @Override
+    public void emit(String targetId, String signalName, Map<String, Object> params) {
+        if (signalBus == null) return;
+        if (targetId == null || targetId.isBlank()) {
+            signalBus.emitFromScene(signalName, params);
+            return;
+        }
+        StoryNode n = node(targetId);
+        if (n == null) {
+            Logs.warn("[Flow] emit 目标节点不存在: " + targetId);
+            return;
+        }
+        signalBus.emitFromNode(n, signalName, params);
+    }
+
+    @Override
+    public void gotoScene(String name) {
+        if (name == null || name.isBlank() || project == null) return;
+        if (!project.hasScene(name)) {
+            Logs.warn("[Flow] 目标场景不存在: " + name);
+            return;
+        }
+        renderScene(name, true, true);
+    }
+
+    @Override
+    public boolean saveSlot(String slot) { return saveTo(slot); }
+
+    @Override
+    public boolean loadSlot(String slot) { return loadFrom(slot); }
+
+    @Override
+    public GameSaveManager saves() { return saveManager; }
+
+    @Override
+    public FlowVariables variables() { return flowVars; }
+
+    @Override
+    public void log(String message) { Logs.info("[Flow] " + message); }
+
+    // =====================================================================
     // Toast 提示
     // =====================================================================
 
-    private void toast(String text) {
+    @Override
+    public void toast(String text) {
         Label l = new Label(text);
         l.getStyleClass().add("toast");
         HBox row = new HBox(l);

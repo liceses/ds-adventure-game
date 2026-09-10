@@ -5,6 +5,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.studio.flow.SignalDef;
+import com.studio.flow.SlotDef;
+
 /**
  * 剧情场景（对应 scenario.txt 中 [场景名] 到下一个 [场景名] 之间的内容）。
  * <p>
@@ -22,12 +25,20 @@ public class GameScene {
     /** 场景内的全部节点，顺序 = 层级顺序（后加入者在上层） */
     private final List<StoryNode> nodes = new ArrayList<>();
 
+    /** 场景级信号（主要是键盘：地图的全局事件监听器接收后分发） */
+    private final List<SignalDef> signals = new ArrayList<>();
+
+    /** 场景级槽（响应场景信号或任意节点信号） */
+    private final List<SlotDef> slots = new ArrayList<>();
+
     /** 中文/英文别名 → 规范键 */
     public static final Map<String, String> SCENE_KEY_ALIAS = new LinkedHashMap<>();
     static {
         SCENE_KEY_ALIAS.put("event", "event");   SCENE_KEY_ALIAS.put("事件", "event");
         SCENE_KEY_ALIAS.put("next", "next");     SCENE_KEY_ALIAS.put("下一场景", "next"); SCENE_KEY_ALIAS.put("下个场景", "next");
         SCENE_KEY_ALIAS.put("end", "end");       SCENE_KEY_ALIAS.put("结束", "end");
+        SCENE_KEY_ALIAS.put("signal", "signal"); SCENE_KEY_ALIAS.put("信号", "signal");
+        SCENE_KEY_ALIAS.put("slot", "slot");     SCENE_KEY_ALIAS.put("槽", "slot"); SCENE_KEY_ALIAS.put("槽位", "slot");
     }
 
     public GameScene(String name) { setName(name); }
@@ -37,6 +48,12 @@ public class GameScene {
 
     public Map<String, String> props() { return props; }
     public List<StoryNode> nodes() { return nodes; }
+
+    /** 场景级信号列表（键盘全局监听器按此分发） */
+    public List<SignalDef> signals() { return signals; }
+
+    /** 场景级槽列表 */
+    public List<SlotDef> slots() { return slots; }
 
     // ---------------- 便捷访问场景级属性 ----------------
 

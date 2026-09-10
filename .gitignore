@@ -10,3 +10,9 @@ maps/
 # 外部工程师编译进插件目录的产物
 plugins/classes/
 plugins/*.jar
+# 逻辑层编译产物
+logic/classes/
+logic/*.jar
+# 本地探针/临时编译输出
+.out-*/
+.*test*/

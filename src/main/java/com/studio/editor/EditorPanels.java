@@ -257,6 +257,27 @@ final class EditorPanels {
             optionBtn.getStyleClass().add("tool-button");
             optionBtn.setOnAction(e -> NodeDialogs.showOptionDialog(hub));
             body.getChildren().add(optionBtn);
+
+            // 场景级信号（键盘）与槽：地图全局监听器接收按键后分发
+            TextArea sceneSig = new TextArea(NodeDialogs.signalsToText(scene.signals()));
+            sceneSig.setWrapText(true);
+            sceneSig.setPrefRowCount(2);
+            sceneSig.setTooltip(new Tooltip("场景级键盘信号：名称 | key | 按键码 | press|release"));
+            bind(sceneSig, v -> {
+                NodeDialogs.applySignals(scene.signals(), v);
+                hub.setDirty();
+            });
+            body.getChildren().add(row("场景信号(键盘)", sceneSig));
+
+            TextArea sceneSlot = new TextArea(NodeDialogs.slotsToText(scene.slots()));
+            sceneSlot.setWrapText(true);
+            sceneSlot.setPrefRowCount(2);
+            sceneSlot.setTooltip(new Tooltip("场景槽：信号名 | 动作 | 目标 | 参数；例：快捷键F | toggle | 提示 | visible"));
+            bind(sceneSlot, v -> {
+                NodeDialogs.applySlots(scene.slots(), v);
+                hub.setDirty();
+            });
+            body.getChildren().add(row("场景槽", sceneSlot));
             body.getChildren().add(new Separator());
         }
 
@@ -358,12 +379,12 @@ final class EditorPanels {
             action.getSelectionModel().select(NodeDialogs.actionIndexFor(node.getAction()));
             bind(action, v -> {
                 node.setAction(NodeDialogs.actionCodeFor(action.getSelectionModel().getSelectedIndex()));
-                targetF.setDisable(!NodeDialogs.needsTargetValue(node.getAction()));
+                targetF.setDisable(!NodeDialogs.targetEnabled(node));
                 refreshView.run();
             });
             body.getChildren().add(row("动作 action", action));
-            targetF.setDisable(!NodeDialogs.needsTargetValue(node.getAction()));
-            body.getChildren().add(row("目标 target（场景名/存档名）", targetF));
+            targetF.setDisable(!NodeDialogs.targetEnabled(node));
+            body.getChildren().add(row("目标 target（场景名/存档名/对话下一场景）", targetF));
 
             CheckBox visible = new CheckBox("可见");
             visible.setSelected(node.isVisible());
@@ -380,6 +401,33 @@ final class EditorPanels {
             TextField op = num(node.getOpacity(),
                     v -> { node.setOpacity(Math.max(0.05, Math.min(1, v))); refreshView.run(); });
             body.getChildren().add(row("透明度 opacity", op));
+
+            TextField trans = new TextField(node.getTransition());
+            trans.setPromptText("scale/opacity:300ms（留空=立即）");
+            trans.setTooltip(new Tooltip("本节点属性改变时的简单补间：scale/opacity/rotation/x/y[:毫秒]"));
+            bind(trans, v -> { node.setTransition(v); refreshView.run(); });
+            body.getChildren().add(row("过渡动画 transition", trans));
+
+            // 节点信号 / 槽（与完整属性窗口里的编辑同步）
+            TextArea nodeSig = new TextArea(NodeDialogs.signalsToText(node.signals()));
+            nodeSig.setWrapText(true);
+            nodeSig.setPrefRowCount(2);
+            nodeSig.setTooltip(new Tooltip("名称 | mouse|key | click/release/按键码 | 参数"));
+            bind(nodeSig, v -> {
+                NodeDialogs.applySignals(node.signals(), v);
+                hub.setDirty();
+            });
+            body.getChildren().add(row("信号 signal", nodeSig));
+
+            TextArea nodeSlot = new TextArea(NodeDialogs.slotsToText(node.slots()));
+            nodeSlot.setWrapText(true);
+            nodeSlot.setPrefRowCount(3);
+            nodeSlot.setTooltip(new Tooltip("信号名 | 动作 | 目标 | 参数：set/toggle/emit/goto/save/load/call/log"));
+            bind(nodeSlot, v -> {
+                NodeDialogs.applySlots(node.slots(), v);
+                hub.setDirty();
+            });
+            body.getChildren().add(row("槽 slot", nodeSlot));
 
             Button full = new Button("📋 打开完整属性窗口…");
             full.getStyleClass().add("tool-button");

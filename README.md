@@ -40,6 +40,15 @@ IDEA 中直接运行：
    槽 1/2/3 各配 [保存][读取][删除]——先在某场景保存、再走到别的场景、回来“读取”
    即跳回存档时的场景并自动关闭存档台。存档写入 `maps/demo_save_room/saves/*.txt`
    （`{变量: 数值}` 语法、支持 `#` 注释，可手改）。
+5. **信号 / 槽 + 逻辑层演示**：编辑器 文件 → “打开信号演示地图（信号/槽+逻辑层）…” 生成并打开
+   `maps/demo_signal_lab`：点“启动按钮”触发鼠标**信号**→槽 `call`→`logic/SignalLabLogic`
+   逻辑层改变量与样式；点“手动灯”走纯编辑器槽 `emit`；按 `F`/`L` 演示场景级与节点级**键盘信号**；
+   存档/读档 slot1 可验证变量与样式覆盖一起恢复。详见 README 第六节。
+6. **自包含示例地图（双立绘轮流高亮）**：`maps/demo_signal_characters` 是**纯地图文件夹**——
+   脚本 + 素材 + 地图自带逻辑（`logic/src` 源码与已编译的 `logic/classes/*.class`）全在文件夹内，
+   与编辑器工程零耦合。用 编辑器 文件 → **打开地图文件夹…** 选中它即可编辑/运行：
+   点击对话框段落推进时，两位立绘**轮流高亮并略微变大**（说话者 opacity 1.0 / scale 1.08，
+   另一位 0.55 / 1.0，名牌同步明暗），对话走完后按对话节点 `target` **自动跳转**到 [尾声]。
 
 ---
 
@@ -111,7 +120,7 @@ style = -fx-background-color: white;
 | style | 内联 CSS（`-fx-*`） | |
 | event | 节点事件（action=event 时触发插件） | |
 | action | 按钮动作：target/skip/save/load/speed/event | **save/load 为真实存档读写** |
-| target | action=target 填场景名；action=save/load 填存档文件名 | save/load 留空=slot1.txt |
+| target | action=target 填场景名；action=save/load 填存档文件名 | save/load 留空=slot1.txt；**对话节点填“对话结束后的下一场景”，点完最后一段自动跳转** |
 | visible / fontSize / align / opacity | 可见性/字号/对齐/透明度 | 缺省=默认 |
 | typewriter / 逐字显示 | 对话逐字开关：默认/开/关（对话默认开） | 逐字时点击对话=显示全文 |
 | 其它任意键 | 存入 extras 原样往返 | 保证无损同步 |
@@ -149,7 +158,11 @@ style = -fx-background-color: white;
 - 布局：左侧=场景与节点层级树；中间=画布；右侧=属性检查器；底部=状态栏。
 - 画布左上角**常驻工具箱**（视图→显示工具箱 可开关）：按住“文本/图片/按钮/背景/立绘/人物名/对话/音乐”项拖到画布即生成节点；单击某项也在可视中心放置。
 - 节点：拖拽改坐标；单击选中（金色描边）；双击或右键“编辑属性”弹出完整属性窗口，**修改即时刷新画布**；
+  属性窗口保持原来的**单列平铺样式**，内容过多时用**鼠标滚轮上下滚动**查看（也支持拖拽平移）；
   右键还有 复制/删除/上移/下移 层级。空白处右键可“在此处添加…”（再次点击任意区域自动收起菜单）。
+- 常用快捷键：**Delete** 删除选中节点、**Ctrl+S** 保存、**Ctrl+O** 打开、**Ctrl+R** 播放测试、
+  **Ctrl+E** 编辑选中节点、**Ctrl+D** 复制节点、**Ctrl+= / Ctrl+- / Ctrl+0** 缩放/适应窗口
+  （均已做场景级快捷键处理，不受焦点影响）。
 - **新建地图**自动生成标准 AVG 模板：左右立绘、左下/右下人物名字牌、中央对话区、底部“跳过/存档/读档/加速”按钮
   （存档/读档为真实 saves/ 读写，跳过/加速为播放器控制）。
 - **导出**：DirectoryChooser 选择位置后生成 `地图名/{scenario.txt, resources/}`；缺失素材按节点尺寸自动补生成占位 PNG/WAV。
@@ -191,7 +204,67 @@ public interface GamePlugin {
 
 ---
 
-## 六、运行注意事项 / FAQ
+## 六、信号 / 槽 与逻辑层（渲染由引擎负责，工程师只写逻辑）
+
+节点与场景都带有 **信号列表** 与 **槽列表**，随 `scenario.txt` 双向读写，可在编辑器里直接编辑。
+
+### 脚本一行式（编辑器同样用这种写法）
+```
+# 节点/场景信号：名称 | mouse|key | click|release|按键码 | 附带参数
+signal = 点击 | mouse | click
+signal = 点亮键L | key | L | press
+# 槽：信号名 | 动作 | 目标 | 参数 | 附加参数
+slot = 点击   | call   | | signallab
+slot = 点击   | emit   | 灯 | 亮灯
+slot = 亮灯   | set    | @self | style | value=-fx-background-color: #f4d06f;
+slot = 快捷键F | toggle | 提示 | visible
+```
+- **信号**：鼠标 `click / release`、键盘 `press / release`（节点级与**场景级**都支持；场景级按键由
+  **地图全局事件监听器**接收后按名字分发）；支持在信号上挂静态**附带参数**。
+- **槽动作**（全部由引擎执行，天然即时渲染）：`set`（改属性，`value=` 字面值 / `valueVar=` 取变量）、
+  `toggle`（布尔切换）、`emit`（向目标节点/场景发信号，参数继续传递）、`goto`（跳场景）、
+  `save` / `load`（读写 saves 槽位）、`call`（转交逻辑层）、`log`（日志+顶部提示）。
+  参数合并优先级：事件上下文 → 信号附带参数 → 槽附带参数。
+- **过渡动画 `transition`**：给属性变化加简单补间（JavaFX Timeline 驱动）。
+  ```java
+  // 节点属性（该节点所有属性变化默认走补间）
+  transition = scale/opacity:300ms
+  // 或写在槽的附加参数里（只对本次 set 生效，优先级高于节点默认）
+  slot = 点击 | set | @self | scale | value=1.08 | transition=scale:300ms
+  ```
+  支持动画的属性：`scale`、`opacity`、`rotation`、`x`、`y`（毫秒省略时默认 300；
+  多个属性用 `/` 或 `,` 分隔，也可逐属性写时长如 `scale:200ms,opacity:400ms`）。
+  逻辑层同样可用：`ctx.setProperty(id, "scale", "1.08", "scale:300ms")`。
+  动画结束后最终值会记录为“属性覆盖”，随存档保存并在重绘/读档时重放。
+
+### 逻辑层目录 `logic/`（工程师只写逻辑）
+```
+工程根/logic/            全局逻辑：logic.ini(ID=类名) + classes/ 或 *.jar
+地图根/logic/            该地图专属逻辑（同样规则，优先加载）
+```
+```java
+public class MyLogic implements com.studio.flow.LogicHandler {
+    public void onSignal(FlowContext ctx, SignalEvent ev) {
+        ctx.setVar("金币", ctx.intVar("金币", 0) + 10);        // 变量（随存档保存）
+        ctx.setText("金币文本", "金币: " + ctx.var("金币", "0")); // 引擎立即重绘
+        ctx.setStyle("宝箱", "-fx-opacity: 0.35;");            // 改样式
+        ctx.emit("提示", "获得金币", Map.of("数量", 10));       // 向另一节点发信号
+    }
+}
+```
+- 槽写 `call` 时可用注册 ID、`ID#方法名` 或全限定类名；逻辑类的加载沿用“父加载器优先 + URLClassLoader 兜底”，
+  同样规避模块化限制；
+- **逻辑层对地图存档数据有读写权限**：`ctx.setVar/nodeVar`（地图/节点变量）、`ctx.setProperty`（节点属性覆盖）
+  都会随存档写入 `saves/*.txt`（`var.*` / `nodevar.*` / `prop.*`），读档后自动恢复并**重放渲染**，
+  变量本身又可作为后续逻辑输入；
+- 内置示例：`com.studio.logic.demo.SignalLabLogic`（ID `signallab`），配套地图
+  **`maps/demo_signal_lab`**（编辑器 文件 → “打开信号演示地图（信号/槽+逻辑层）…”）：
+  点按钮 → 逻辑层改变量/样式/文本；按 `F` 切提示显隐；按 `L` 让灯变蓝；存档/读档验证恢复；
+- 编辑器里：节点属性窗口与右侧检查器都能编辑“信号 / 槽”文本（带模板按钮），场景区可编辑**场景信号(键盘)/场景槽**。
+
+---
+
+## 七、运行注意事项 / FAQ
 
 - **依赖下载**：首次构建需联网拉取 openjfx 依赖；离线环境无法 `mvn`，可用本机 `javac` 先编译
   核心层（model/parser/util）验证（见第三节命令行自测）。
@@ -201,7 +274,8 @@ public interface GamePlugin {
 - 素材为“相对路径引用 + 缺失时占位”策略：美术资源放进 `resources/` 同名覆盖即生效，
   编辑器里选中素材文件会自动复制进地图 resources 并改为相对引用。
 - `删除当前地图` 会**永久删除**文件夹（弹窗二次确认）；请谨慎。
-- 播放器里“存档/读档”为需求要求的**占位按钮（输出日志即可）**，接口已预留扩展为快照。
+- 存档/读档：引擎内置 `scene` 变量与 `FlowVariables`（`var.*` / `nodevar.*` / `prop.*`）随存档写入，
+  故事按钮 `action=save/load` + `target=槽位名`，或插件/逻辑层通过 `SavePortal` / `FlowContext` 调用。
 
 ## 七、License / 说明
 示例地图的美术资源为代码生成的占位图；业务用途请替换为原创素材。

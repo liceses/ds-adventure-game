@@ -30,6 +30,7 @@ import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.input.KeyCombination;
+import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -87,6 +88,7 @@ public class EditorPane extends BorderPane implements EditorHub {
 
     private final CheckMenuItem gridItem = new CheckMenuItem("显示网格");
     private boolean skipSceneBoxListener = false;
+    private boolean shortcutsInstalled = false;
 
     // =====================================================================
     // 构造与界面搭建
@@ -107,6 +109,41 @@ public class EditorPane extends BorderPane implements EditorHub {
 
         setBottom(buildStatusBar());
         refreshAll(true);
+
+        // 场景挂上后安装全局快捷键（Delete 删节点等；避免被菜单/焦点吞掉）
+        sceneProperty().addListener((o, a, sc) -> {
+            if (sc != null) installShortcuts(sc);
+        });
+    }
+
+    /** 全局快捷键：Delete 删除选中节点、Ctrl+S/O/R/E/D 与缩放 */
+    private void installShortcuts(Scene sc) {
+        if (shortcutsInstalled) return;
+        shortcutsInstalled = true;
+        sc.addEventFilter(javafx.scene.input.KeyEvent.KEY_PRESSED, e -> {
+            javafx.scene.Node focus = sc.getFocusOwner();
+            boolean typing = focus instanceof javafx.scene.control.TextInputControl;
+            if (e.getCode() == javafx.scene.input.KeyCode.DELETE && !typing) {
+                deleteSelectedNode();
+                e.consume();
+                return;
+            }
+            if (!e.isControlDown()) return;
+            switch (e.getCode()) {
+                case S -> { saveMap(); e.consume(); }
+                case O -> { openMapDialog(); e.consume(); }
+                case R -> { previewInPlayer(); e.consume(); }
+                case E -> {
+                    if (selectedNode != null) openNodeDialog(selectedNode);
+                    e.consume();
+                }
+                case D -> { duplicateSelected(); e.consume(); }
+                case EQUALS, PLUS, ADD -> { canvas.zoomIn(); e.consume(); }
+                case MINUS, SUBTRACT -> { canvas.zoomOut(); e.consume(); }
+                case DIGIT0, NUMPAD0 -> { canvas.fitZoom(); e.consume(); }
+                default -> { }
+            }
+        });
     }
 
     // =====================================================================
@@ -123,6 +160,7 @@ public class EditorPane extends BorderPane implements EditorHub {
         MenuItem demo = item("新建示例地图（含插件演示）…", e -> createMapDialog(true));
         MenuItem branch = item("打开分支剧情示例（含 2048）…", e -> openBranchDemoMap());
         MenuItem saveRoom = item("打开存档演示地图（3 槽存档台）…", e -> openSaveRoomDemoMap());
+        MenuItem signalLab = item("打开信号演示地图（信号/槽+逻辑层）…", e -> openSignalLabMap());
 
         MenuItem save = item("保存地图 (Ctrl+S)", e -> saveMap());
         save.setAccelerator(KeyCombination.keyCombination("Ctrl+S"));
@@ -131,8 +169,8 @@ public class EditorPane extends BorderPane implements EditorHub {
         MenuItem del = item("删除当前地图…", e -> deleteMap());
 
         MenuItem exit = item("退出", e -> requestExit());
-        fileMenu.getItems().addAll(open, fresh, demo, branch, saveRoom, new SeparatorMenuItem(), save,
-                export, del, new SeparatorMenuItem(), exit);
+        fileMenu.getItems().addAll(open, fresh, demo, branch, saveRoom, signalLab,
+                new SeparatorMenuItem(), save, export, del, new SeparatorMenuItem(), exit);
 
         // ---------- 编辑 ----------
         Menu editMenu = new Menu("编辑(E)");
@@ -631,6 +669,21 @@ public class EditorPane extends BorderPane implements EditorHub {
             if (!new File(dir, "scenario.txt").isFile()) {
                 com.studio.util.BranchMapFactory.createMap(dir);
                 notify("已生成分支示例地图: " + dir.getAbsolutePath());
+            }
+            openMap(dir);
+        } catch (IOException e) {
+            Ui.error(stage, "生成示例失败", e.getMessage(), e);
+        }
+    }
+
+    /** 生成并打开“信号实验室”示例地图（信号/槽 + 逻辑层演示） */
+    private void openSignalLabMap() {
+        try {
+            File dir = new File(System.getProperty("user.dir"),
+                    com.studio.util.SignalLabMapFactory.DEFAULT_FOLDER);
+            if (!new File(dir, "scenario.txt").isFile()) {
+                com.studio.util.SignalLabMapFactory.createMap(dir);
+                notify("已生成信号演示地图: " + dir.getAbsolutePath());
             }
             openMap(dir);
         } catch (IOException e) {

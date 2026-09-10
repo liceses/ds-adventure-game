@@ -146,10 +146,10 @@
 }
 .dialog-pane .header-panel { -fx-background-color: #2a2c3c; }
 .dialog-pane .header-panel .label { -fx-text-fill: #f0f1ff; }
-.dialog-pane .content { -fx-text-fill: #cfd1e6; }
+.dialog-pane .content { -fx-text-fill: #aeaecc; }
 .dialog-pane .button {
     -fx-background-color: #3a3d57;
-    -fx-text-fill: #e8e8f0;
+    -fx-text-fill: #a3a3b6;
     -fx-background-radius: 6;
     -fx-cursor: hand;
 }

@@ -4,6 +4,9 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import com.studio.flow.SignalDef;
+import com.studio.flow.SlotDef;
+
 /**
  * 剧情节点（对应 scenario.txt 中的一个 { ... } 块）。
  * <p>
@@ -48,6 +51,12 @@ public class StoryNode {
         // 文本列表：textList/台词列表 是 text 的别名 —— 用独立一行的 --- 分隔多段台词
         KEY_ALIAS.put("textList", "text"); KEY_ALIAS.put("台词列表", "text");
         KEY_ALIAS.put("文本列表", "text"); KEY_ALIAS.put("多段台词", "text");
+        // 信号与槽（可重复出现，逐行追加）
+        KEY_ALIAS.put("signal", "signal"); KEY_ALIAS.put("信号", "signal");
+        KEY_ALIAS.put("slot", "slot"); KEY_ALIAS.put("槽", "slot"); KEY_ALIAS.put("槽位", "slot");
+        // 过渡动画：如 scale/opacity:300ms
+        KEY_ALIAS.put("transition", "transition"); KEY_ALIAS.put("过渡", "transition");
+        KEY_ALIAS.put("过渡动画", "transition"); KEY_ALIAS.put("动画", "transition");
     }
 
     private NodeType type = NodeType.TEXT;
@@ -66,6 +75,17 @@ public class StoryNode {
     private double opacity = 1.0;
     /** null=按类型默认（对话开启逐字），true/false=强制开/关 */
     private Boolean typewriter = null;
+
+    /** 本节点可发出的信号（鼠标点击/释放、按键等） */
+    private final java.util.ArrayList<SignalDef> signals = new java.util.ArrayList<>();
+    /** 本节点订阅的槽（收到信号时执行的动作 / 转交逻辑层） */
+    private final java.util.ArrayList<SlotDef> slots = new java.util.ArrayList<>();
+
+    /**
+     * 默认过渡动画（本节点属性被信号/槽/逻辑改变时生效），如 {@code scale/opacity:300ms}；
+     * 留空 = 立即生效。
+     */
+    private String transition = "";
 
     /** 未知键保留区（按读取顺序），保证脚本无损往返 */
     private final LinkedHashMap<String, String> extras = new LinkedHashMap<>();
@@ -86,6 +106,9 @@ public class StoryNode {
         c.action = action; c.target = target; c.visible = visible;
         c.fontSize = fontSize; c.align = align; c.opacity = opacity;
         c.typewriter = typewriter;
+        c.transition = transition;
+        for (SignalDef s : signals) c.signals.add(s.copy());
+        for (SlotDef s : slots) c.slots.add(s.copy());
         c.extras.putAll(extras);
         return c;
     }
@@ -146,6 +169,19 @@ public class StoryNode {
 
     public Map<String, String> extras() { return extras; }
 
+    /** 本节点可发出的信号列表（编辑器/引擎共用；随 scenario.txt 读写） */
+    public java.util.List<SignalDef> signals() { return signals; }
+
+    /** 默认过渡动画规格（如 {@code scale/opacity:300ms}）；空=立即生效 */
+    public String getTransition() { return transition; }
+
+    public void setTransition(String transition) {
+        this.transition = transition == null ? "" : transition.trim();
+    }
+
+    /** 本节点订阅的槽列表 */
+    public java.util.List<SlotDef> slots() { return slots; }
+
     // ---------------- 便捷查询 ----------------
 
     /** 是否为纯音频轨（不占画面） */
@@ -175,6 +211,7 @@ public class StoryNode {
             case "align"    -> setAlign(value);
             case "opacity"  -> setOpacity(parseDoubleSafe(value, 1.0));
             case "typewriter" -> setTypewriter(parseBoolSafe(value, true));
+            case "transition" -> setTransition(value);
             default         -> extras.put(canonicalKey, value);
         }
     }
@@ -200,6 +237,7 @@ public class StoryNode {
         if (!"left".equals(align)) m.put("align", align);
         if (opacity < 1.0) m.put("opacity", trimDouble(opacity));
         if (typewriter != null) m.put("typewriter", typewriter ? "true" : "false");
+        if (!transition.isEmpty()) m.put("transition", transition);
         // 未知键按原顺序补在尾部
         m.putAll(extras);
         return m;

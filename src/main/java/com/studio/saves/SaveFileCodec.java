@@ -89,9 +89,18 @@ public final class SaveFileCodec {
         return data;
     }
 
-    /** 去掉行内 # 注释（# 之后的字符一律忽略；保留引号内? —— 数值存档无引号，直接切） */
+    /**
+     * 去掉注释：
+     * 含 {…} 的行 —— 只把“闭合花括号之后”的 # 当注释（值本身可能含 #，如 CSS 颜色值）；
+     * 不含 {…} 的行 —— 直接按注释/垃圾行处理。
+     */
     public static String stripComment(String line) {
-        int idx = line.indexOf('#');
+        int close = line.lastIndexOf('}');
+        if (close < 0) {
+            int idx = line.indexOf('#');
+            return idx >= 0 ? line.substring(0, idx) : line;
+        }
+        int idx = line.indexOf('#', close + 1);
         return idx >= 0 ? line.substring(0, idx) : line;
     }
 

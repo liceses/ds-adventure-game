@@ -1,5 +1,8 @@
 package com.studio.parser;
 
+import com.studio.flow.SignalCodec;
+import com.studio.flow.SignalDef;
+import com.studio.flow.SlotDef;
 import com.studio.model.GameOption;
 import com.studio.model.GameProject;
 import com.studio.model.GameScene;
@@ -183,7 +186,15 @@ public final class ScriptParser {
                     heredocKey = key;
                     heredocBuf = new StringBuilder();
                 } else {
-                    setNodeProperty(currentNode, key, unescape(value), warnings, lineNo);
+                    String canonical = StoryNode.KEY_ALIAS.getOrDefault(key, key);
+                    // 信号/槽是“可重复行”，直接使用原始值（不做 \n 反转义，交由 SignalCodec 处理转义）
+                    if ("signal".equals(canonical)) {
+                        addNodeSignal(currentNode, value, warnings, lineNo);
+                    } else if ("slot".equals(canonical)) {
+                        addNodeSlot(currentNode, value, warnings, lineNo);
+                    } else {
+                        setNodeProperty(currentNode, canonical, unescape(value), warnings, lineNo);
+                    }
                 }
             } else if (inOption) {
                 project.option().putAliasedProperty(key, unescape(value));
@@ -193,7 +204,14 @@ public final class ScriptParser {
                     heredocKey = key;
                     heredocBuf = new StringBuilder();
                 } else {
-                    currentScene.putAliasedProperty(key, unescape(value));
+                    String canonical = GameScene.SCENE_KEY_ALIAS.getOrDefault(key, key);
+                    if ("signal".equals(canonical)) {
+                        addSceneSignal(currentScene, value, warnings, lineNo);
+                    } else if ("slot".equals(canonical)) {
+                        addSceneSlot(currentScene, value, warnings, lineNo);
+                    } else {
+                        currentScene.putAliasedProperty(canonical, unescape(value));
+                    }
                 }
             } else {
                 warnings.add("第 " + lineNo + " 行: 落在段落之外的键值已忽略: " + truncate(raw));
@@ -220,8 +238,31 @@ public final class ScriptParser {
         return project;
     }
 
-    /** 手工脚本省略 width/height 时回填类型默认尺寸（music 除外） */
-    private static void applyTypeDefaults(StoryNode node) {
+    // =====================================================================
+    // 信号 / 槽（可重复行）
+    // =====================================================================
+
+    private static void addNodeSignal(StoryNode node, String raw, List<String> warnings, int lineNo) {
+        SignalDef def = SignalCodec.decodeSignal(raw, warnings);
+        if (def != null) node.signals().add(def);
+    }
+
+    private static void addNodeSlot(StoryNode node, String raw, List<String> warnings, int lineNo) {
+        SlotDef def = SignalCodec.decodeSlot(raw, warnings);
+        if (def != null) node.slots().add(def);
+    }
+
+    private static void addSceneSignal(GameScene scene, String raw, List<String> warnings, int lineNo) {
+        SignalDef def = SignalCodec.decodeSignal(raw, warnings);
+        if (def != null) scene.signals().add(def);
+    }
+
+    private static void addSceneSlot(GameScene scene, String raw, List<String> warnings, int lineNo) {
+        SlotDef def = SignalCodec.decodeSlot(raw, warnings);
+        if (def != null) scene.slots().add(def);
+    }
+
+    /** 手工脚本省略 width/height 时回填类型默认尺寸（music 除外） */    private static void applyTypeDefaults(StoryNode node) {
         if (node == null) return;
         if (node.getType() != com.studio.model.NodeType.MUSIC) {
             if (node.getWidth() <= 0) node.setWidth(node.getType().defaultWidth());
