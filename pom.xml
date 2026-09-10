@@ -1,63 +1,110 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+  剧情游戏编辑器(Studio) 与 剧情游戏读取器(Player) —— 工程构建文件
+  JDK 21 + JavaFX 21（纯 Java 代码构建 UI，无 FXML）
+-->
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>com.lab</groupId>
-  <artifactId>ds-adventure</artifactId>
-  <version>0.1.0</version>
+  <groupId>com.studio</groupId>
+  <artifactId>visual-novel-studio</artifactId>
+  <version>1.0.0</version>
   <packaging>jar</packaging>
 
-  <name>ds-adventure</name>
-  <description>文字剧情 + 小游戏融合的 JavaFX 实训项目（Galgame 主框架，小游戏以特殊演出嵌入）</description>
+  <name>Visual Novel Studio &amp; Player</name>
+  <description>剧情游戏可视化编辑器（Studio）与剧情游戏读取器（Player），基于 Java 21 + JavaFX 21</description>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.release>17</maven.compiler.release>
-    <javafx.version>21.0.12</javafx.version>
-    <junit.version>5.11.4</junit.version>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+    <!-- JavaFX 平台分类器：win / linux / mac / linux-aarch64 ... 换平台时用 -Djavafx.platform=xxx 覆盖 -->
+    <javafx.version>21.0.5</javafx.version>
+    <javafx.platform>win</javafx.platform>
+
+    <!-- 默认启动类为编辑器；运行播放器： mvn -Pplayer javafx:run -->
+    <fx.mainClass>com.studio.launcher.EditorApp</fx.mainClass>
   </properties>
 
   <dependencies>
+    <!-- JavaFX 基础控件（按平台分类器引入，保证编译与运行一致） -->
+    <dependency>
+      <groupId>org.openjfx</groupId>
+      <artifactId>javafx-base</artifactId>
+      <version>${javafx.version}</version>
+      <classifier>${javafx.platform}</classifier>
+    </dependency>
+    <dependency>
+      <groupId>org.openjfx</groupId>
+      <artifactId>javafx-graphics</artifactId>
+      <version>${javafx.version}</version>
+      <classifier>${javafx.platform}</classifier>
+    </dependency>
     <dependency>
       <groupId>org.openjfx</groupId>
       <artifactId>javafx-controls</artifactId>
       <version>${javafx.version}</version>
+      <classifier>${javafx.platform}</classifier>
     </dependency>
-    <dependency>
-      <groupId>org.openjfx</groupId>
-      <artifactId>javafx-fxml</artifactId>
-      <version>${javafx.version}</version>
-    </dependency>
+    <!-- 音频/视频媒体支持（MediaPlayer 播放 mp3/wav 等） -->
     <dependency>
       <groupId>org.openjfx</groupId>
       <artifactId>javafx-media</artifactId>
       <version>${javafx.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter</artifactId>
-      <version>${junit.version}</version>
-      <scope>test</scope>
+      <classifier>${javafx.platform}</classifier>
     </dependency>
   </dependencies>
 
   <build>
+    <finalName>visual-novel-studio</finalName>
     <plugins>
+      <!-- 编译器：Java 21 -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.13.0</version>
+        <configuration>
+          <release>21</release>
+          <encoding>UTF-8</encoding>
+          <showWarnings>true</showWarnings>
+          <compilerArgs>
+            <arg>-Xlint:all,-options</arg>
+          </compilerArgs>
+        </configuration>
+      </plugin>
+
+      <!-- JavaFX 运行插件（无 module-info 时自动以 classpath 模式启动，规避模块限制） -->
       <plugin>
         <groupId>org.openjfx</groupId>
         <artifactId>javafx-maven-plugin</artifactId>
         <version>0.0.8</version>
         <configuration>
-          <mainClass>com.lab.galgame.GameApplication</mainClass>
+          <mainClass>${fx.mainClass}</mainClass>
+          <options>
+            <!-- 通过 -Dmode 切换：player=读取器（其余默认编辑器） -->
+            <option>-Dstudio.mode=studio</option>
+          </options>
         </configuration>
       </plugin>
+
+      <!-- 允许直接运行核心自测（不需要图形环境）： mvn -q exec:java -Dexec.mainClass=com.studio.parser.ParserSelfTest -->
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <version>3.2.5</version>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>3.2.0</version>
       </plugin>
     </plugins>
   </build>
+
+  <profiles>
+    <!-- 播放器启动配置： mvn -Pplayer javafx:run -->
+    <profile>
+      <id>player</id>
+      <properties>
+        <fx.mainClass>com.studio.launcher.PlayerApp</fx.mainClass>
+      </properties>
+    </profile>
+  </profiles>
 </project>
