@@ -1,0 +1,104 @@
+/* ================================================================
+   Player（剧情读取器）运行时样式
+   说明：JavaFX 原生不支持 CSS transition，因此本项目在代码中
+   （FxAnim 工具类）监听 :hover / :pressed 伪类切换，并驱动
+   ScaleTransition 模拟“CSS 过渡”动画 —— 参见 NodeFactory。
+   ================================================================ */
+
+.player-root {
+    -fx-font-family: "Microsoft YaHei UI", "PingFang SC", "Noto Sans CJK SC", sans-serif;
+    -fx-background-color: #05060d;
+}
+
+/* ---------- 剧情按钮 ---------- */
+.story-btn {
+    -fx-background-color: rgba(24, 26, 44, 0.68);
+    -fx-background-radius: 12;
+    -fx-border-color: rgba(255, 255, 255, 0.30);
+    -fx-border-radius: 12;
+    -fx-text-fill: #f2f3ff;
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+    -fx-padding: 6 14 6 14;
+    -fx-cursor: hand;
+}
+.story-btn:hover { -fx-border-color: #ffd76a; -fx-text-fill: #ffd76a; }
+
+/* 人物名牌子 */
+.name-plate {
+    -fx-background-color: rgba(20, 22, 40, 0.82);
+    -fx-background-radius: 12;
+    -fx-text-fill: #ffe2a6;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-padding: 2 16 2 16;
+    -fx-alignment: center;
+}
+
+/* 对话面板容器 */
+.dialog-panel {
+    -fx-background-color: rgba(14, 15, 30, 0.78);
+    -fx-background-radius: 18;
+    -fx-border-color: rgba(255, 255, 255, 0.10);
+    -fx-border-radius: 18;
+}
+
+/* ---------- 顶部提示横幅（Toast） ---------- */
+.toast {
+    -fx-background-color: rgba(10, 12, 22, 0.88);
+    -fx-background-radius: 14;
+    -fx-padding: 8 18 8 18;
+    -fx-border-color: #ffd76a;
+    -fx-border-radius: 14;
+}
+.toast .label { -fx-text-fill: #ffe9b0; -fx-font-size: 14px; }
+
+/* ---------- 插件包装器（浏览器标签页式） ---------- */
+.plugin-bar {
+    -fx-background-color: #171826;
+    -fx-padding: 8 14 8 14;
+    -fx-border-color: transparent transparent #33364d transparent;
+}
+.plugin-bar .label { -fx-text-fill: #dfe0f2; }
+.back-btn {
+    -fx-background-color: #3d4060;
+    -fx-background-radius: 8;
+    -fx-text-fill: #ffffff;
+    -fx-padding: 5 16 5 16;
+    -fx-cursor: hand;
+}
+.back-btn:hover { -fx-background-color: #565a8c; }
+
+/* ---------- 扫雷 Demo 样式 ---------- */
+.mine-root { -fx-background-color: #101322; -fx-padding: 18; }
+.mine-title { -fx-text-fill: #ffd76a; -fx-font-size: 17px; -fx-font-weight: bold; }
+.mine-hint { -fx-text-fill: #9aa0c8; -fx-font-size: 12px; }
+.mine-cell {
+    -fx-background-color: linear-gradient(to bottom, #4a4f74, #34384f);
+    -fx-background-radius: 4;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-text-fill: #eef0ff;
+    -fx-cursor: hand;
+    -fx-background-insets: 1;
+}
+.mine-cell:hover { -fx-background-color: #5a608c; }
+.mine-cell:pressed { -fx-background-color: #242740; }
+.mine-cell.revealed { -fx-background-color: #23263a; -fx-text-fill: #c9cbe0; -fx-cursor: default; }
+.mine-cell.mine-hit { -fx-background-color: #a33; -fx-text-fill: #fff; }
+.mine-cell.flag { -fx-background-color: #40341c; -fx-text-fill: #ffcf5c; }
+.mine-overlay {
+    -fx-background-color: rgba(8, 9, 16, 0.86);
+    -fx-background-radius: 14;
+    -fx-border-color: #ffd76a;
+    -fx-border-radius: 14;
+    -fx-padding: 26 34 26 34;
+}
+.mine-overlay .label { -fx-text-fill: #f4f5ff; -fx-font-size: 18px; }
+.mine-restart {
+    -fx-background-color: #3d4060;
+    -fx-background-radius: 8;
+    -fx-text-fill: white;
+    -fx-padding: 6 20 6 20;
+    -fx-cursor: hand;
+}
