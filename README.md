@@ -291,12 +291,12 @@ public interface GamePlugin {
     void execute(Stage stage, Map<String, Object> params);                          // 引擎要求实现
     default Parent createEmbeddedView(Map<String, Object> params) { return null; }  // 返回界面则“嵌入”主舞台
     default String displayName() { ... }
-    default void onDetach() { }
+    default void onDetach() { }                                                     // 插件被移除时回调（停循环/计时器）
 }
 ```
 
 - **动态加载**：`PluginLoader` 先查 `plugins/plugins.ini` 注册表与内置白名单，再按双亲委派（父加载器 = 应用类加载器）尝试 classpath，找不到时用 `URLClassLoader` 扫描 `plugins/` 下 `.jar` 与 `classes/`。
-- **界面包装**：插件返回的 `Parent` 放入主舞台中央嵌入层，顶部自动生成「🎮 插件名 … ← 返回剧情」标题栏；返回后恢复进入前的场景（场景事件不重复触发）。
+- **界面包装**：插件返回的 `Parent` 放入主舞台中央嵌入层，顶部自动生成「🎮 插件名 … ← 返回剧情」标题栏；返回后恢复进入前的场景（场景事件不重复触发），并在移除时回调插件 `onDetach()` 以停止其游戏循环/计时器（读档收起插件层时同样回调）。
 - 内置 demo 插件：`MinesweeperPlugin`（扫雷）、`Game2048Plugin`（2048）、`SavePanelPlugin`（三槽存档台）。
 
 ### 9.3 如何规避 Java 模块化（JPMS）限制

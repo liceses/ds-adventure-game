@@ -1,4 +1,19 @@
 # 更新日志 (Changelog)
+## [v1.5] 修复插件 onDetach 不被回调
+
+### Fixed
+- `ReaderView` 现在会在插件被移除时回调 `GamePlugin.onDetach()`：
+  - 玩家点【← 返回剧情】（`leavePlugin()`）
+  - 读档时收起插件层（`exitPluginIfShown()`）
+  - 新增 `activePlugin` 字段与 `detachActivePlugin()` 统一收尾（捕获插件异常、打日志）
+- 影响：使用 `AnimationTimer` / `Timeline` 的实时小游戏（贪吃蛇、飞机大战等）返回剧情后
+  循环不再残留后台运行（此前 `onDetach()` 定义了但引擎从不调用）
+
+### Docs
+- `CONTRIBUTING.md` §2.6 由「已知缺陷 + 对策」更新为正式的引擎回调契约（含触发路径表、
+  幂等 `stopLoop()` 示例、兜底监听、`onDetach()` 内禁止事项）；§7.4/§8 同步更新
+- `README.md` 插件接口与「界面包装」说明补充 `onDetach()` 回调时机
+
 ## [v1.4] 新增协作规范 CONTRIBUTING.md
 
 ### Added

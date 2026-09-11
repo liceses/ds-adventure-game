@@ -79,7 +79,7 @@ public class SnakePlugin implements GamePlugin {
         view = new StackPane(/* 你画的棋盘 Canvas / GridPane … */);
         startLoop();
 
-        // ★ 关键：被移除出主舞台时（玩家点【← 返回剧情】）停止自己的循环
+        // 兜底：视图被摘除时再停一次（主路径是引擎回调 onDetach，见 §2.6；stopLoop 需幂等）
         view.parentProperty().addListener((obs, old, now) -> {
             if (now == null) stopLoop();
         });
@@ -90,7 +90,7 @@ public class SnakePlugin implements GamePlugin {
     public String displayName() { return "贪吃蛇"; }
 
     @Override
-    public void onDetach() { stopLoop(); }   // 见 §2.6：当前引擎不会主动调用它
+    public void onDetach() { stopLoop(); }   // 引擎移除插件时回调（见 §2.6）
 
     private void startLoop() {
         loop = new AnimationTimer() {
@@ -166,23 +166,37 @@ event = snake
 
 引擎行为：同一个插件**不会重复进入**（已在插件模式时新的触发被忽略）；返回时**不会重复触发**进入它的场景事件（引擎内部已做抑制）。
 
-### 2.6 生命周期与资源释放（⚠️ 已知缺陷，务必按此写）
+### 2.6 生命周期与资源释放（务必按此写）
 
-**现状**：`GamePlugin.onDetach()` 虽在接口中定义、`Game2048Plugin` 也实现了，但**引擎目前不会调用它**。
-因此：**所有基于 `AnimationTimer` / `Timeline` 的实时小游戏（贪吃蛇、飞机大战等），不要依赖 `onDetach()` 来停循环**，
-否则玩家返回剧情后你的循环仍在后台跑（占用 CPU、可能连带更新已移除的节点）。
+引擎在**插件从主舞台移除时**会回调 `GamePlugin.onDetach()`，两条路径都会触发：
 
-**两种对策（任选，推荐同时做）**：
+| 触发路径 | 引擎行为 |
+|---|---|
+| 玩家点标题栏【← 返回剧情】 | `ReaderView.leavePlugin()` → 回调 `onDetach()` → 回到进入插件前的场景 |
+| 读档时收起插件层 | `ReaderView.exitPluginIfShown()` → 回调 `onDetach()` |
 
-1. **监听父节点被摘除**（最可靠，见 §2.2 骨架）：
+因此**实时小游戏必须在 `onDetach()` 里停掉自己的游戏循环**：
+
+```java
+private AnimationTimer loop;
+
+@Override
+public void onDetach() { stopLoop(); }        // ★ 引擎会调用，勿留空
+
+private void stopLoop() {                      // 必须幂等（onDetach 与兜底监听都可能触发）
+    if (loop != null) { loop.stop(); loop = null; }
+}
+```
+
+补充约定：
+
+1. `onDetach()` 抛异常不会导致引擎卡住（引擎捕获后打警告日志），但**请勿在其中做耗时操作或弹窗**；
+2. 同一时刻只有一个插件被托管：重复触发会被忽略（`runPlugin` 有重入保护），托管新插件前会先 detach 上一个；
+3. **建议再加一层兜底**，以防将来有其他路径移除插件视图：
    ```java
    view.parentProperty().addListener((obs, old, now) -> { if (now == null) stopLoop(); });
    ```
-   引擎返回剧情时会执行 `pluginContent.setCenter(null)`，此时 `view.getParent() == null`，监听即被触发。
-2. **包装返回回调**：自建返回按钮时先 `stopLoop()` 再 `back.run()`。
-
-**建议维护者尽快修引擎（1 行）**：在 `ReaderView.leavePlugin()` 中调用当前插件的 `onDetach()`
-（需同时把插件实例存为字段），使接口契约成立。修完前，请按上面的对策 1 写插件。
+4. 自建「返回」按钮时，先 `stopLoop()` 再调 `back.callback`，语义更清晰。
 
 ### 2.7 事件 ID 命名建议（与需求编号对应）
 
@@ -387,8 +401,8 @@ src/main/java/com/studio/flow/**                       信号/槽引擎
 
 ### 7.4 待修事项（已知）
 
-- `ReaderView.leavePlugin()` 未调用插件 `onDetach()`（见 §2.6）——建议尽快修，修完请更新本节与 §2.6。
 - `maven-surefire-plugin` 已显式固定 `3.2.5`；升级需全组同步。
+- P0 F3 的「小游戏结果回传剧情引擎（通关/失败 → 三分支调度）」尚未落地，需扩展 `GamePlugin` 接口（见 README §5）。
 
 ---
 
@@ -399,7 +413,7 @@ src/main/java/com/studio/flow/**                       信号/槽引擎
 | `找不到符号: Math.clamp` / `getFirst()` | 用了 Java 21 专有 API | 换成 Java 17 写法：`Math.max/min`、`list.get(0)` |
 | `在 classpath 与 plugins 目录中都找不到插件类` | 没注册 / 类名或包名写错 / 没重新编译 | 检查 `plugins/plugins.ini` 的 `全限定类名`；`mvnw.cmd clean compile` |
 | 触发了但什么都没出现 | `createEmbeddedView()` 返回了 `null`（走了窗口模式），或抛异常 | 看控制台日志（`Logs.plugin` / `插件运行异常`）；确认返回了 `Parent` |
-| 返回剧情后仍在后台跑、卡顿 | 循环没停（§2.6 的坑） | 用 `view.parentProperty()` 监听摘除；或先停循环再 `back.run()` |
+| 返回剧情后仍在后台跑、卡顿 | `onDetach()` 里没停循环 | 在 `onDetach()` 中 `loop.stop()`（§2.6）；再加 `view.parentProperty()` 兜底 |
 | 点了按钮没反应 / 又掉回小游戏 | 场景事件在返回时被重复触发 | 引擎已做抑制；若自建返回逻辑，注意别直接调 `renderScene` |
 | 地图改了没生效 | 编辑器没保存 / 看的是别的地图 | 编辑器 `Ctrl+S`；确认 `config.ini` 的 `map.folder` |
 | 图片显示为占位方块 | `resources/` 路径不对或文件缺失 | 路径相对**地图根**；确认文件名与大小写 |

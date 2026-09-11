@@ -138,6 +138,7 @@ public class ReaderView extends BorderPane implements SavePortal, FlowHost {
     private String previousScene;        // 进入插件前正在展示的场景（插件【返回】的目标）
     private String pluginReturnScene;    // 由场景级/按钮级事件临时指定的返回目标
     private boolean suppressSceneEvent;  // 从插件返回时避免重复触发场景事件
+    private GamePlugin activePlugin;     // 当前嵌入中的插件实例（返回时回调 onDetach 释放资源）
 
     // ---- 存档 ----
     private GameSaveManager saveManager;
@@ -795,6 +796,7 @@ public class ReaderView extends BorderPane implements SavePortal, FlowHost {
     /** 插件层若正打开，则就地收起（保留刚渲染出的目标场景） */
     private void exitPluginIfShown() {
         if (!pluginMode()) return;
+        detachActivePlugin();
         pluginLayer.setVisible(false);
         pluginLayer.setManaged(false);
         pluginContent.setCenter(null);
@@ -875,6 +877,8 @@ public class ReaderView extends BorderPane implements SavePortal, FlowHost {
     /** 把插件 Parent 放入主舞台中央的嵌入层，顶部生成“返回”标题栏 */
     private void embedPlugin(GamePlugin plugin, String eventId, Parent view) {
         clearDialogs();
+        detachActivePlugin(); // 防御：确保同一时刻只有一个插件在托管（runPlugin 已有重入保护）
+        activePlugin = plugin;
         // 返回目标优先级：本次事件的指定场景 ＞ 当前展示场景
         previousScene = (pluginReturnScene != null && project.hasScene(pluginReturnScene))
                 ? pluginReturnScene : sceneName;
@@ -890,12 +894,30 @@ public class ReaderView extends BorderPane implements SavePortal, FlowHost {
     /** 点击【返回】：移除嵌入层，回到进入插件前的场景 */
     private void leavePlugin() {
         if (!pluginMode()) return;
+        detachActivePlugin();
         pluginLayer.setVisible(false);
         pluginLayer.setManaged(false);
         pluginContent.setCenter(null);
         suppressSceneEvent = true; // 防止场景事件再次把玩家拉回插件
         if (previousScene != null && project.hasScene(previousScene)) {
             renderScene(previousScene, false, false);
+        }
+    }
+
+    /**
+     * 释放当前嵌入的插件：回调 {@link GamePlugin#onDetach()}，让插件停止自己的
+     * 后台线程 / 计时器（实时小游戏必须在此停掉 AnimationTimer），并清空引用。
+     * 引擎在【返回剧情】与「读档收起插件层」两条路径上都会调用。
+     */
+    private void detachActivePlugin() {
+        GamePlugin plugin = activePlugin;
+        activePlugin = null;
+        if (plugin == null) return;
+        try {
+            plugin.onDetach();
+            Logs.plugin(plugin.getClass().getSimpleName(), "已 detach（onDetach 已回调）");
+        } catch (RuntimeException e) {
+            Logs.warn("插件 onDetach 抛出异常: " + plugin.getClass().getName() + "（" + e + "）");
         }
     }
 
