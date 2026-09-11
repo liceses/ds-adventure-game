@@ -1,4 +1,14 @@
 # 更新日志 (Changelog)
+## [v1.3] 构建坐标统一与测试插件固定
+
+### Changed
+- `artifactId`：`visual-novel-studio` → **`ds-adventure`**（与仓库名一致；`<finalName>` 原已为 ds-adventure）
+- 显式声明 `maven-surefire-plugin 3.2.5`，避免随 Maven 版本漂移（原依赖 Maven 默认绑定）
+- `pom.xml` 注释中的命令示例统一改为 `mvnw.cmd`（原为 `mvn`）
+
+### Docs
+- README（技术栈表 / 构建坐标 / 说明）同步更新
+
 ## [v1.2] README 重写为全项目说明
 
 ### Changed

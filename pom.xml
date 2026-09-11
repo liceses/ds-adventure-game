@@ -9,7 +9,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.studio</groupId>
-  <artifactId>visual-novel-studio</artifactId>
+  <artifactId>ds-adventure</artifactId>
   <version>1.0.0</version>
   <packaging>jar</packaging>
 
@@ -24,7 +24,7 @@
     <javafx.version>17.0.20</javafx.version>
     <javafx.platform>win</javafx.platform>
 
-    <!-- 默认启动类为编辑器；运行播放器： mvn -Pplayer javafx:run -->
+    <!-- 默认启动类为编辑器；运行播放器： mvnw.cmd -Pplayer javafx:run -->
     <fx.mainClass>com.studio.launcher.EditorApp</fx.mainClass>
   </properties>
 
@@ -82,6 +82,13 @@
         </configuration>
       </plugin>
 
+      <!-- 单元测试：显式固定 surefire 版本，避免随 Maven 版本漂移（P0-8：mvnw.cmd test 通过） -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>3.2.5</version>
+      </plugin>
+
       <!-- JavaFX 运行插件（无 module-info 时自动以 classpath 模式启动，规避模块限制） -->
       <plugin>
         <groupId>org.openjfx</groupId>
@@ -96,7 +103,7 @@
         </configuration>
       </plugin>
 
-      <!-- 允许直接运行核心自测（不需要图形环境）： mvn -q exec:java -Dexec.mainClass=com.studio.parser.ParserSelfTest -->
+      <!-- 允许直接运行核心自测（不需要图形环境）： mvnw.cmd -q exec:java -Dexec.mainClass=com.studio.parser.ParserSelfTest -->
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>exec-maven-plugin</artifactId>
@@ -106,7 +113,7 @@
   </build>
 
   <profiles>
-    <!-- 播放器启动配置： mvn -Pplayer javafx:run -->
+    <!-- 播放器启动配置： mvnw.cmd -Pplayer javafx:run -->
     <profile>
       <id>player</id>
       <properties>

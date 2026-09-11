@@ -46,12 +46,12 @@
 | Maven | 3.9.9（由 Wrapper 自动下载） | **无需全局安装 Maven** |
 | Maven Wrapper | 3.3.2 | `mvnw.cmd`（Windows）/ `./mvnw`（macOS、Linux） |
 | JUnit | 5.11.4（Jupiter） | `mvnw.cmd test`，见 `src/test/java/com/studio/parser/ScriptParserTest.java` |
-| Surefire | 3.2.5（随 Maven 3.9.9 默认绑定） | 运行 JUnit 5 |
+| maven-surefire-plugin | 3.2.5（`pom.xml` 显式声明） | 运行 JUnit 5 |
 | javafx-maven-plugin | 0.0.8 | `javafx:run` 启动 Studio / Player |
 | exec-maven-plugin | 3.2.0 | 无图形环境下运行核心层自测 `ParserSelfTest` |
-| 构建坐标 | `com.studio : visual-novel-studio : 1.0.0` | 产物名固定为 `ds-adventure`（`<finalName>`） |
+| 构建坐标 | `com.studio : ds-adventure : 1.0.0` | 产物名 `ds-adventure`（`<finalName>`），与仓库名一致 |
 
-> 注：`artifactId` 沿用组员 PR 引入的 `visual-novel-studio`；与仓库名 `ds-adventure-game` 尚未统一，属待办项。
+> 说明：`groupId` / 包名沿用 `com.studio`，`artifactId` 已统一为 `ds-adventure`（与仓库名一致）。
 
 ---
 
