@@ -23,6 +23,52 @@
 }
 .menu-item .label { -fx-text-fill: #e8e8f0; }
 
+/* ---------- 右键菜单 / 弹出菜单（高对比配色） ----------
+   背景 #1b1e2e + 文字 #f4f6ff（对比度约 15:1），
+   高亮 #3f4a86，禁用 #8b91ad，边框 #6f79b8；
+   子菜单（Menu 展开层）与箭头/勾选标记同样处理。 */
+.context-menu {
+    -fx-background-color: #1b1e2e;
+    -fx-background-radius: 6;
+    -fx-border-color: #6f79b8;
+    -fx-border-width: 1;
+    -fx-border-radius: 6;
+    -fx-padding: 4 2 4 2;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.68), 16, 0.22, 0, 5);
+}
+.context-menu .label { -fx-text-fill: #f4f6ff; }
+.context-menu .menu-item { -fx-padding: 6 22 6 18; }
+.context-menu .menu-item .label { -fx-text-fill: #f4f6ff; }
+.context-menu .menu-item:focused {
+    -fx-background-color: #3f4a86;
+    -fx-background-radius: 4;
+}
+.context-menu .menu-item:focused .label { -fx-text-fill: #ffffff; }
+.context-menu .menu-item:disabled .label { -fx-text-fill: #8b91ad; }
+/* 禁用项不要叠加 modena 的 0.4 透明度，避免文字彻底看不见 */
+.context-menu .menu-item:disabled { -fx-opacity: 1; }
+/* 子菜单（Menu 那一层）同样高对比 */
+.context-menu .menu { -fx-padding: 6 22 6 18; }
+.context-menu .menu > .label { -fx-text-fill: #f4f6ff; }
+.context-menu .menu:focused,
+.context-menu .menu:showing {
+    -fx-background-color: #3f4a86;
+    -fx-background-radius: 4;
+}
+.context-menu .menu:focused > .label,
+.context-menu .menu:showing > .label { -fx-text-fill: #ffffff; }
+/* 箭头（子菜单指示）与勾选/单选标记必须可见 */
+.context-menu .arrow { -fx-background-color: #cfd4ff; }
+.context-menu .menu-item:disabled .arrow { -fx-background-color: #6a708c; }
+.context-menu .check, .context-menu .radio { -fx-background-color: #cfd4ff; }
+.context-menu .menu-item:disabled .check,
+.context-menu .menu-item:disabled .radio { -fx-background-color: #6a708c; }
+.context-menu .separator { -fx-padding: 3 6 3 6; }
+.context-menu .separator .line {
+    -fx-border-color: #3a4066 transparent transparent transparent;
+    -fx-border-width: 1 0 0 0;
+}
+
 /* ---------- 场景工具条 ---------- */
 .scene-bar {
     -fx-background-color: #262838;
@@ -36,6 +82,47 @@
     -fx-background-radius: 6;
 }
 .combo-box .list-cell { -fx-text-fill: #e8e8f0; }
+.combo-box .arrow { -fx-background-color: #cfd4ff; }
+.combo-box .arrow-button { -fx-background-color: #383b52; -fx-background-radius: 0 6 6 0; }
+
+/* ---------- 下拉弹层（ComboBox / ChoiceBox / 日期选择等）----------
+   原来只样式化了“收起状态”的单元格，展开后的列表仍是 modena 的浅色底，
+   而文字是浅色的 #e8e8f0 → 浅字浅底看不清。这里把弹层统一成与右键菜单一致的深色高对比配色。 */
+.combo-box-popup > .list-view {
+    -fx-background-color: #1b1e2e;
+    -fx-border-color: #6f79b8;
+    -fx-border-width: 1;
+    -fx-background-radius: 6;
+    -fx-border-radius: 6;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.6), 14, 0.25, 0, 4);
+}
+.combo-box-popup > .list-view > .virtual-flow > .clipped-container > .sheet > .list-cell,
+.combo-box-popup .list-cell {
+    -fx-background-color: #1b1e2e;
+    -fx-text-fill: #f4f6ff;
+    -fx-padding: 6 10 6 10;
+}
+.combo-box-popup .list-cell:filled:hover {
+    -fx-background-color: #3f4a86;
+    -fx-text-fill: #ffffff;
+}
+.combo-box-popup .list-cell:filled:selected {
+    -fx-background-color: #3f4a86;
+    -fx-text-fill: #ffffff;
+}
+.combo-box-popup .list-cell:empty { -fx-background-color: #1b1e2e; }
+.combo-box-popup .list-view .placeholder .label { -fx-text-fill: #8b91ad; }
+.combo-box-popup .scroll-bar:vertical,
+.combo-box-popup .scroll-bar:horizontal { -fx-background-color: #23263a; }
+.combo-box-popup .scroll-bar .thumb { -fx-background-color: #4a4f74; -fx-background-radius: 6; }
+
+/* 日期选择器 / 选择框的弹层同样处理 */
+.choice-box .context-menu,
+.date-picker-popup { -fx-background-color: #1b1e2e; }
+.date-picker-popup .month-year-pane { -fx-background-color: #23263a; }
+.date-picker-popup .label { -fx-text-fill: #f4f6ff; }
+.color-palette { -fx-background-color: #1b1e2e; }
+.color-palette .label { -fx-text-fill: #f4f6ff; }
 
 .tool-button {
     -fx-background-color: #33364d;
@@ -117,10 +204,24 @@
 .tree-cell { -fx-text-fill: #d6d8ea; -fx-padding: 3 0 3 0; }
 .tree-cell:selected { -fx-background-color: #3d4060; -fx-background-radius: 6; }
 
-.field-label { -fx-text-fill: #9fa3c6; -fx-font-size: 12px; }
+/* 字段名：原来 #9fa3c6 在深色底上偏暗，调亮一档 */
+.field-label { -fx-text-fill: #c6cbec; -fx-font-size: 12px; }
 .text-field, .text-area, .combo-box, .color-picker, .check-box {
     -fx-text-fill: #e8e8f0;
 }
+
+/* 颜色选择器：以前字号偏大 + 宽度不够，十六进制色值会被截断显示不全 */
+.color-picker {
+    -fx-font-size: 12px;
+    -fx-background-color: #2c2e40;
+    -fx-background-radius: 6;
+    -fx-border-color: #3d4058;
+    -fx-border-radius: 6;
+    -fx-padding: 1 2 1 2;
+}
+.color-picker > .label { -fx-text-fill: #e8e8f0; -fx-font-size: 12px; }
+.color-picker > .arrow-button { -fx-background-color: #383b52; -fx-background-radius: 0 6 6 0; }
+.color-picker > .arrow-button > .arrow { -fx-background-color: #cfd4ff; }
 .text-field, .text-area {
     -fx-background-color: #2c2e40;
     -fx-background-radius: 6;
@@ -146,10 +247,14 @@
 }
 .dialog-pane .header-panel { -fx-background-color: #2a2c3c; }
 .dialog-pane .header-panel .label { -fx-text-fill: #f0f1ff; }
-.dialog-pane .content { -fx-text-fill: #aeaecc; }
+.dialog-pane .content { -fx-text-fill: #c9cdea; }
+/* 对话框里的普通 Label 默认继承 modena 的深色文字，落在深色底板上就看不清了
+   （例如「地图全局设置」里的“初始场景 / 背景色 / 全局音量”这几个字段名），这里统一调亮 */
+.dialog-pane .label { -fx-text-fill: #d7dbf5; }
+.dialog-pane .field-label { -fx-text-fill: #c6cbec; }
 .dialog-pane .button {
     -fx-background-color: #3a3d57;
-    -fx-text-fill: #a3a3b6;
+    -fx-text-fill: #e8e8f0;
     -fx-background-radius: 6;
     -fx-cursor: hand;
 }
@@ -158,3 +263,29 @@
 .split-pane { -fx-background-color: #23242f; }
 .split-pane > .split-pane-divider { -fx-background-color: #171822; }
 .split-pane > .split-pane-divider:hover { -fx-background-color: #4a4e72; }
+
+/* ---------- 小字提示 / 分区标题 ---------- */
+.hint-text { -fx-text-fill: #8b91ad; -fx-font-size: 11px; }
+.section-title { -fx-text-fill: #cfd4ff; -fx-font-size: 12px; -fx-font-weight: bold; }
+
+/* ---------- 表格（存档变量列表等） ---------- */
+.table-view {
+    -fx-background-color: #1e202c;
+    -fx-background-radius: 6;
+    -fx-border-color: #3d4058;
+    -fx-border-radius: 6;
+    -fx-table-cell-border-color: #2c2e40;
+}
+.table-view:focused { -fx-border-color: #7c81c9; }
+.table-view .column-header-background { -fx-background-color: #2a2c3c; }
+.table-view .column-header,
+.table-view .filler { -fx-background-color: transparent; -fx-size: 26; }
+.table-view .column-header .label { -fx-text-fill: #cfd4ff; -fx-font-weight: bold; }
+.table-view .table-cell { -fx-text-fill: #e8e8f0; -fx-alignment: center-left; -fx-padding: 3 6 3 6; }
+.table-row-cell { -fx-background-color: #1e202c; }
+.table-row-cell:odd { -fx-background-color: #23252f; }
+.table-row-cell:selected { -fx-background-color: #3f4a86; }
+.table-row-cell:selected .table-cell { -fx-text-fill: #ffffff; }
+.table-view .text-field { -fx-background-color: #2c2e40; -fx-text-fill: #e8e8f0; }
+.table-view .placeholder .label { -fx-text-fill: #8b91ad; }
+

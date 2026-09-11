@@ -83,11 +83,20 @@ public class GameScene {
 
     // ---------------- 节点管理 ----------------
 
-    public void addNode(StoryNode node) { nodes.add(node); }
+    public void addNode(StoryNode node) {
+        nodes.add(node);
+        node.setIndex(nodes.size() - 1);
+    }
 
-    public void removeNode(StoryNode node) { nodes.remove(node); }
+    public void removeNode(StoryNode node) {
+        nodes.remove(node);
+        reindex();
+    }
 
-    public void removeNodeAt(int index) { nodes.remove(index); }
+    public void removeNodeAt(int index) {
+        nodes.remove(index);
+        reindex();
+    }
 
     /** 前移一层（向画面顶层移动） */
     public boolean bringForward(StoryNode node) {
@@ -95,6 +104,7 @@ public class GameScene {
         if (i < 0 || i >= nodes.size() - 1) return false;
         StoryNode t = nodes.remove(i);
         nodes.add(i + 1, t);
+        reindex();
         return true;
     }
 
@@ -104,10 +114,65 @@ public class GameScene {
         if (i <= 0) return false;
         StoryNode t = nodes.remove(i);
         nodes.add(i - 1, t);
+        reindex();
         return true;
     }
 
+    /** 移动 n 层（正数向上/向顶层，负数向下/向底层） */
+    public boolean moveBy(StoryNode node, int delta) {
+        int i = nodes.indexOf(node);
+        if (i < 0 || delta == 0) return false;
+        int target = Math.max(0, Math.min(nodes.size() - 1, i + delta));
+        if (target == i) return false;
+        StoryNode t = nodes.remove(i);
+        nodes.add(target, t);
+        reindex();
+        return true;
+    }
+
+    /** 把节点移动到指定层级下标 */
+    public boolean moveTo(StoryNode node, int newIndex) {
+        int i = nodes.indexOf(node);
+        if (i < 0) return false;
+        int target = Math.max(0, Math.min(nodes.size() - 1, newIndex));
+        if (target == i) return false;
+        StoryNode t = nodes.remove(i);
+        nodes.add(target, t);
+        reindex();
+        return true;
+    }
+
+    /** 把每个节点的 index 重新编号为它在列表中的位置（0 起） */
+    public void reindex() {
+        for (int i = 0; i < nodes.size(); i++) nodes.get(i).setIndex(i);
+    }
+
+    /**
+     * 按节点的 index 稳定排序（解析脚本后调用）；
+     * 排序完成后把 index 规范化为连续的 0..n-1。
+     */
+    public void sortByIndex() {
+        List<StoryNode> copy = new ArrayList<>(nodes);
+        copy.sort(java.util.Comparator.comparingInt(StoryNode::getIndex));
+        nodes.clear();
+        nodes.addAll(copy);
+        reindex();
+    }
+
     public boolean contains(StoryNode node) { return nodes.contains(node); }
+
+    /**
+     * 深拷贝本场景（撤销/恢复的快照用）：节点、场景属性、信号、槽全部复制一份，
+     * 与原件互不影响。
+     */
+    public GameScene copy() {
+        GameScene c = new GameScene(name);
+        c.props.putAll(props);
+        for (StoryNode n : nodes) c.nodes.add(n.copy());
+        for (SignalDef s : signals) c.signals.add(s.copy());
+        for (SlotDef s : slots) c.slots.add(s.copy());
+        return c;
+    }
 
     @Override
     public String toString() { return "场景[" + name + "](" + nodes.size() + " 个节点)"; }

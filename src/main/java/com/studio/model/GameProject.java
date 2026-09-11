@@ -52,6 +52,20 @@ public class GameProject {
 
     public List<String> warnings() { return warnings; }
 
+    /**
+     * 深拷贝整个工程（编辑器“撤销/恢复”的快照用）。
+     * <p>场景、节点、信号/槽、[option] 全部复制一份，与原件互不影响。</p>
+     */
+    public GameProject copy() {
+        GameProject p = new GameProject(rootDir);
+        p.option.copyFrom(option);
+        for (Map.Entry<String, GameScene> e : scenes.entrySet()) {
+            p.scenes.put(e.getKey(), e.getValue().copy());
+        }
+        p.warnings.addAll(warnings);
+        return p;
+    }
+
     // ---------------- 场景管理 ----------------
 
     public GameScene firstScene() {

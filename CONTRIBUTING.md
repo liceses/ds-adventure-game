@@ -168,12 +168,14 @@ event = snake
 
 ### 2.6 生命周期与资源释放（务必按此写）
 
-引擎在**插件从主舞台移除时**会回调 `GamePlugin.onDetach()`，两条路径都会触发：
+引擎在**插件从主舞台移除时**会回调 `GamePlugin.onDetach()`，下列四条路径都会触发（每运行一次插件最多回调一次）：
 
 | 触发路径 | 引擎行为 |
 |---|---|
 | 玩家点标题栏【← 返回剧情】 | `ReaderView.leavePlugin()` → 回调 `onDetach()` → 回到进入插件前的场景 |
 | 读档时收起插件层 | `ReaderView.exitPluginIfShown()` → 回调 `onDetach()` |
+| 同一局里又触发了**另一个**插件事件 | `ReaderView.runPlugin()` 检测到实例不同 → 先给旧插件回调 `onDetach()`，再 `execute()` 新插件 |
+| 关闭播放器窗口 | `ReaderView.shutdown()` → 回调当前事件插件的 `onDetach()`；同时所有 `@plugin(...)` 槽插件收到 `SlotPlugin.onDetach()` |
 
 因此**实时小游戏必须在 `onDetach()` 里停掉自己的游戏循环**：
 
@@ -190,8 +192,9 @@ private void stopLoop() {                      // 必须幂等（onDetach 与兜
 
 补充约定：
 
-1. `onDetach()` 抛异常不会导致引擎卡住（引擎捕获后打警告日志），但**请勿在其中做耗时操作或弹窗**；
+1. `onDetach()` 抛异常不会导致引擎卡住（引擎捕获后记错误日志，含堆栈），但**请勿在其中做耗时操作或弹窗**；
 2. 同一时刻只有一个插件被托管：重复触发会被忽略（`runPlugin` 有重入保护），托管新插件前会先 detach 上一个；
+   引擎清引用后才回调，因此 `onDetach()` 内的异常或（极端情况下）再次触发事件都不会造成重复回调；
 3. **建议再加一层兜底**，以防将来有其他路径移除插件视图：
    ```java
    view.parentProperty().addListener((obs, old, now) -> { if (now == null) stopLoop(); });

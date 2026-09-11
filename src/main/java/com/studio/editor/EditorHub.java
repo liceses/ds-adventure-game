@@ -27,6 +27,12 @@ public interface EditorHub {
     void refreshInspector();              // 检查器内容重建（跟随当前选择）
     void sceneStructureChanged();         // 场景列表/树/场景下拉框重建
 
+    // ---------- 新增节点模板（右键“添加节点”的初值来源） ----------
+    /** 当前“新增节点模板”：新建节点时按它的状态复制（类型/尺寸/文本/信号/槽…） */
+    StoryNode newNodeTemplate();
+    /** 替换“新增节点模板”（右键“添加节点”生成的新节点将与它一致） */
+    void setNewNodeTemplate(StoryNode node);
+
     // ---------- 节点变更 ----------
     void nodeChanged(StoryNode node);     // 属性修改 → 实时刷新该节点视图
     void addNode(StoryNode node);         // 新节点加入当前场景
@@ -37,6 +43,18 @@ public interface EditorHub {
     // ---------- 画布 ----------
     /** 打开节点“详情”编辑对话框（右键/双击触发） */
     void openNodeDialog(StoryNode node);
+
+    /**
+     * 记录一步可撤销操作（<b>必须在修改工程之前调用</b>）。
+     * 编辑器内部用“工程快照 + 栈”实现撤销/恢复。
+     */
+    void pushUndo(String label);
+
+    /** 撤销上一步操作（Ctrl+Z） */
+    void undo();
+
+    /** 恢复被撤销的操作（Ctrl+Y / Ctrl+Shift+Z） */
+    void redo();
     /** 在画布逻辑坐标处添加一个默认节点（工具箱拖放、右键菜单调用） */
     void createNodeAt(String typeCode, double x, double y);
 

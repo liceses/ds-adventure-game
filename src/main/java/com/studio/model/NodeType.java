@@ -6,7 +6,7 @@ import java.util.Locale;
  * 剧情节点类型。
  * <p>
  * 画布上的每个对象都对应一种类型，决定其在读取器中的 JavaFX 控件形态：
- * 背景(填满画面)、立绘(图片)、文本、人物名、对话、按钮、纯音乐轨。
+ * 背景(填满画面)、立绘(图片)、文本、文本框(可输入)、人物名、对话、按钮、纯音乐轨。
  */
 public enum NodeType {
     /** 背景图（填满整个逻辑画布） */
@@ -15,6 +15,8 @@ public enum NodeType {
     CHARACTER("char", "立绘", "👤", 320.0, 520.0),
     /** 普通文本标签 */
     TEXT("text", "文本", "📝", 420.0, 90.0),
+    /** 文本框：玩家可输入的输入框（单行/多行，可绑定存档变量） */
+    TEXTBOX("textbox", "文本框", "⌨", 420.0, 56.0),
     /** 人物名字牌 */
     NAME("name", "人物名", "🏷", 260.0, 48.0),
     /** 对话内容框（富文本 + 打字机效果） */
@@ -75,6 +77,7 @@ public enum NodeType {
         n.setHeight(t.defaultHeight());
         switch (t) {
             case TEXT   -> n.setText("双击或右键编辑文字…");
+            case TEXTBOX -> n.setText("请输入…");
             case NAME   -> n.setText("角色名");
             case DIALOG -> n.setText("「在这里输入对话内容……」");
             case BUTTON -> n.setText("按钮");

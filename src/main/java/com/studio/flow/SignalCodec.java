@@ -70,8 +70,14 @@ public final class SignalCodec {
         StringBuilder sb = new StringBuilder();
         sb.append(esc(s.getSignal())).append(" | ").append(esc(s.getAction())).append(" | ")
           .append(esc(s.getTarget())).append(" | ").append(esc(s.getArg()));
+        if (s.isPlugin()) {
+            // 插件槽：动作之后是可变个数的参数（第 5、6… 段），逐个写出
+            for (String a : s.extraArgs()) {
+                sb.append(" | ").append(esc(a));
+            }
+        }
         String params = encodeParams(s.params());
-        if (!params.isEmpty()) sb.append(" | ").append(params); // 第 5 段：附加参数
+        if (!params.isEmpty()) sb.append(" | ").append(params); // 第 5 段起的 k=v 附加参数
         return sb.toString();
     }
 
@@ -84,6 +90,16 @@ public final class SignalCodec {
         SlotDef s = new SlotDef();
         s.setSignal(f.get(0));
         s.setAction(f.get(1));
+        if (s.isPlugin()) {
+            // 插件槽：动作之后的所有字段都是参数（数量可变），不做 k=v 解析
+            if (f.size() > 2) s.setTarget(f.get(2));
+            if (f.size() > 3) s.setArg(f.get(3));
+            for (int i = 4; i < f.size(); i++) s.extraArgs().add(f.get(i));
+            if (f.size() > 2 && s.pluginArgs().length == 0) {
+                warn(warnings, line, "插件槽 " + s.pluginId() + " 没有参数");
+            }
+            return s;
+        }
         if (f.size() > 2) s.setTarget(f.get(2));
         if (f.size() > 3) s.setArg(f.get(3));
         if (f.size() > 4) s.params().putAll(decodeParams(f.get(4)));
@@ -107,7 +123,7 @@ public final class SignalCodec {
     public static LinkedHashMap<String, String> decodeParams(String s) {
         LinkedHashMap<String, String> map = new LinkedHashMap<>();
         if (s == null || s.isBlank()) return map;
-        for (String part : splitEscaped(s, ',')) {
+        for (String part : splitParams(s)) {
             int eq = indexOfUnescaped(part, '=');
             if (eq <= 0) {
                 if (!part.isBlank()) map.put(unesc(part.trim()), "");
@@ -116,6 +132,37 @@ public final class SignalCodec {
             map.put(unesc(part.substring(0, eq).trim()), unesc(part.substring(eq + 1).trim()));
         }
         return map;
+    }
+
+    /**
+     * 按未转义的逗号切分参数；<b>括号内的逗号不切分</b>，
+     * 这样 {@code value=@node(宝箱, width)} 这类写法不会被拆坏。
+     */
+    private static List<String> splitParams(String s) {
+        List<String> out = new ArrayList<>();
+        StringBuilder cur = new StringBuilder();
+        boolean esc = false;
+        int depth = 0;
+        for (int i = 0; i < s.length(); i++) {
+            char c = s.charAt(i);
+            if (esc) {
+                cur.append('\\').append(c);
+                esc = false;
+                continue;
+            }
+            if (c == '\\') { esc = true; continue; }
+            if (c == '(') depth++;
+            else if (c == ')') depth = Math.max(0, depth - 1);
+            if (c == ',' && depth == 0) {
+                out.add(cur.toString());
+                cur.setLength(0);
+                continue;
+            }
+            cur.append(c);
+        }
+        if (esc) cur.append('\\');
+        out.add(cur.toString());
+        return out;
     }
 
     /** 按未转义的 | 切分整行 */

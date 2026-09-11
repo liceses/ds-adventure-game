@@ -17,8 +17,8 @@ public class StoryNode {
 
     /** 规范键：写文件时输出的固定顺序 */
     public static final String[] SCRIPT_ORDER = {
-            "type", "id", "x", "y", "width", "height",
-            "path", "audio", "text", "style", "event", "action", "target",
+            "type", "id", "index", "x", "y", "width", "height",
+            "path", "video", "audio", "text", "multiline", "bind", "style", "event", "action", "target",
             "visible", "fontSize", "align", "opacity"
     };
 
@@ -34,6 +34,8 @@ public class StoryNode {
         KEY_ALIAS.put("height", "height");KEY_ALIAS.put("高度", "height"); KEY_ALIAS.put("高", "height");
         KEY_ALIAS.put("path", "path");    KEY_ALIAS.put("图片", "path");   KEY_ALIAS.put("立绘路径", "path"); KEY_ALIAS.put("路径", "path");
         KEY_ALIAS.put("audio", "audio");  KEY_ALIAS.put("音频", "audio");  KEY_ALIAS.put("音乐", "audio");  KEY_ALIAS.put("音效", "audio");
+        // 视频素材：设了就由读取器用视频播放器渲染该节点（可当“会动的背景图”用）
+        KEY_ALIAS.put("video", "video"); KEY_ALIAS.put("视频", "video"); KEY_ALIAS.put("影片", "video");
         KEY_ALIAS.put("text", "text");    KEY_ALIAS.put("文本", "text");   KEY_ALIAS.put("文字", "text");   KEY_ALIAS.put("内容", "text");
         KEY_ALIAS.put("style", "style");  KEY_ALIAS.put("样式", "style");  KEY_ALIAS.put("内联样式", "style");
         KEY_ALIAS.put("event", "event");  KEY_ALIAS.put("事件", "event");
@@ -57,12 +59,21 @@ public class StoryNode {
         // 过渡动画：如 scale/opacity:300ms
         KEY_ALIAS.put("transition", "transition"); KEY_ALIAS.put("过渡", "transition");
         KEY_ALIAS.put("过渡动画", "transition"); KEY_ALIAS.put("动画", "transition");
+        // 层级顺序（0 = 最底层；数值越大越靠上），可在属性窗口直接改
+        KEY_ALIAS.put("index", "index"); KEY_ALIAS.put("层级", "index");
+        KEY_ALIAS.put("顺序", "index"); KEY_ALIAS.put("序号", "index"); KEY_ALIAS.put("层", "index");
+        // 文本框（TEXTBOX）专用：多行开关 + 绑定的存档变量名
+        KEY_ALIAS.put("multiline", "multiline"); KEY_ALIAS.put("多行", "multiline");
+        KEY_ALIAS.put("多行文本", "multiline"); KEY_ALIAS.put("多行模式", "multiline");
+        KEY_ALIAS.put("bind", "bind"); KEY_ALIAS.put("绑定变量", "bind");
+        KEY_ALIAS.put("变量", "bind"); KEY_ALIAS.put("绑定", "bind");
     }
 
     private NodeType type = NodeType.TEXT;
     private String id = "";
     private double x, y, width, height;
     private String path = "";    // 图片/立绘相对路径（相对地图根目录）
+    private String video = "";   // 视频相对路径（设了就代替图片渲染该节点，可循环播放）
     private String audio = "";   // 音效/背景音乐路径
     private String text = "";    // 显示文字（支持富文本标记）
     private String style = "";   // 内联 CSS 样式（JavaFX -fx-* 属性）
@@ -75,6 +86,15 @@ public class StoryNode {
     private double opacity = 1.0;
     /** null=按类型默认（对话开启逐字），true/false=强制开/关 */
     private Boolean typewriter = null;
+
+    /** 层级顺序：0 = 最底层，数值越大越靠上（与场景内节点列表顺序保持一致） */
+    private int index = 0;
+
+    /** 文本框专用：是否多行（true 用多行输入框，false 用单行输入框） */
+    private boolean multiline = false;
+
+    /** 文本框专用：绑定的存档变量名（输入内容实时写入该变量，留空表示不绑定） */
+    private String bind = "";
 
     /** 本节点可发出的信号（鼠标点击/释放、按键等） */
     private final java.util.ArrayList<SignalDef> signals = new java.util.ArrayList<>();
@@ -102,11 +122,14 @@ public class StoryNode {
     public StoryNode copy() {
         StoryNode c = new StoryNode();
         c.type = type; c.id = id; c.x = x; c.y = y; c.width = width; c.height = height;
-        c.path = path; c.audio = audio; c.text = text; c.style = style; c.event = event;
+        c.path = path; c.video = video; c.audio = audio; c.text = text; c.style = style; c.event = event;
         c.action = action; c.target = target; c.visible = visible;
         c.fontSize = fontSize; c.align = align; c.opacity = opacity;
         c.typewriter = typewriter;
         c.transition = transition;
+        c.index = index;
+        c.multiline = multiline;
+        c.bind = bind;
         for (SignalDef s : signals) c.signals.add(s.copy());
         for (SlotDef s : slots) c.slots.add(s.copy());
         c.extras.putAll(extras);
@@ -136,6 +159,11 @@ public class StoryNode {
 
     public String getPath() { return path; }
     public void setPath(String path) { this.path = path == null ? "" : path; }
+
+    /** 视频素材路径（相对地图根目录）；非空时读取器用视频播放器渲染该节点 */
+    public String getVideo() { return video; }
+
+    public void setVideo(String video) { this.video = video == null ? "" : video.trim(); }
 
     public String getAudio() { return audio; }
     public void setAudio(String audio) { this.audio = audio == null ? "" : audio; }
@@ -182,6 +210,30 @@ public class StoryNode {
     /** 本节点订阅的槽列表 */
     public java.util.List<SlotDef> slots() { return slots; }
 
+    // ---------------- 层级顺序 ----------------
+
+    /** 层级下标（0 = 最底层，越大越靠上） */
+    public int getIndex() { return index; }
+
+    public void setIndex(int index) { this.index = Math.max(0, index); }
+
+    // ---------------- 文本框（TEXTBOX） ----------------
+
+    /** 是否多行文本（文本框节点专用） */
+    public boolean isMultiline() { return multiline; }
+
+    public void setMultiline(boolean multiline) { this.multiline = multiline; }
+
+    public Boolean getMultiline() { return multiline; }
+
+    /** 绑定的存档变量名（文本框节点专用；输入内容写入该变量） */
+    public String getBind() { return bind; }
+
+    public void setBind(String bind) { this.bind = bind == null ? "" : bind.trim(); }
+
+    /** 是否是“可输入文本框”节点 */
+    public boolean isTextBox() { return type == NodeType.TEXTBOX; }
+
     // ---------------- 便捷查询 ----------------
 
     /** 是否为纯音频轨（不占画面） */
@@ -200,6 +252,7 @@ public class StoryNode {
             case "width"    -> setWidth(parseDoubleSafe(value, defaultByType()));
             case "height"   -> setHeight(parseDoubleSafe(value, defaultByType2()));
             case "path"     -> setPath(value);
+            case "video"    -> setVideo(value);
             case "audio"    -> setAudio(value);
             case "text"     -> setText(value);
             case "style"    -> setStyle(value);
@@ -212,6 +265,9 @@ public class StoryNode {
             case "opacity"  -> setOpacity(parseDoubleSafe(value, 1.0));
             case "typewriter" -> setTypewriter(parseBoolSafe(value, true));
             case "transition" -> setTransition(value);
+            case "index"    -> setIndex((int) parseDoubleSafe(value, 0));
+            case "multiline" -> setMultiline(parseBoolSafe(value, false));
+            case "bind"     -> setBind(value);
             default         -> extras.put(canonicalKey, value);
         }
     }
@@ -221,13 +277,18 @@ public class StoryNode {
         LinkedHashMap<String, String> m = new LinkedHashMap<>();
         m.put("type", type.code());
         if (!id.isEmpty()) m.put("id", id);
+        // 层级下标：显式落盘，便于手改脚本后用“按 index 排序”精确调层
+        m.put("index", String.valueOf(index));
         m.put("x", trimDouble(x));
         m.put("y", trimDouble(y));
         if (width > 0 && width != type.defaultWidth()) m.put("width", trimDouble(width));
         if (height > 0 && height != type.defaultHeight()) m.put("height", trimDouble(height));
         if (!path.isEmpty()) m.put("path", path);
+        if (!video.isEmpty()) m.put("video", video);
         if (!audio.isEmpty()) m.put("audio", audio);
         if (!text.isEmpty()) m.put("text", text);
+        if (multiline) m.put("multiline", "true");
+        if (!bind.isEmpty()) m.put("bind", bind);
         if (!style.isEmpty()) m.put("style", style);
         if (!event.isEmpty()) m.put("event", event);
         if (!action.isEmpty()) m.put("action", action);

@@ -25,6 +25,8 @@ import java.util.Map;
  *   <li>{@code save}/{@code load} —— 读写参数中的存档槽位</li>
  *   <li>{@code call}   —— 转给地图工程师的逻辑类（参数=逻辑ID 或 全限定类名#方法名）</li>
  *   <li>{@code log}    —— 输出日志/提示（参数=文本）</li>
+ *   <li>{@code @plugin(插件名)} —— 调用插件（参数=动作之后的所有字段，作为 args 字符串数组传入；
+ *       其中写成 {@code @var(x)} 的位置会把插件返回的值写回存档变量）。</li>
  * </ul>
  */
 public class SlotDef {
@@ -39,6 +41,13 @@ public class SlotDef {
     private String arg = "";
     /** 附加参数（如 value=… / valueVar=…） */
     private final LinkedHashMap<String, String> params = new LinkedHashMap<>();
+
+    /**
+     * 插件动作的额外参数：动作写成 {@code @plugin(名)} 时，动作之后的第 3、4、5… 个
+     * 字段依次放进这里（第 1、2 个分别存在 {@link #target} 与 {@link #arg}）。
+     * 插件拿到的 args 数组 = target + arg + extraArgs（去掉尾部空字段）。
+     */
+    private final java.util.ArrayList<String> extraArgs = new java.util.ArrayList<>();
 
     public SlotDef() { }
 
@@ -68,14 +77,39 @@ public class SlotDef {
 
     public Map<String, String> params() { return params; }
 
+    /** 插件动作的额外参数列表 */
+    public java.util.List<String> extraArgs() { return extraArgs; }
+
+    /** 动作是否为插件调用（{@code @plugin(插件名)}） */
+    public boolean isPlugin() { return action.toLowerCase(java.util.Locale.ROOT).startsWith("@plugin("); }
+
+    /** 插件名/插件 ID（非插件动作返回空串） */
+    public String pluginId() { return isPlugin() ? Expr.inner(action) : ""; }
+
+    /**
+     * 传给插件的参数原文数组：动作之后的所有字段，去掉尾部空字段。
+     * 元素可能是字面量、也可能是 {@code @var(x)} / {@code @double(1.05)} 这类表达式。
+     */
+    public String[] pluginArgs() {
+        java.util.ArrayList<String> all = new java.util.ArrayList<>();
+        all.add(target == null ? "" : target);
+        all.add(arg == null ? "" : arg);
+        all.addAll(extraArgs);
+        int end = all.size();
+        while (end > 0 && all.get(end - 1).isBlank()) end--;
+        return all.subList(0, end).toArray(new String[0]);
+    }
+
     public SlotDef copy() {
         SlotDef c = new SlotDef(signal, action, target, arg);
         c.params.putAll(params);
+        c.extraArgs.addAll(extraArgs);
         return c;
     }
 
     @Override
     public String toString() {
+        if (isPlugin()) return "槽[" + signal + " → @plugin(" + pluginId() + ") " + String.join(" ", pluginArgs()) + "]";
         return "槽[" + signal + " → " + action + " " + target + " " + arg + "]";
     }
 }

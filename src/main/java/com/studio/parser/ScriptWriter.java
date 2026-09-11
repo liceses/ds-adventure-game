@@ -79,6 +79,11 @@ public final class ScriptWriter {
         for (Map.Entry<String, String> e : orderedOption(project.option()).entrySet()) {
             writeKeyValue(sb, e.getKey(), e.getValue());
         }
+        // 存档变量声明：一行一个（名称 | 类型 | 初值）
+        for (com.studio.model.SaveVarDef d : project.option().saveVars()) {
+            if (d == null || !d.isValid()) continue;
+            sb.append("savevar = ").append(d.toScriptValue()).append('\n');
+        }
         sb.append('\n');
 
         // ---------- 各场景 ----------

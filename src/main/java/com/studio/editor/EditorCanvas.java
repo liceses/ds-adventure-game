@@ -15,6 +15,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
+import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.input.MouseButton;
@@ -37,7 +38,7 @@ import java.util.Map;
  *   <li>逻辑画布 1280×720 + 网格背景，随区域自适应缩放（Ctrl+滚轮 手动缩放）；</li>
  *   <li>鼠标靠近<b>左边缘</b>自动弹出悬浮工具箱；按住工具项拖到画布即新建节点；</li>
  *   <li>节点按住可拖动改坐标，单击选中（金色描边），双击或右键菜单打开属性编辑；</li>
- *   <li>空白处右键可从菜单“在此处添加…”，或清除场景。</li>
+ *   <li>空白处右键：➕ 添加节点（按类型子菜单）/ ⬆ 上移一层 / ⬇ 下移一层 / 🗑 删除节点 / 🧹 清空场景。</li>
  * </ul>
  */
 public class EditorCanvas extends StackPane {
@@ -107,27 +108,99 @@ public class EditorCanvas extends StackPane {
                 hub.selectNode(null);
             }
         });
+        // ===== 统一的右键菜单 =====
+        // 原来“空白处”与“节点上”是两个不同菜单，而且节点上的菜单会被这里的处理器覆盖，
+        // 结果无论在哪右键看到的都是空白菜单。现在合并成一个：
+        // 先按逻辑坐标命中测试，右键落在某个节点上就先选中它，再统一构建菜单
+        //（背景节点不参与命中，避免整屏背景把“空白处”吃掉）。
         board.setOnContextMenuRequested(e -> {
             if (hub.scene() == null) return;
             Point2D p = toLogical(e.getSceneX(), e.getSceneY());
+            // 右键位置夹在画布范围内（新节点生成在右键处）
+            final double x = Math.max(0, Math.min(CW, p.getX()));
+            final double y = Math.max(0, Math.min(CH, p.getY()));
+
+            StoryNode hit = hitTestNode(p.getX(), p.getY());
+            if (hit != null) hub.selectNode(hit);
+            final StoryNode sel = hit != null ? hit : hub.selectedNode();
+
             ContextMenu menu = new ContextMenu();
-            for (NodeType t : new NodeType[]{NodeType.TEXT, NodeType.CHARACTER, NodeType.BUTTON,
-                    NodeType.DIALOG, NodeType.NAME, NodeType.BACKGROUND, NodeType.MUSIC}) {
-                MenuItem add = new MenuItem(t.icon() + " 添加" + t.display() + "节点");
-                final double x = Math.max(0, Math.min(CW, p.getX()));
-                final double y = Math.max(0, Math.min(CH, p.getY()));
+
+            // 1) 添加节点（子菜单：按类型列出全部 NodeType；文案 = 图标 + 显示名）
+            Menu addMenu = new Menu("➕ 添加节点");
+            for (NodeType t : NodeType.values()) {
+                MenuItem add = new MenuItem(t.icon() + " " + t.display());
                 add.setOnAction(ev -> hub.createNodeAt(t.code(), x, y));
-                menu.getItems().add(add);
+                addMenu.getItems().add(add);
             }
-            MenuItem del = new MenuItem("X 删除选中节点");
-            del.setOnAction(event -> {hub.deleteNode(hub.selectedNode());});
-            menu.getItems().add(del);
+            menu.getItems().add(addMenu);
+
+            // 2) 节点相关操作（合并原“节点右键菜单”的全部功能）
             menu.getItems().add(new SeparatorMenuItem());
+
+            MenuItem edit = new MenuItem("✏️ 编辑属性…");
+            edit.setOnAction(ev -> {
+                if (sel != null) hub.openNodeDialog(sel);
+            });
+            edit.setDisable(sel == null);
+            menu.getItems().add(edit);
+
+            MenuItem copy = new MenuItem("📋 复制节点（Ctrl+D）");
+            copy.setOnAction(ev -> {
+                if (sel == null) return;
+                StoryNode c = sel.copy();
+                c.setX(Math.max(0, Math.min(CW, c.getX() + 26)));
+                c.setY(Math.max(0, Math.min(CH, c.getY() + 26)));
+                hub.addNode(c);
+            });
+            copy.setDisable(sel == null);
+            menu.getItems().add(copy);
+
+            menu.getItems().add(new SeparatorMenuItem());
+
+            // 2) 上移一层（向画面顶层）
+            MenuItem up = new MenuItem("⬆ 上移一层");
+            up.setOnAction(ev -> {
+                if (sel == null) return;
+                if (hub.scene() != null && hub.scene().bringForward(sel)) {
+                    hub.pushUndo("上移一层");
+                    hub.nodesLayerChanged();
+                } else {
+                    hub.notify("已经是最上层");
+                }
+            });
+            up.setDisable(sel == null);
+            menu.getItems().add(up);
+
+            // 3) 下移一层（向画面底层）
+            MenuItem down = new MenuItem("⬇ 下移一层");
+            down.setOnAction(ev -> {
+                if (sel == null) return;
+                if (hub.scene() != null && hub.scene().sendBackward(sel)) {
+                    hub.pushUndo("下移一层");
+                    hub.nodesLayerChanged();
+                } else {
+                    hub.notify("已经是最底层");
+                }
+            });
+            down.setDisable(sel == null);
+            menu.getItems().add(down);
+
+            // 4) 删除选中节点
+            MenuItem del = new MenuItem("🗑 删除节点");
+            del.setOnAction(ev -> {
+                if (sel != null) hub.deleteNode(sel);
+            });
+            del.setDisable(sel == null);
+            menu.getItems().add(del);
+
+            // 5) 清空本场景全部节点（保持原有确认弹窗）
             MenuItem clear = new MenuItem("🧹 清空本场景全部节点");
             clear.setOnAction(ev -> {
                 if (hub.scene() != null) {
                     if (com.studio.ui.Ui.confirm(null, "清空场景",
                             "确定清空场景 [" + hub.scene().getName() + "] 的所有节点吗？", "该操作不可撤销。")) {
+                        hub.pushUndo("清空场景节点");
                         hub.scene().nodes().clear();
                         hub.setDirty();
                         hub.nodesLayerChanged();
@@ -137,6 +210,7 @@ public class EditorCanvas extends StackPane {
                 }
             });
             menu.getItems().add(clear);
+
             openMenu(menu, board, e.getScreenX(), e.getScreenY());
         });
 
@@ -179,7 +253,8 @@ public class EditorCanvas extends StackPane {
         menu.setOnHidden(e -> { if (openMenu == menu) openMenu = null; });
     }
 
-    private void hideOpenMenu() {
+    /** 收起当前右键菜单（EditorPane 的全局“点击任意处收起弹层”会调用） */
+    public void hideOpenMenu() {
         if (openMenu != null) {
             ContextMenu m = openMenu;
             openMenu = null;
@@ -356,14 +431,23 @@ public class EditorCanvas extends StackPane {
         return wrapper;
     }
 
+    /** 本次拖动是否已经记录过撤销快照（避免拖动过程中压入几十步） */
+    private boolean dragUndoPushed = false;
+
     private void attachInteractions(Pane wrapper, StoryNode node) {
         wrapper.setOnMousePressed(e -> {//单击选择节点；任意按下先收起右键菜单
             hideOpenMenu();
+            dragUndoPushed = false;
             if (e.getButton() != MouseButton.PRIMARY) return;
             hub.selectNode(node);
         });
         wrapper.setOnMouseDragged(e -> {
             if (e.getButton() != MouseButton.PRIMARY) return;
+            // 一次拖动只记一步撤销（单纯点选不会产生历史）
+            if (!dragUndoPushed) {
+                hub.pushUndo("移动节点");
+                dragUndoPushed = true;
+            }
             Point2D p = toLogical(e.getSceneX(), e.getSceneY());
             node.setX(clamp(node.getX(), p.getX() - node.getWidth() / 2.0));
             node.setY(clamp(node.getY(), p.getY() - node.getHeight() / 2.0));
@@ -382,36 +466,33 @@ public class EditorCanvas extends StackPane {
                 hub.openNodeDialog(node);
             }
         });
-        wrapper.setOnContextMenuRequested(e -> {
-            hub.selectNode(node);
-            ContextMenu menu = new ContextMenu();
-            MenuItem edit = new MenuItem("✏️ 编辑属性…");
-            edit.setOnAction(ev -> hub.openNodeDialog(node));
-            MenuItem copy = new MenuItem("📋 复制节点");
-            copy.setOnAction(ev -> {
-                StoryNode c = node.copy();
-                c.setX(clamp(c.getX(), c.getX() + 26));
-                c.setY(clamp(c.getY(), c.getY() + 26));
-                hub.addNode(c);
-            });
-            MenuItem del = new MenuItem("🗑 删除节点");
-            del.setOnAction(ev -> hub.deleteNode(node));
-            MenuItem up = new MenuItem("⬆ 上移一层");
-            up.setOnAction(ev -> {
-                if (hub.scene() != null && hub.scene().bringForward(node)) hub.nodesLayerChanged();
-            });
-            MenuItem down = new MenuItem("⬇ 下移一层");
-            down.setOnAction(ev -> {
-                if (hub.scene() != null && hub.scene().sendBackward(node)) hub.nodesLayerChanged();
-            });
-            menu.getItems().addAll(edit, new SeparatorMenuItem(), copy, del,
-                    new SeparatorMenuItem(), up, down);
-            openMenu(menu, wrapper, e.getScreenX(), e.getScreenY());
-        });
+        // 右键统一由 board 的菜单处理（见下方 board.setOnContextMenuRequested）：
+        // 这里不再单独挂菜单，避免两个处理器先后触发、后者把前者覆盖掉。
     }
 
     private double clamp(double orig, double v) {
         return Math.max(0, v);
+    }
+
+    /**
+     * 逻辑坐标命中测试：返回该点上最上层的节点（后加入的在上层）。
+     * <p>背景节点（bg）通常是整屏铺底，不参与命中，这样“点空白处右键”仍然成立。</p>
+     */
+    private StoryNode hitTestNode(double lx, double ly) {
+        com.studio.model.GameScene scene = hub.scene();
+        if (scene == null) return null;
+        java.util.List<StoryNode> nodes = scene.nodes();   // 列表顺序 = 层级顺序（后面的在上层）
+        // 从上往下找，第一个命中的就是“点到的那个”
+        for (int i = nodes.size() - 1; i >= 0; i--) {
+            StoryNode n = nodes.get(i);
+            if (!n.isVisible() || n.getType() == NodeType.BACKGROUND) continue;
+            double w = Math.max(2, n.getWidth());
+            double h = Math.max(2, n.getHeight());
+            if (lx >= n.getX() && lx <= n.getX() + w && ly >= n.getY() && ly <= n.getY() + h) {
+                return n;
+            }
+        }
+        return null;
     }
 
     // =====================================================================
@@ -423,7 +504,7 @@ public class EditorCanvas extends StackPane {
         title.getStyleClass().add("palette-title");
         palette.getChildren().add(title);
         for (NodeType t : new NodeType[]{NodeType.TEXT, NodeType.CHARACTER, NodeType.BUTTON,
-                NodeType.BACKGROUND, NodeType.NAME, NodeType.DIALOG, NodeType.MUSIC}) {
+                NodeType.BACKGROUND, NodeType.NAME, NodeType.DIALOG, NodeType.MUSIC,NodeType.TEXTBOX}) {
             palette.getChildren().add(makePaletteItem(t));
         }
     }
