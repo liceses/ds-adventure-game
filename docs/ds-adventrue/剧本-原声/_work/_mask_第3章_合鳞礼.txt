@@ -6,20 +6,26 @@ narr: 空气里浮着香灰味，底下压着一缕海盐的咸——V3 泉眼�
 narr: 殿门两侧立着两尊石头神卫，眼窝里各嵌一杆小秤，秤砣随人走近轻轻一晃；柜台高得看不见脸，只有一支黄铜传声筒斜斜探下来，像倒挂的喇叭花。
 @enter ds whale_cute center
 @enter paimon cute right
+@enter ds cute center
 ds: 【#01】
 sclerk: 【#02】
 ds: 【#03】
 sclerk: 【#04】
+@enter ds smug center
 ds: 【#05】
 narr: 石头神卫不答话，只把一只石掌平平伸过来，掌心朝天，静静等着接签。
+@enter paimon proud right
 paimon: 【#06】
 narr: 派蒙掏出一面磨得锃亮的铜牌，牌面上只刻着一个字：赠。
 sclerk: 【#07】
+@enter paimon panic right
 paimon: 【#08】
 st: 【服务器繁忙，请稍后再试】
 narr: 铜牌「嗡」地亮了一下。派蒙后半句话被牌面吸了进去，喉咙里只咕嘟咕嘟冒出一串泡泡，啪、啪，破在半空。
+@enter ds panic center
 ds: 【#09】
 narr: 派蒙的肚子先不服，咕噜噜噜，叫得整条石阶都听见了。石头神卫眼窝里的秤砣晃了晃，像想笑又不敢笑。
+@enter paimon cry right
 paimon: （咚咚咚拍柜台，又高高举起随身写字板，上书：【#10】）
 sclerk: 【#11】
 narr: 石掌把写字板轻轻抽走，收进柜台底下，动作熟得像这么干过三百年。
@@ -29,6 +35,7 @@ narr: 殿角石灯笼里，一只萤火虫抱着小翅膀打瞌睡——它替�
 narr: 殿门在身后合拢。殿内比外头亮：泉眼居中，一杆齐殿高的泉秤从穹顶垂下，秤钩空空的，只挂着水汽。
 ds: 【#13】
 narr: 泉眼里白茫茫一片碎光。V3 鳞离开泉眼那一瞬就碎了，几百小片跟着泉水的呼吸打转，捞一片，散两片。
+@enter ds cry center
 ds: 【#14】
 sclerk: 【#15】
 ds: 【#16】
@@ -40,6 +47,7 @@ narr: 殿壁八盏报幕灯一齐翻亮，火苗窜成两排「合」字。
 sclerk: （祭词腔）【#20】
 灯官: 【#21】
 sclerk: 【#22】
+@enter 灯官 panic left
 灯官: 【#23】
 sclerk: 【#24】
 *choice
@@ -62,9 +70,11 @@ goto ch3_rules
 sclerk: 【#28】
 sclerk: 【#29】
 sclerk: 【#30】
+@enter ds panic center
 ds: 【#31】
 ds: 【#32】
 narr: 思维链在半空打了个结。
+@enter ds smug center
 ds: 【#33】
 narr: 两尊石头神卫沉默地、整齐地往旁边挪了半步，像集体不认识这位表叔。
 sclerk: 【#34】
@@ -76,13 +86,16 @@ sclerk: 【#35】
 灯官: 【#36】
 narr: 派蒙举着双手满场扑腾，扑起的水汽在灯下亮成一小圈虹。
 @flag pieces +1
+@enter ds cute center
 ds: 【#37】
 goto ch3_after
 @label ch3_lose
 sclerk: 【#38】
 narr: 话音未落，泉眼自己「咕咚」一声，把碎鳞全数吸了回去，泉水一层层往上顶。
+@enter ds panic center
 ds: 【#39】
 narr: 泡泡升到穹顶又落回来，落回秤盘时已经并成一整片。泉眼自己替殿里合完了鳞——不慌不忙，像潮水漫回滩上。
+@enter 灯官 delighted left
 灯官: 【#40】
 sclerk: 【#41】
 @flag pieces +1
@@ -95,15 +108,18 @@ narr: ds娘伸手把铜牌摘下来。牌很轻，翻过面，背面有一行比
 ds: 【#44】
 narr: 字小得像不想被人读到。ds娘把牌子扣进掌心，没有再翻回去。
 st: 【合鳞礼成 · 秤上鳞重：二〇四八】
+@enter ds cry center
 ds: 【#45】
 narr: 是。变的只是秤上的数。
 narr: 铜牌离开胸口的一瞬，派蒙喉咙里攒了一路的泡泡「啵啵啵」全破了。
+@enter paimon cute right
 paimon: 【#46】
 ds: 【#47】
 @if chaos >= 1 goto ch3_chaos_gift
 goto ch3_tail
 @label ch3_chaos_gift
 灯官: 【#48】
+@enter paimon proud right
 paimon: 【#49】
 goto ch3_tail
 @label ch3_tail

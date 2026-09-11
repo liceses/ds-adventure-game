@@ -6,10 +6,12 @@ narr: 泉眼四周立着一圈灯柱，灯牌上的签价被晨光照得发白�
 narr: 街角葱贩的吆喝混在报幕声里：「脆葱！甜葱！蘸了酱油更好听的葱！」他脚边的水盆里真飘着一股辛香。
 narr: 琴行老板抱着一柜子谱子坐在门槛上哭，嘴里翻来覆去念叨：「词都在……音呢？我的音呢？」谱纸边都被他翻毛了。
 bugs: 【#01】
+@enter bugs smug center
 @enter ds whale_cute center
 ds: 【#02】
 @enter miku normal left
 miku: 【#03】
+@enter ds smile left
 ds: 【#04】
 miku: 【#05】
 narr: 初音清了清嗓，刚唱出半句「啊——」，袖口啪地弹出一根细绳，缠住她的手腕往回收。
@@ -19,8 +21,10 @@ sclerk: 【#06】
 miku: 【#07】
 sclerk: 【#08】
 narr: 初音不服，改成轻轻哼。哼到第三声，契绳又是一紧，签筒里接连落下三枚签。
+@enter ds normal left
 ds: 【#09】
 narr: ds 娘就着泉眼的水汽唱了半段深海号子，又长又稳。签筒一声不响，契绳动都没动。
+@enter miku smile left
 miku: 【#10】
 ds: 【#11】
 ds: 【#12】
@@ -28,8 +32,10 @@ narr: 思维链在半空打了个结。
 ds: 【#13】
 miku: 【#14】
 ds: 【#15】
+@enter miku cry left
 miku: 【#16】
 sclerk: 【#17】
+@enter ds smile left
 ds: 【#18】
 sclerk: 【#19】
 miku: 【#20】
@@ -38,6 +44,7 @@ narr: 话音未落，曲库阁方向传来一声闷响，像整面柜子同时�
 st: 【服务器繁忙，请稍后再试】
 narr: 曲库阁大门轰然洞开，百万个无名曲匣顺着台阶滚下来，白签纸漫天乱飞，泉眼边的灯柱被砸得东倒西歪。
 sclerk: 【#22】
+@enter miku normal left
 miku: 【#23】
 ds: 【#24】
 miku: 【#25】
@@ -47,6 +54,7 @@ ds: 【#26】
 > 深海摇篮曲 | flag song =2
 > 无名进行曲 | flag song =3
 @if song >= 2 goto song_pick_mid
+@enter miku smile left
 miku: 【#27】
 goto song_pick_join
 @label song_pick_mid
@@ -57,18 +65,22 @@ goto song_pick_join
 miku: 【#29】
 @label song_pick_join
 narr: 初音踩着滚落的曲匣跳上舞台，白签纸绕着她卷成一股股旋风。
+@enter miku normal left
 ds: 【#30】
+@enter ds normal left
 ds: 【#31】
 sclerk: 【#32】
 miku: 【#33】
 @minigame link mode:normal onWin:ch6_win onLose:ch6_lose
 @label ch6_win
 narr: 最后一枚浮签咔哒落位，崩簧安静下来。灯从签位一路亮上谱架顶，雪崩在台前三寸处停住了。
+@enter miku cry center
 miku: 【#34】
 miku: 【#35】
 ds: 【#36】
 miku: 【#37】
 ds: 【#38】
+@enter miku joy center
 narr: 初音第一次唱出了副歌。全场安静，然后是哭声。
 narr: 缠了她一整章的契绳，自己松开了，软软垂回柜台深处，像一条认输的鱼。
 goto ch6_rest
@@ -76,19 +88,23 @@ goto ch6_rest
 narr: 崩簧最后一记把她的手弹开，浮签哗啦啦全飞回雪崩里，舞台重新被曲匣围住。
 sclerk: 【#39】
 narr: 雪崩却忽然自己停了。曲匣滚尽，浮签散空，台上只剩最底下一排空签位，一格一格，干干净净。
+@enter miku cry center
 miku: 【#40】
 ds: 【#41】
 miku: 【#42】
 ds: 【#43】
+@enter miku smile center
 narr: 初音第一次唱出了副歌。全场安静，然后是哭声。
 goto ch6_rest
 @label ch6_rest
 narr: 三天后，音之城广场。初音的等身牌立在泉眼旁，牌上只写了两个字：答谢。
+@enter bugs normal center
 bugs: 【#44】
 narr: 琴行老板把那柜有词没音的谱子摊在太阳底下晒，初音路过，在他每一段空白里补上了音。
 narr: 葱贩把最粗的一捆脆葱搬上台口，说是给歌姬伴奏用的，逗得满场都笑。
-@enter miku cute center
+@enter miku joy center
 miku: 【#45】
+@enter ds smile left
 ds: 【#46】
 narr: 副歌唱到第三遍，秤砣震得嗡嗡响，签痕泡进泉水里，一道一道变淡。
 ds: 【#47】

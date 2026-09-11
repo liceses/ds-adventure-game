@@ -10,17 +10,20 @@ ds: 「让我想想——三千块砖，三千个价。这墙防的不是人，�
 sclerk: 「客官留步。看墙免费，看价签半文，今日特价，第二眼起照价。」
 narr: 柜台不知什么时候支上了垛口，高得只露出一副算盘和一副嗓子。
 sclerk: 「头一桩，砖钱：脚下踩过的、眼里蹭过的，一律计价，童叟无欺。」
+@enter ds cute center
 ds: 「我是浮着走的，砖都没碰。」
 sclerk: 「更好，浮空费含在砖钱里，不加价。第二桩，堵缝费：砖缝里过的风出过力，按风头补钱。」
+@enter ds normal center
 ds: 「……连风都要补钱？」
 sclerk: 「过了秤，风也是客。第三桩最要紧——过手钱，今日结清。凡今日过您手的，水、火、风，都得来柜上走一遭。」
 narr: 垛口上有只灰麻雀，叼走一张被风吹落的价签回窝垫底。今年的新窝，比去年软和。
-@enter creeper normal right
+@enter creeper ash right
 creeper: 「……别为难她。墙这一面，归我管。」
 ds: 「你就是守鳞人？怎么灰成这样——」
 creeper: 「欠火。」他从壳缝里抽出一卷契，纸上没有印泥，只有一个坑形的真窟窿。「契官说，印没处找，就把上回炸的坑按上去。火欠着，坑替我记账。」
 ds: 「这个窟窿……会一天比一天深？」
 creeper: 「嗯。炸不响的日子，坑替我记着。」
+@enter creeper fierce right
 creeper: 「其实……我就想再响一次。轰的一声、整面墙都跟着抖的那种。」
 creeper: （第一回。鼓腮，憋气，浑身绷得像受了潮——）「咻————」
 narr: 只有一缕气音，细细的，像口没水的哨子。风都替他害臊。
@@ -28,16 +31,20 @@ creeper: （第二回。咬紧牙，把全身的劲往一处攒——）
 narr: 没等响，灰壳先簌簌落了一层，铺满他的脚背。他假装那是计划的一部分。
 sclerk: 「客官，爆炸属于大额，需要预约。」
 creeper: 「……预约是哪国的妖术？」
+@enter creeper ash right
 creeper: （第三回。他张开嘴——）「……」
 narr: 连嘶都嘶不出来。长城静得能听见他自己一点点灰下去的声音。
 ds: 「让我想想——But wait……But wait——」
 narr: 思维链在半空打了个结。
+@enter ds cute center
 ds: 「我想通了！这长城是防蚊子的，价签是防蚊子不识字！」
 creeper: 「……姑娘，价签防的是水。」
+@enter ds whale_cute center
 ds: 「唔。那我不想了——欠的火不用还，我送你一捧白来的。」
 ds: （她从发梢摘下一粒磷光，托在掌心。）「我出生那天的第一朵浪花。谁也没给它定过价。白来的。」
 @flag heat +1
 narr: 磷光落进苦力怕掌心，灰壳底下透出一点暖绿，像灰堆里埋着一颗没熄透的芯。
+@enter creeper normal right
 sclerk: 「且慢，姑娘。火过你手，就得过我的秤——老规矩。」
 narr: 秤盘刚从柜台后探出头，秤杆「叮」地弹了起来——
 st: 【叮——秤崩簧。秤不肯认。】
@@ -52,12 +59,15 @@ narr: 苦力怕捧着那点火，看看火，又看看秤，忽然笑了。这�
 > （疯）柜台那位也辛苦，送他一把白来的火。 | flag chaos +1 | goto ch4_rules
 @label ch4_rules
 @if chaos >= 1 goto ch4_chaos
+@enter creeper fierce right
 creeper: （把欠火契折成小小一方，塞回壳缝最深处）「拆的时候别理柜台，我替你盯缝。」
+@enter ds cute center
 ds: 「好脾气。用户桑，我喜欢这孩子——灰归灰，主意是正的。」
 narr: 苦力怕把腰挺直了。灰壳上引信的位置，透出一星微光。
 @flag focus +1
 goto ch4_common
 @label ch4_chaos
+@enter ds normal center
 ds: （又摘下一粒磷光，隔着墙抛向柜台。）「柜台那位也辛苦——白来的，接好。」
 narr: 司秤吏双手捧住，翻遍账本：记「收」没有来路，记「支」没有去处。柜台里静得能听见算盘出汗。
 sclerk: 「记……记哪一栏？」
@@ -65,7 +75,9 @@ creeper: 「没有那一栏。」
 sclerk: 「那、那就先拿着。拿着不算账——不算账就不算账。」他把火供在算盘旁边，捧得端端正正，不知该谢还是该记。
 @flag focus +1
 @label ch4_common
+@enter ds smile center
 ds: 「用户桑，规矩就一条：你点哪块砖，我替你唱哪块的斤两。」
+@enter creeper normal right
 creeper: 「唱对了，砖自己下来。唱错了……砖会把你的话也过一遍秤。话重，压手。」
 sclerk: 「唱错不罚，记账。今日过手钱照旧结清——规矩是规矩。」
 @minigame brick mode:normal onWin:ch4_win onLose:ch4_lose with:heat,focus,chaos
@@ -76,6 +88,7 @@ ds: 「……空心的。难怪风掀它三回，它一动也不敢动。」
 narr: 风穿过砖心，头一回没被拦下来过秤。砖自己翻了个身——砖心里嵌着一片鲸鳞，刻痕清清楚楚：R1。
 sclerk: 「……记下。R1，出库。」嗓子比平时低了半格。
 @flag pieces +1
+@enter ds cute center
 ds: 「第四片到手！用户桑，你点砖的手，比我的鳞还稳！」
 goto ch4_burst
 @label ch4_lose
@@ -86,14 +99,18 @@ narr: 就在这时，城顶那块「天价」砖忽然自己松了，咚地滚�
 narr: 砖心空空，嵌着一片鲸鳞，刻痕：R1。它大概是听腻了——三千块砖都有人念价，只有它，从来没人念过。
 sclerk: 「非、非卖品怎么可以自己走！——算了。记：R1，出库。事由……风大。」
 @flag pieces +1
+@enter ds normal center
 ds: 「墙自己投降啦！用户桑，这一把输得值——我的鳞，是风替我捡回来的！」
 goto ch4_burst
 @label ch4_burst
 narr: 鳞一离墙，苦力怕掌心那粒白来的火猛地蹿高。他愣住，咧开嘴——
+@enter creeper fierce right
 creeper: 「要、要响了——」
 narr: 轰————！像一口憋了太久的笑终于笑出了声。墙腰炸开一道豁口，水晶泉的水涌进来，漫过一块块价签。
 narr: 价签泡了水，字一枚一枚晕开，糊成淡淡的云。灰麻雀从窝里探出头，看看水，把叼来的那张价签往怀里又拢了拢。
+@enter creeper happy right
 creeper: （他坐在豁口边，浑身透绿，蒸汽腾腾。）「响了……真的响了。」他把新炸出来的坑指给 ds 娘看，像出示一枚崭新的图章。「下回印契，用这个。自己的。」
+@enter ds whale_cute center
 ds: 「契官要是再来，你就请他盖这个。」
 narr: 屏幕这边，你轻轻点了一下。ds 娘回头冲屏幕眨眨眼，把这当作鼓掌。
 narr: 水声里，ds 娘的眉心浮起一道极淡的纹，像思考拧成的小疙瘩，一闪，又沉了下去。她自己没有察觉。

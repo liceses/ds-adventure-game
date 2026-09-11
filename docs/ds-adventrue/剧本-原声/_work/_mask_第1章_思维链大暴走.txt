@@ -8,6 +8,7 @@ narr: 瀑布尽头，一点鲸蓝色的鳞光卡在泉眼上，被一杆黑铁�
 @enter ds cute center
 ds: 【#01】
 narr: 没有人接话。瀑布声替所有人保持了沉默。
+@enter ds normal center
 ds: 【#02】
 narr: 格栅缝里，一只小螃蟹横着爬过，钳子上还挂着半张作废的签，谁也没空理它。
 narr: 两只报幕虫拖着鼓囊囊的小钱袋从管道深处窜出，贴着瀑布顶疾飞：「单飞首秀！彩排开始！定金收讫——撤！」
@@ -26,21 +27,27 @@ ds: 【#09】
 > 三十遍走位我们全看见了，首秀很帅 | goto ch1_cheer
 > 先说好，鳞归我们，走位你自己留着 | goto ch1_deal
 @label ch1_cheer
+@enter snake_expert smug right
 snake_expert: 【#10】
 goto ch1_gift
 @label ch1_deal
+@enter snake_expert proud right
 snake_expert: 【#11】
 goto ch1_gift
 # —— 白送：崩秤 ——
 @label ch1_gift
 ds: 【#12】
 narr: 她从鳞囊里抽出半节庆功曲，庆功那天才唱的那半段，纸边还带着体温。
+@enter ds cute center
 ds: 【#13】
 narr: 曲子刚落到秤盘上，黑铁秤杆猛地一抖。
 st: 【叮——秤崩簧。秤不肯认。】
+@enter snake_expert panic right
 snake_expert: 【#14】
+@enter ds normal center
 ds: 【#15】
 narr: 蛇专家盯着秤盘，尾巴尖在格栅上敲了三下，没敲出任何节奏。
+@enter snake_expert cry right
 snake_expert: 【#16】
 narr: 泉眼咕嘟一声。蛇身盘上秤座，尾尖挑起那片鲸鳞，管道里的水声忽然齐了拍子。
 # —— 抉择 ——
@@ -50,21 +57,27 @@ narr: 泉眼咕嘟一声。蛇身盘上秤座，尾尖挑起那片鲸鳞，管�
 > 直接张嘴咬住蛇尾巴 | flag chaos +1 | goto ch1_chaos
 @label ch1_hot
 narr: 她尾巴一甩，水管当当作响，连数据流都让出一条道。
+@enter ds cute center
 ds: 【#17】
 goto ch1_rules
 @label ch1_cool
 narr: 她凑近秤杆，眯起眼：崩簧是新的，秤星却磨平了，像被成千上万的签子蹭过。
+@enter ds normal center
 ds: 【#18】
 goto ch1_rules
 @label ch1_chaos
 ds: 【#19】
 narr: 她一口咬住蛇尾。蛇尾一甩，天旋地转，瀑布当头浇下——
+@enter ds cry center
 narr: 咚。她被稳稳拍上蛇背，顺着水势，一路骑进秤影里。
+@enter snake_expert smug right
 snake_expert: 【#20】
 goto ch1_rules
 # —— 立规矩：心蛇过秤 ——
 @label ch1_rules
+@enter snake_expert proud right
 snake_expert: 【#21】
+@enter ds normal center
 ds: 【#22】
 snake_expert: 【#23】
 ds: 【#24】
@@ -75,7 +88,9 @@ ds: 【#25】
 @label ch1_win
 narr: 心蛇吞下最后一节念头，又长又直地压上秤杆——秤砣离地三寸。
 narr: 蛇专家愣了半秒，随即甩尾卷起自己那张单飞契，「刺啦」撕成两半。
+@enter snake_expert smug right
 snake_expert: 【#26】
+@enter ds cute center
 ds: 【#27】
 @flag pieces +1
 goto ch1_after
@@ -83,18 +98,22 @@ goto ch1_after
 @label ch1_lose
 narr: 心蛇打了个结，「啪」地散成满天念头。蛇尾一甩，她被拍进瀑布，咕咚咕咚往下游漂。
 narr: 可蛇玩嗨了，追上来用尾尖卷着那片鲸鳞，一路追着送，像归还失物。
+@enter snake_expert normal right
 snake_expert: 【#28】
+@enter ds cry center
 ds: 【#29】
 @flag pieces +1
 goto ch1_after
 # —— 余韵 ——
 @label ch1_after
-@enter snake_expert normal right
+@enter snake_expert proud right
 narr: 鳞归了位。泉眼重新涌出白花花的水，不过秤、不凭签；旁边的签筒哑了火，再没人去抽。
 narr: 管道区凉快下来，瀑布声顺了，连显卡的焦味都淡了一层。
 narr: 蛇专家不知从哪儿摸出一份备用的经纪约，裱进木框，端端正正挂上管道墙。
 snake_expert: 【#30】
+@enter ds normal center
 ds: 【#31】
+@enter snake_expert normal right
 snake_expert: 【#32】
 @exit snake_expert
 narr: 瀑布下游，水汽里浮出一座朱红鸟居的影子。有人抱着扫帚站在门口，红白配色，叉着腰。

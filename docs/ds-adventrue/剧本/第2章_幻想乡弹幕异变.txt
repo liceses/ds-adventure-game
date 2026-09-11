@@ -3,6 +3,7 @@
 @scene hakurei_shrine bg:TBD bgm:TBD title:幻想乡弹幕异变
 narr: 博丽神社的石阶尽头，蝉声比人先到。晒了一上午的柏木栏杆散着松脂味，指尖碰上去，烫得人一缩手。
 narr: 参道上空，一群报幕飞虫抬着一艘白纸小船慢慢飞。船舷垂下的横幅被风扯得哗啦啦响，像有人在一里外数铜钱。
+@enter bugs normal left
 bugs: 「让让——报幕虫群过境——闲杂香客避让——」
 bugs: 「本次抽签，由万秤楼冠名赞助——」
 narr: 神社旁不知何时立起一座七层纸楼，每层檐角一盏小灯，楼身糊满签文。风一过，满楼签纸齐齐一颤。楼脚的等身木牌写着三行字：许愿过楼，抽三成过手钱；愿不白许，按月奉纳；凭签取愿。
@@ -15,33 +16,43 @@ ds: 「用户桑，到了到了！泉水的味道就在附近……咦，混着�
 ds: 「Hmm……七层楼，七盏灯，泉眼就压在楼底下。But wait——这么白的泉水，怎么要凭签取？」
 @enter reimu normal right
 reimu: 「站住。博丽灵梦，幻想乡的巫女。异变的主谋，报上名来。」
+@enter ds surprised center
 ds: 「咦？我？我是来拔秤的鲸鱼娘啦！」
+@enter reimu serious right
 reimu: 「泉眼被钉上秤那一晚，参道上就多了一股鲸鱼味。现在，它就在你身上。」
 ds: 「我是鲸鱼娘，自带鲸鱼味啊！」
 reimu: 「少装傻。一夜之间，赛钱箱学会了拒客，香客全被这栋楼吸走——不是你带来的，还能是谁？」
 reimu: 「神社新规矩：抽签免费——先听完这段报幕。」
+@enter ds serious center
 ds: 「让泉水排队听报幕……让我想想——不对，这楼比我来得还早！楼身上的浆糊都干了三年了！」
+@enter reimu angry right
 reimu: 「红白巫女的直觉，从没看走眼过。还有那什么『叫号』——那是哪国的妖术？！」
 ds: 「But wait……But wait——」
 narr: 思维链在半空打了个结。
 ds: 「幻想乡的巫女除了退治妖怪，还兼职替河童疏通泉眼——我上次路过时亲眼看见的！」
+@enter reimu surprised right
 reimu: 「……啊？」
 ds: 「总之我拔秤很专业！V2 那片就是这么拔下来的，一根签都没多拿！」
 reimu: 「……拔过一片？」
-@enter bugs normal left
+@enter bugs smug left
 bugs: 「闲人让道——愿楼三号柜台，开价——」
 sclerk: 「巫女大驾。楼里正存着您一笔老愿：香油钱八百文。老契只抽一成过手钱——如今新契上楼，抽三成。」
+@enter reimu angry right
 reimu: 「八百！我的八百在楼里！说好只抽一成的！」
 sclerk: 「不愿取也使得。续奉纳十年，按月缴足，愿签自动升三层。十年后凭签取愿，过手钱折半。」
 reimu: 「我的愿，要按月喂十年才让取？！」
 sclerk: 「楼规如此。崩簧在上，签海在下——拍楼者，签海伺候。」
 narr: 灵梦哪里听得完，抄起御币就朝楼身拍去。纸楼纹丝不动，倒把楼底的赛钱箱震得咔哒一声，弹出一枚木牌。
 narr: 木牌上四个字：找零失败。再拍，再弹一枚——还是找零失败。
+@enter reimu smug right
 reimu: 「连自家的箱子都学会推脱了？！」
+@enter bugs panic left
 bugs: 「警报——楼体遇袭——横幅告急——这、这场报不下去了——」
 st: 【服务器繁忙，请稍后再试】
 narr: 满楼签纸哗啦啦乱飞，报幕虫群一头扎进自己的横幅里，越挣越缠。
+@enter ds normal center
 ds: 「灵梦大人，拔了秤，泉就是你的了。」
+@enter reimu serious right
 reimu: 「……打。今天必须打。」
 *choice
 > 「一起上！我主攻七盏楼灯，灵梦大人压阵拦签雨！」 | flag ally got | goto ch2_duo
@@ -49,13 +60,17 @@ reimu: 「……打。今天必须打。」
 > 「慢着——先给报幕虫群点一首歌！」 | flag chaos +1 | goto ch2_chaos
 @label ch2_duo
 reimu: 「行。你打灯，我拦签。轻点打——真烧起来，我的八百可就成灰了。」
+@enter ds smug center
 ds: 「我瞄准的是灯，不是楼！大概！」
 goto ch2_rules
 @label ch2_solo
+@enter reimu smug right
 reimu: 「一个人接十层签雨？好胆量。打灭了灯别吹牛，被埋进纸堆里别哭。」
+@enter ds normal center
 ds: 「鲸鱼不哭，鲸鱼只喷水！」
 goto ch2_rules
 @label ch2_chaos
+@enter ds smug center
 ds: 「报幕虫群，我给你们点一首《鲸群摇篮曲》——要唱满七层楼那么长的那一版！」
 narr: 虫群齐刷刷愣在半空，纸船一歪。领头的报幕虫张着嘴，横幅忘了抖。
 bugs: 「点、点歌？曲名未录入报幕单——卡、卡壳了——」
@@ -63,7 +78,9 @@ narr: 整支虫群悬在楼前，嗡声乱成一锅粥。自开楼以来，报�
 goto ch2_rules
 @label ch2_rules
 sclerk: 「楼方规矩，念给各位听：七灯灭其一，签雨加急；七灯全灭，崩簧自开，愿契作废，白水归泉。」
+@enter reimu normal right
 reimu: 「幻想乡的规矩更短：弹幕不伤性命，比谁的灯先灭。躲开签海，把七盏灯挨个打熄，楼就开了。」
+@enter ds serious center
 ds: 「楼里的签是活的，会认人！用户桑，贴着楼影走，灯亮的地方千万别站！」
 narr: 话音未落，七盏楼灯一齐晃了晃，第一层签雨哗啦啦上了弦。
 @minigame plane mode:normal onWin:ch2_win onLose:ch2_lose with:ally,solo
@@ -71,18 +88,22 @@ narr: 话音未落，七盏楼灯一齐晃了晃，第一层签雨哗啦啦上�
 narr: 七盏楼灯连成一串，一盏接一盏熄灭。最后一盏灭掉时，整座纸楼像被抽掉了骨头。
 narr: 崩簧「崩」地弹开，七层楼从上到下散成一场白花花的纸雪。
 narr: ds 娘从纸堆里捧出那片温热的鲸鳞——V2.5，鳞面上还挂着一线新涌的白水。
+@enter ds smug center
 ds: 「拔秤喽——灵梦大人，您的泉回来啦！」
+@enter reimu serious right
 reimu: 「泉是回来了。我的八百呢？」
 narr: 灵梦一屁股坐进签纸堆里刨了起来，刨出三枚铜钱，又刨出半张没报完的横幅。
 @flag pieces +1
 goto ch2_after
 @label ch2_lose
 narr: 签雨忽然收拢成一张大网，兜头罩下。ds 娘被埋进签纸堆，只留一截尾鳍在外面拍水。
+@enter bugs smug left
 bugs: 「胜负已分——签海获胜——楼方威武——」
 reimu: 「……喂，这么多人看着呢，别装死。」
 narr: 灵梦御币横扫，崩簧被震得咔咔直响，楼身歪了半边，顶层签纸哗啦啦塌下来一层。
 narr: ds 娘顶着满头签纸从堆里钻出来，怀里正好滚出那片鲸鳞。V2.5 烫得像刚出锅的白水煮蛋。
 reimu: 「输也给我输得像样点！」
+@enter ds normal center
 ds: 「我这叫战术性躺进纸堆啦！」
 @flag pieces +1
 goto ch2_after
@@ -91,10 +112,13 @@ narr: 泉眼连鳞带秤一起拔了出来。白水先打了个嗝，随即哗�
 narr: 香客踩着漫过脚背的新水花跑过参道，有人顺手把攥了一路没敢抽的签纸折成小船，放进水里看它打转。
 narr: 一个小孩双手捧了个满，转身整捧泼向灵梦的后背。
 narr: 灵梦哇地跳起来，追着人绕赛钱箱跑了三圈，耳朵尖一路红到发梢。
+@enter reimu angry right
 reimu: 「水是干净的，人是脏的！给我站住！」
 narr: 闹够了，灵梦把御币往赛钱箱上一搁。箱子弹出一枚崭新的木牌——这次上面一个字也没有。
+@enter ds smile center
 ds: 「鳞片在哼歌。它说，鲸群过冬的时候，大鲸会把磷虾云让给最小的那一头——从来没人给它发过签。」
 narr: V2.5 贴着掌心微微发烫。共享是本能——鳞里的老记忆，比愿楼上的新牌子旧了不知多少年。
+@enter reimu smug right
 reimu: 「……哼，这种歪理，倒头一回听得这么顺耳。」
 narr: 同一时刻，万秤楼深处。秤主把「幻想乡」三个字从账页上划掉，笔尖悬在下一个名字上，轻轻点下一滴朱砂。
 narr: 下一话——灯官提着一盏会自己报价的灯，往更深处的领域去了。

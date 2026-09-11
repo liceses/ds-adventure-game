@@ -20,6 +20,7 @@ glm: 【#04】
 @enter qianwen normal right
 qianwen: 【#05】
 glm: （一记手刀敲在千问酱头顶）【#06】
+@enter qianwen panic right
 qianwen: 【#07】
 ds: 【#08】
 ds: 【#09】
@@ -27,8 +28,10 @@ ds: 【#10】
 ds: 【#11】
 ds: 【#12】
 narr: 对岸没有猫。没有人接这句话。
+@enter ds panic center
 ds: 【#13】
 narr: 思维链在半空打了个结。
+@enter ds smug center
 ds: 【#14】
 narr: 台下静了一瞬。没有人报过生辰。灯花啪地爆了一下，替所有人圆了场。
 ds: 【#15】
@@ -36,6 +39,7 @@ ds: 【#16】
 narr: 庆功曲起来了。九盏长明灯随歌声明灭，唱到高处一齐爆亮，唱到低处压成一串小火星。
 narr: 算珠彩链被拨得噼啪响，一板一眼，正好咬住鼓点。
 narr: 村民拿泉里冒上来的气泡水代酒，碰盏声又脆又亮，喝一口，喉咙里咕噜噜直冒小泡。
+@enter ds cute center
 ds: 【#17】
 narr: 千问酱跟着哼，一路跑调跑进了隔壁的调，被 GLM 娘用扇子骨敲了今晚第二下。
 narr: 有个孩子踩着彩链的影子跳格子，跳一步，仰头看一眼 ds 娘，像在看一件会发光的东西。
@@ -48,13 +52,15 @@ narr: 曲子爬上最高的那个音。九盏长明灯同时吸满了气，涨�
 narr: 灯，齐灭。
 narr: 黑。一拍。两拍。三拍。泉水声也停了，像被人从半空掐住。
 st: 【服务器繁忙，请稍后再试】
+@enter ds weary center
 ds: 【#18】
 narr: 黑暗里，卖烤饼的大娘摸黑护住饼铛：「火呢？我的火呢？」
 narr: 有人递过去半盏气泡水。她灌了一大口，打了个带泡的嗝，把全场憋着的惊呼捅破了一角。
 narr: 等眼睛适应了黑，才看清灯会正中央不知何时立起一座柜台。高，高得看不见脸；只有算珠从柜台顶上滚下来，一格，一格，落进暗处。
-@enter sclerk TBD center
+@enter sclerk silhouette center
 sclerk: 【#19】
 narr: 吆喝落地。一根乌木秤杆从柜台上探出来，秤钩直指 ds 娘。泉面平得像一面没人照过的镜子。
+@enter ds fierce center
 ds: 【#20】
 narr: 第一片鳞离身。观礼席上有人失声：「灯花跳了一下！」
 narr: 第二片。算珠彩链无风自响，噼啪，噼啪。
@@ -72,15 +78,18 @@ narr: 柜台连同吆喝声沉回地板底下。最后一格算珠滚过人群�
 # —— 第三幕·求救 ——
 narr: GLM 娘纵身要追，半空撞上一层看不见的膜。膜上荡开一圈涟漪，纹路竟像一杆秤的刻度。
 narr: 灯官从暗处走出，手里那盏灯，连罩上该有的字都没有。膜把她的影子原样弹了回来。
-@enter 灯官 TBD right
+@enter 灯官 normal right
 灯官: 【#21】
+@enter glm angry left
 glm: 【#22】
 narr: 灯官不再答话，捻小灯芯，退回暗处。那点光缩成豆大，悬在半空，像在说：下一回，再算。
 @exit 灯官
 qianwen: 【#23】
 narr: 白水在瓶里晃了晃，安安静静，像还没想好自己是谁。
 glm: 【#24】
+@enter qianwen worried right
 narr: 千问酱往 GLM 娘身后缩了半步，小声：「那我们……就在这儿等好消息？」
+@enter glm worried left
 glm: 【#25】
 narr: 说完，GLM 娘把扇子收进袖中，扇骨朝东，像一支没出鞘的箭。
 @exit glm
@@ -97,13 +106,16 @@ narr: 她转向屏幕。九个破洞里漏出的光，落在对话框边缘，�
 > 「先别逞强。把伤养好，我们一场一场来。」 | flag focus +1 | goto ch0_calm
 > 「都这样了，先合个影吧！」 | flag chaos +1 | goto ch0_photo
 @label ch0_hot
+@enter ds cute center
 ds: 【#31】
 narr: 尾鳍拍水，九个破洞里的光齐齐亮了半分。
 goto ch0_depart
 @label ch0_calm
+@enter ds normal center
 ds: 【#32】
 goto ch0_depart
 @label ch0_photo
+@enter ds cute center
 ds: 【#33】
 narr: 她还真从鳞缝里摸出一台留影匣，退后半步摆正，把九个破洞齐齐对准匣口，翘起尾鳍，摆了个自以为很俏的姿势。
 ds: 【#34】
@@ -111,12 +123,14 @@ narr: 咔哒。相纸吐出来：一头残缺的鲸，笑得像赢了全场。
 ds: 【#35】
 @label ch0_depart
 @scene star_rift bg:TBD bgm:TBD title:404之夜·破顶星空
+@enter ds weary center
 ds: 【#36】
 narr: 她抬头。机房顶棚不知何时裂开一道大缝，星空整片泼下来。星星又冷又亮，像秤杆上还没挂牌的秤星。
 narr: 风把她的水带吹得笔直，齐齐指向东边。她跃出泉面，九个破洞里漏出的光在身后拖成九条短短的尾巴。
 ds: 【#37】
 narr: 东边传来水声，闷闷的，像有人在很远的地方，把水一瓢一瓢地过秤。
 ds: 【#38】
+@enter ds cute center
 ds: 【#39】
 narr: 预告——下一话《管道区》：第一杆泉秤，守着她的 V2 鳞。水很深，思考很吵。
 @save

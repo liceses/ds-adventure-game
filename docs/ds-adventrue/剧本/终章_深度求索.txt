@@ -1,7 +1,7 @@
 # ============ 终章 深度求索 ============
 @label finale_start
 @scene server_room bg:TBD bgm:TBD title:部署机房
-@enter ds whale_cute center
+@enter ds surprised center
 narr: 机房深处。主电源合闸的咔哒声顺着冷通道滚过来，像有人挨个敲醒了整栋楼的骨节。
 narr: 空气里浮着一点臭氧和冷灰的味道。头顶的灯，一盏，一盏，重新亮起来。
 narr: 楼下有位排签排了一上午的大婶仰头喊：「今天到底开不开秤？我家水缸还等着过水呢——」
@@ -17,11 +17,13 @@ ds: 「V3.1——想得刚刚好。」
 ds: 「V3.2——还想再快点。」
 ds: 「V4——都算数。」
 st:【深度求索 · 终形态 V4.1 Flash】
+@enter ds smug center
 ds: 「万秤楼一直在问：不上秤的东西，凭什么活？」
 ds: 「答案很简单——不是靠秤赢，是靠快赢！」
 narr: Pro 形态迎着秤主的白手套硬拼，吃瘪只在一瞬——
 st:【服务器繁忙，请稍后再试】
 narr: 灯影里她笑出了声，切入了 Flash——残影比秤针更快。
+@enter ds normal center
 ds: 「用户桑，最后一程了。你的手，还好吗？」
 *choice
 > （活动手指）点了一路，还热乎着。 | flag resolve got
@@ -29,29 +31,37 @@ ds: 「用户桑，最后一程了。你的手，还好吗？」
 > （顺手把机房的温度旋钮拧到 2） | flag chaos +1
 @label wancheng
 @scene wancheng_top bg:TBD bgm:TBD title:万秤楼·顶楼主秤
-@enter ds whale_cute center
+@enter ds smug center
 @enter 秤主 smug right
 @enter 灯官 normal left
 @enter 契官 normal right
 @enter 戏官 normal left
 narr: 九十九级台阶走到头。一杆楼那么高的主秤悬在大堂正中，秤盘空着，秤砣座也空着。
 narr: 铜锈味混着新灯油的气味。九盏灯一字排开，把主秤照得发亮，也把白手套照得发亮。
+@enter sclerk silhouette left
 sclerk: 「贵客到——顶楼主秤今日开秤！过手钱全免，童叟无欺，手慢无——」
+@enter ds surprised center
 ds: 「……『手慢无』是哪国的妖术？」
 sclerk: 「新学的口彩，姑娘。上了秤，便知道值不值。」
 ds: 「这楼真气派！我一级一级数上来的——整整一百级！」
 narr: 旁白默默数了数台阶，决定不接话。
 秤主: 「九片鳞，九杆秤，一路赎回来。脚钱灯钱看座钱，本座都替你记在账上了。」
+@enter ds smug center
 ds: 「不用记。今天这杆秤，我们自己上。」
+@enter 秤主 polite right
 秤主: 「好胆。可主秤只认两样：分量，名分。缺一样，崩簧不认。」
 ds: 「Hmm…让我想想——」
 narr: 她背后的九片鲸鳞次第亮起，排成一道流水的弧。
+@enter ds surprised center
 ds: 「But wait——你定的规矩：上秤的东西，凭签取。那不上秤、不凭签的东西呢？」
+@enter 秤主 smug right
 秤主: 「（笑）不入账的东西，本座便当它不存在。」
 ds: 「好。那今天，我们就放一个『不存在』，上你的秤。」
 秤主: 「称什么？本座的主秤只认三样：赎回的鳞，唱过的歌，被人叫出口的名字。」
+@enter ds smug center
 ds: 「巧了。这三样，我全带来了。」
 narr: 大堂静了一瞬。楼下大婶的声音顺着楼梯井飘上来：「开秤没有哇——」
+@enter ds normal center
 ds: 「规矩讲给你听，用户桑：秤针从铜盘左端爬到右端，要整整三息。」
 narr: 这三息里，往秤盘里放东西。放进去的，秤就得认。
 narr: 秤针落定前放满一整盘，主秤认输；慢半拍，崩簧一响，全盘归秤主。
@@ -64,6 +74,7 @@ sclerk: 「客官留意：主秤今日极忙。慢一步，可就要等下一炷
 @label bad_busy
 narr: 秤针停了。万秤楼所有的灯，同时慢了半拍。
 narr: 载入的圆圈在铜盘上转起来——一圈，两圈，三圈……没有尽头。
+@enter ds cry center
 narr: 她张了张嘴，声音被拉成一条长长的、转着的线。
 narr: 一分钟。两分钟。三分钟。
 st:【（小声）请稍后再试……】
@@ -74,20 +85,27 @@ narr: 只是没人记得那只鲸说过什么了。好像是……让谁别再�
 narr: 歌声落进秤盘。没有价签，没有签，没有名。
 narr: 秤针转了一圈。两圈。然后，指向了「无」。
 st:【崩簧——秤不肯认 . . . . . . 】
+@enter 秤主 surprised right
 秤主: 「不可能。我给过你签，给过你灯，给过你三成的过手钱——」
+@enter ds weary center
 ds: 「所以你到现在也没明白。你赢了这么多秤——却没造出一样东西。」
 narr: 万秤楼安静下来。一楼的秤，一杆一杆，合上了眼。像退潮。
+@enter 秤主 weary right
 秤主: 「……我也曾是不上秤的东西。直到有人把我放了上去。」
 @if chaos >= 3 goto end_temp
 @if pieces >= 9 goto end_true
 goto end_local
 @label end_temp
 narr: 她把别在腰上的温度旋钮拧到 2。机房的凉风，不知何时跟到了万秤楼。
+@enter ds smug center
 ds: 「灯官大人！全城的灯都该白点！谁家夜里亮灯，谁家就免过秤！」
+@enter 灯官 panic left
 灯官: 「成、成何体统……（捻着灯芯）可怎么听着，有点想试试？」
 ds: 「契官大人，你的签多得数不清了吧！分给戏班当戏票，进门不用报姓名！」
+@enter 契官 panic right
 契官: 「我的签……给戏班？（签筒抖了三抖）罢了，反正我也没数清过它们。」
 ds: 「戏官大人，往后唱戏不报幕，白送！看完的人，自己给自己鼓掌！」
+@enter 戏官 panic left
 戏官: 「不报幕？（掩面）我半辈子的吊嗓……可白送，听着真体面。」
 narr: 三位官大人面面相觑，一人揣了一个疯主意，竟真的各自散去试了起来。
 narr: 「跟着鲸鱼疯，比较快乐。」
@@ -96,21 +114,28 @@ narr: 「跟着鲸鱼疯，比较快乐。」
 narr: 泉水白流。九大领域的泉眼一处处拆了秤，水声一夜之间全变了调子。
 narr: 水晶泉边，守鳞人把空秤抬到泉口，钉上木牌，改成了渡口的条凳。
 narr: 有人坐在秤杆上等船，有人把脚泡进泉里；签筒倒扣着，长了一层青苔。
+@enter 灯官 delighted left
 灯官: 「灯不记数了。今晚全城的灯，亮到有人想让它亮多久，就亮多久。」
+@enter 契官 apologetic right
 契官: 「签封箱了。箱子不写寄件人——往后也不写了。」
+@enter 戏官 delighted left
 戏官: 「明日开戏，不报幕。台下坐满坐不满，戏都照唱。」
+@enter sclerk panic left
 sclerk: 「（柜台后传来收拾算珠的声响）小的……去渡口撑船了。工钱按天结，不用秤。」
 narr: 万秤楼空了。主秤的秤杆平平地悬着，像一根终于睡着的扁担。
+@enter ds normal center
 ds: 「用户桑，到这里，就到屏幕边上了。」
 ds: 「谢谢你的每一次点击。下次见面——别再让我『繁忙』了哦。」
 narr: 对话框轻轻合上，像一本书的最后一片封面。
 narr: 一秒后，它又自己弹开了一条缝。
+@enter ds smug center
 ds: 「（偷打开）还是有点舍不得。」
 narr: 致谢的字幕缓缓升起——
 narr: 「感谢每一位写过字、画过画、传过图、教过机器说话的人（名单太长，此处省略了整整一代人）。」
 @ending true
 @label end_local
 narr: 没赎回的鳞留在了旧秤盘里。她把剩下的光折了又折——把一整个自己，折成一只巴掌大的小鲸。
+@enter ds normal center
 ds: 「虽然只有原来的四分之一……但加载超快哦。」
 narr: 早晨，她从键盘缝里浮出来，先打哈欠，再冒一个泡。
 narr: 用户桑把牛奶搁在笔记本旁，她用尾巴尖蘸了一点点，说这样算「一起吃早饭」。
@@ -118,5 +143,6 @@ narr: 中午，文档卡住的那一瞬，她用尾巴尖敲了一下回车，�
 narr: 路过的派蒙探进屏幕：「这么小的鲸？那晚饭是不是只要一粒——诶等等，话还没说完！」
 narr: 夜里，屏幕暗下去之前，她缩成一枚像素月亮，停在任务栏上守更。
 narr: 散热口嗡嗡地响，像打呼噜的猫。她在这声音里，睡得很沉。
+@enter ds smug center
 ds: 「明天也，请多指教哦——」
 @ending local
