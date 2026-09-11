@@ -1,4 +1,20 @@
 # 更新日志 (Changelog)
+## [v1.4] 新增协作规范 CONTRIBUTING.md
+
+### Added
+- `CONTRIBUTING.md`：面向组员的小游戏/剧情/公共代码协作规范
+  - 环境与版本硬约束（Java 17 目标、JavaFX 17.0.20、禁止 Java 21 专有 API、依赖需全组同意）
+  - 小游戏接入：内置插件（推荐）vs 外部插件、最小插件骨架、`GamePlugin` 参数表、
+    `plugins/plugins.ini` 注册规则、剧情触发写法、事件 ID 命名表（与需求 F 编号对应）
+  - 生命周期说明：**`onDetach()` 当前不会被引擎调用**的已知缺陷与两种对策
+  - 素材规范、演示地图共享（`maps/` 被忽略的三种解法）、分支/提交/PR 模板、
+    提交前自检清单、常见问题排查表、明确禁止事项
+
+### Fixed
+- `plugins/README.txt` 更新过期内容：产物名 `visual-novel-studio.jar` → `ds-adventure.jar`、
+  JavaFX 21.0.5 → 17.0.20、`release 21` → 17、依赖坐标 `visual-novel-studio` → `ds-adventure`、
+  命令 `mvn` → `mvnw.cmd`；并加指引指向 `CONTRIBUTING.md`
+
 ## [v1.3] 构建坐标统一与测试插件固定
 
 ### Changed

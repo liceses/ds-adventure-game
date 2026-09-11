@@ -1,5 +1,9 @@
 # plugins 插件目录使用说明
 
+> 📘 完整的协作规范（分支 / 提交 / PR / 自检清单 / 常见问题）见仓库根目录 [`CONTRIBUTING.md`](../CONTRIBUTING.md)。
+> **课程作业推荐走「内置插件」形态**（源码放 `src/main/java/com/studio/plugin/demo/`，
+> 在 `plugins.ini` 注册），因为本目录下的编译产物 `classes/`、`*.jar` 已被 `.gitignore` 忽略、无法入库。
+
 本目录存放“外部 Java 程序”插件：工程师只需实现 `com.studio.plugin.GamePlugin`
 接口，把编译产物放进来，读取器(Player)解析到场景/节点的 `event` 属性时就会
 **动态加载**并把它嵌入主舞台中央（顶部自动带【返回】标题栏）。
@@ -28,12 +32,12 @@ public interface GamePlugin {
 params 约定键：`plugin.id`、`map.folder`(File)、`embedded`(Boolean)、`host.stage`、`back.callback`(Runnable)。
 
 ## 方式一：javac 快速编译（无需 Maven 工程）
-先 `mvn -q -DskipTests package` 产出 target/visual-novel-studio.jar，
-然后（Windows 示例，注意替换 JDK/JavaFX 版本号）：
+先 `mvnw.cmd -q -DskipTests package` 产出 target/ds-adventure.jar，
+然后（Windows 示例，注意替换 JDK/JavaFX 版本号；本工程为 JavaFX 17.0.20）：
 
 ```bat
 set JFX=C:\Users\xxx\.m2\repository\org\openjfx
-set CP=target\visual-novel-studio.jar;%JFX%\javafx-base\21.0.5\javafx-base-21.0.5-win.jar;%JFX%\javafx-graphics\21.0.5\javafx-graphics-21.0.5-win.jar;%JFX%\javafx-controls\21.0.5\javafx-controls-21.0.5-win.jar
+set CP=target\ds-adventure.jar;%JFX%\javafx-base\17.0.20\javafx-base-17.0.20-win.jar;%JFX%\javafx-graphics\17.0.20\javafx-graphics-17.0.20-win.jar;%JFX%\javafx-controls\17.0.20\javafx-controls-17.0.20-win.jar
 
 javac -encoding UTF-8 -cp "%CP%" -d plugins\classes ^
       plugins\examples\ClockDemoPlugin.java
@@ -49,18 +53,18 @@ javac -encoding UTF-8 -cp "%CP%" -d plugins\classes ^
   <groupId>com.example</groupId>
   <artifactId>my-plugin</artifactId>
   <version>1.0</version>
-  <properties><maven.compiler.release>21</maven.compiler.release></properties>
+  <properties><maven.compiler.release>17</maven.compiler.release></properties>
   <dependencies>
     <dependency>
       <groupId>com.studio</groupId>
-      <artifactId>visual-novel-studio</artifactId>
+      <artifactId>ds-adventure</artifactId>
       <version>1.0.0</version>
       <scope>provided</scope>
     </dependency>
   </dependencies>
 </project>
 ```
-先在本工程根目录 `mvn install -DskipTests`，再在插件工程 `mvn package`，
+先在本工程根目录 `mvnw.cmd install -DskipTests`，再在插件工程 `mvn package`，
 把 `my-plugin-1.0.jar` 丢进 plugins 即可。
 
 ## 扫雷 Demo

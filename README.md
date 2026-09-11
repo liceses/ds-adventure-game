@@ -372,6 +372,8 @@ public class MyLogic implements com.studio.flow.LogicHandler {
 
 ## 十一、协作与 Git 规范
 
+> 📘 **完整协作规范见 [`CONTRIBUTING.md`](CONTRIBUTING.md)**：小游戏插件接入步骤与代码骨架、`plugins.ini` 注册、素材规范、演示地图共享、分支/提交/PR 模板、提交前自检清单、常见问题排查、禁止事项。
+
 - **主分支**：`main`；功能开发开分支（如 `feat/snake`、`feat/story-engine`），完成后提 PR 合并。
 - **提交信息**：遵循 `feat:` / `fix:` / `docs:` / `chore:` / `refactor:` 前缀，中文描述可读。
 - **`.gitignore` 要点**：`target/`、`maps/`（运行时地图）、`plugins/classes/`、`plugins/*.jar`、`logic/classes/`、`logic/*.jar`、`.idea/`、`.out-*/`，以及本地文档目录 `docs/私人/`（**不进入版本库**）。
