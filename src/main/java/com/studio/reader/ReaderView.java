@@ -1,5 +1,6 @@
 package com.studio.reader;
 
+import com.studio.flow.Expr;
 import com.studio.flow.FlowHost;
 import com.studio.flow.FlowVariables;
 import com.studio.flow.LogicLoader;
@@ -8,6 +9,7 @@ import com.studio.flow.SignalDef;
 import com.studio.model.GameProject;
 import com.studio.model.GameScene;
 import com.studio.model.NodeType;
+import com.studio.model.SaveVarDef;
 import com.studio.model.StoryNode;
 import com.studio.parser.ParserException;
 import com.studio.parser.ScriptParser;
@@ -26,6 +28,7 @@ import com.studio.util.Logs;
 import javafx.animation.FadeTransition;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
@@ -34,6 +37,9 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
+import javafx.scene.control.TextInputControl;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
@@ -46,6 +52,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
+import javafx.scene.media.MediaView;
 import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -91,7 +98,7 @@ public class ReaderView extends BorderPane implements SavePortal, FlowHost {
     // ---- 状态 ----
     private GameScene scene;
     private String sceneName;
-    private boolean turbo = false;          // “加速”
+    private boolean turbo = false;          // 逐字显示加速分支（“加速”按钮动作已移除，恒为 false）
     private double typeSpeed = 14;          // ms/字符
     private double volume = 0.8;
 
@@ -133,12 +140,18 @@ public class ReaderView extends BorderPane implements SavePortal, FlowHost {
 
     // ---- 音频 ----
     private MediaPlayer music;
+    /** 音频通道（bgm / se / 自定义）：插件与旧的 audio 属性共用同一套通道 */
+    private final java.util.LinkedHashMap<String, MediaPlayer> audioChannels = new java.util.LinkedHashMap<>();
+    /** 每个节点当前挂着的视频播放器（节点视图重建时要 dispose，避免泄漏） */
+    private final java.util.LinkedHashMap<String, MediaPlayer> videoPlayers = new java.util.LinkedHashMap<>();
 
     // ---- 插件 ----
     private String previousScene;        // 进入插件前正在展示的场景（插件【返回】的目标）
     private String pluginReturnScene;    // 由场景级/按钮级事件临时指定的返回目标
+    /** 当前运行中的事件插件：返回剧情 / 被替换 / 关闭播放器时都要回调它的 onDetach */
+    private GamePlugin activePlugin;
+    private String activePluginId = "";
     private boolean suppressSceneEvent;  // 从插件返回时避免重复触发场景事件
-    private GamePlugin activePlugin;     // 当前嵌入中的插件实例（返回时回调 onDetach 释放资源）
 
     // ---- 存档 ----
     private GameSaveManager saveManager;
@@ -269,6 +282,9 @@ public class ReaderView extends BorderPane implements SavePortal, FlowHost {
                 }
             });
             volume = clamp(project.option().volume(), 0, 1);
+            // 存档变量初值：工程加载完成后按 [option] 的声明补齐（只补“当前不存在”的键，
+            // 因此不会覆盖掉读档/逻辑层写过的值；读档路径见 loadFrom）
+            flowVars.applyDefaults(project.option().saveVars());
             double cfgSpeed = config.getDouble("typewriter.speed", 14);
             double mapSpeed = project.option().typewriterSpeed();
             typeSpeed = mapSpeed > 0 ? mapSpeed : cfgSpeed;
@@ -288,9 +304,39 @@ public class ReaderView extends BorderPane implements SavePortal, FlowHost {
         }
     }
 
+    /** 关闭播放器：释放计时器/媒体/插件等一切后台资源 */
     private void shutdown() {
         clearDialogs();
         stopMusic();
+        // 事件插件（GamePlugin）：以前这里漏了 onDetach，插件停不掉自己的线程/计时器
+        detachActivePlugin("关闭播放器");
+        // 槽插件（SlotPlugin）：统一回调 onDetach 并清空实例
+        try {
+            if (signalBus != null) signalBus.plugins().shutdown();
+        } catch (RuntimeException e) {
+            Logs.warn("[Plugin] 关闭槽插件时出错：" + e.getMessage());
+        }
+        stopAllAudio();
+        disposeAllVideos();
+    }
+
+    /**
+     * 回调当前事件插件的 {@link GamePlugin#onDetach()} 并清空记录。
+     * <p>“回到剧情”“切换到另一个插件”“关闭播放器”三种情况都会走到这里，
+     * 插件可以放心地在 onDetach 里停线程、停计时器、释放媒体。</p>
+     */
+    private void detachActivePlugin(String reason) {
+        GamePlugin p = activePlugin;
+        String id = activePluginId;
+        activePlugin = null;
+        activePluginId = "";
+        if (p == null) return;
+        try {
+            p.onDetach();
+            Logs.plugin(id, "onDetach 已回调（" + reason + "）");
+        } catch (Throwable t) {
+            Logs.error("[Plugin] onDetach 异常: " + id, t);
+        }
     }
 
     private static double clamp(double v, double lo, double hi) {
@@ -322,6 +368,7 @@ public class ReaderView extends BorderPane implements SavePortal, FlowHost {
 
         board.getChildren().clear();
         nodeViews.clear();
+        disposeAllVideos();
         FxAssets.clearCache();
 
         // 背景底色来自 [option]
@@ -376,32 +423,21 @@ public class ReaderView extends BorderPane implements SavePortal, FlowHost {
         playMusic(path);
     }
 
+    /**
+     * 旧写法：节点的 {@code audio} 属性自动作为场景 BGM 循环播放。
+     * <p>已改为走统一音频通道（与 {@code @plugin(audio)} 共用实现），
+     * 方便日后废除这个属性：只要不再调用这里即可。</p>
+     */
     private void playMusic(String relPath) {
-        stopMusic();
-        if (relPath == null || relPath.isBlank() || mapDir == null) return;
-        File f = new File(mapDir, relPath.replace('\\', '/'));
-        if (!f.exists()) {
-            Logs.warn("音乐文件不存在: " + relPath);
+        if (relPath == null || relPath.isBlank()) {
+            stopAudioChannel("bgm");
             return;
         }
-        try {
-            Media media = new Media(f.toURI().toString());
-            music = new MediaPlayer(media);
-            music.setCycleCount(MediaPlayer.INDEFINITE);
-            music.setVolume(volume * 0.9);
-            music.play();
-        } catch (Exception e) {
-            Logs.warn("播放音乐失败: " + relPath + "（" + e.getMessage() + "）");
-            stopMusic();
-        }
+        playAudioChannel("bgm", relPath, true, clamp(masterVolume() * 0.9, 0, 1));
     }
 
     private void stopMusic() {
-        if (music != null) {
-            music.stop();
-            music.dispose();
-            music = null;
-        }
+        stopAudioChannel("bgm");
     }
 
     // =====================================================================
@@ -414,15 +450,180 @@ public class ReaderView extends BorderPane implements SavePortal, FlowHost {
         double fs = node.getFontSize() > 0 ? node.getFontSize()
                 : (node.getType() == NodeType.DIALOG ? 21 : 17);
 
+        // 该节点设了视频素材 → 用视频播放器渲染它（可当“会动的背景图”用）
+        if (node.getVideo() != null && !node.getVideo().isBlank()) {
+            return buildVideoView(node, w, h);
+        }
         return switch (node.getType()) {
             case BACKGROUND -> buildImageView(node, w, h, false, true);
             case CHARACTER -> buildImageView(node, w, h, true, false);
             case DIALOG -> buildDialog(node, w, h, fs);
             case NAME -> buildRichLabel(node, w, h, fs, "#ffe2a6");
             case TEXT -> buildRichLabel(node, w, h, fs, DEFAULT_TEXT_COLOR);
+            case TEXTBOX -> buildTextBox(node, w, h, fs);
             case BUTTON -> buildButton(node);
             case MUSIC -> null;
         };
+    }
+
+    /**
+     * 视频节点视图：MediaView 填满节点框（背景类节点按拉伸填充，其它按等比适配）。
+     * <p>素材缺失/格式不支持时退化为占位块（🎬 + 路径），不会让剧情崩掉。</p>
+     */
+    private Node buildVideoView(StoryNode node, double w, double h) {
+        String rel = node.getVideo();
+        File f = resolveAsset(rel);
+        boolean fill = node.getType() == NodeType.BACKGROUND;
+        if (f == null || !f.isFile()) {
+            return videoPlaceholder(node, w, h, "找不到视频: " + rel);
+        }
+        try {
+            Media media = new Media(f.toURI().toString());
+            MediaPlayer player = new MediaPlayer(media);
+            boolean loop = StoryNode.parseBoolSafe(videoProp(node.getId(), "videoloop", "true"), true);
+            player.setCycleCount(loop ? MediaPlayer.INDEFINITE : 1);
+            player.setVolume(clamp(StoryNode.parseDoubleSafe(
+                    videoProp(node.getId(), "videovolume", String.valueOf(masterVolume())), masterVolume()), 0, 1));
+            MediaView mv = new MediaView(player);
+            mv.setFitWidth(w);
+            mv.setFitHeight(h);
+            mv.setPreserveRatio(!fill);
+            applyStyle(mv, node.getStyle());
+            player.setOnError(() -> Logs.warn("[Video] 播放失败 " + rel + "：" + player.getError()));
+            player.play();
+            disposeVideo(node.getId());
+            videoPlayers.put(node.getId(), player);
+            return mv;
+        } catch (RuntimeException e) {
+            Logs.warn("[Video] 无法加载视频 " + rel + "（" + e.getMessage() + "）");
+            return videoPlaceholder(node, w, h, "视频无法播放: " + rel);
+        }
+    }
+
+    /** 视频占位块：素材缺失或格式不支持时显示，保证画面结构不变 */
+    private Node videoPlaceholder(StoryNode node, double w, double h, String msg) {
+        javafx.scene.control.Label lb = new javafx.scene.control.Label("🎬 " + msg);
+        lb.setTextFill(javafx.scene.paint.Color.rgb(255, 215, 106));
+        lb.setStyle("-fx-background-color: rgba(24,26,42,0.9); -fx-padding: 6 12 6 12;"
+                + "-fx-background-radius: 10; -fx-border-color: rgba(255,215,106,0.5); -fx-border-radius: 10;");
+        StackPane box = new StackPane(lb);
+        box.setPrefSize(w, h);
+        box.setMinSize(w, h);
+        box.setMaxSize(w, h);
+        if (node.getType() != NodeType.BACKGROUND) applyStyle(box, node.getStyle());
+        return box;
+    }
+
+    /** 把相对路径解析成地图目录下的文件（也支持绝对路径） */
+    private File resolveAsset(String rel) {
+        if (rel == null || rel.isBlank()) return null;
+        File f = new File(rel);
+        if (f.isAbsolute()) return f;
+        return mapDir == null ? f : new File(mapDir, rel.replace('\\', '/'));
+    }
+
+    /** 读节点的运行时属性覆盖（视频控制用） */
+    private String videoProp(String nodeId, String prop, String def) {
+        return flowVars.prop(nodeId, prop, def);
+    }
+
+    private void disposeVideo(String nodeId) {
+        MediaPlayer old = videoPlayers.remove(nodeId);
+        if (old != null) {
+            try {
+                old.stop();
+                old.dispose();
+            } catch (RuntimeException ignored) {
+                // 忽略
+            }
+        }
+    }
+
+    private void disposeAllVideos() {
+        for (MediaPlayer p : new java.util.ArrayList<>(videoPlayers.values())) {
+            try {
+                p.stop();
+                p.dispose();
+            } catch (RuntimeException ignored) {
+                // 忽略
+            }
+        }
+        videoPlayers.clear();
+    }
+
+    // =====================================================================
+    // 音频通道：插件（@plugin(audio)）与旧节点 audio 属性共用
+    // =====================================================================
+
+    /** 播放到某个通道；channel 为空时默认 bgm（循环）或 se（一次性） */
+    public void playAudioChannel(String channel, String relPath, boolean loop, double vol) {
+        String ch = (channel == null || channel.isBlank()) ? (loop ? "bgm" : "se") : channel.trim();
+        if (relPath == null || relPath.isBlank()) {
+            stopAudioChannel(ch);
+            return;
+        }
+        File f = resolveAsset(relPath);
+        if (f == null || !f.isFile()) {
+            Logs.warn("[Audio] 找不到音频: " + relPath);
+            toast("找不到音频: " + relPath);
+            return;
+        }
+        runOnUiThread(() -> {
+            stopAudioChannel(ch);
+            try {
+                Media media = new Media(f.toURI().toString());
+                MediaPlayer p = new MediaPlayer(media);
+                p.setCycleCount(loop ? MediaPlayer.INDEFINITE : 1);
+                p.setVolume(clamp(vol, 0, 1));
+                p.setOnError(() -> Logs.warn("[Audio] 播放失败 " + relPath + "：" + p.getError()));
+                if (!loop) p.setOnEndOfMedia(() -> Logs.info("[Audio] 播放结束: " + relPath));
+                p.play();
+                audioChannels.put(ch, p);
+            } catch (RuntimeException e) {
+                Logs.warn("[Audio] 无法播放 " + relPath + "（" + e.getMessage() + "）");
+            }
+        });
+    }
+
+    public void stopAudioChannel(String channel) {
+        String ch = channel == null || channel.isBlank() ? "bgm" : channel.trim();
+        MediaPlayer p = audioChannels.remove(ch);
+        if (p != null) {
+            try {
+                p.stop();
+                p.dispose();
+            } catch (RuntimeException ignored) {
+                // 忽略
+            }
+        }
+    }
+
+    public boolean pauseAudioChannel(String channel, boolean pause) {
+        MediaPlayer p = audioChannels.get(channel == null || channel.isBlank() ? "bgm" : channel.trim());
+        if (p == null) return false;
+        try {
+            if (pause) p.pause(); else p.play();
+            return true;
+        } catch (RuntimeException e) {
+            return false;
+        }
+    }
+
+    public boolean setAudioChannelVolume(String channel, double vol) {
+        MediaPlayer p = audioChannels.get(channel == null || channel.isBlank() ? "bgm" : channel.trim());
+        if (p == null) return false;
+        p.setVolume(clamp(vol, 0, 1));
+        return true;
+    }
+
+    /** 当前有哪些音频通道在放（探针/调试用） */
+    public java.util.Set<String> audioChannelNames() {
+        return new java.util.LinkedHashSet<>(audioChannels.keySet());
+    }
+
+    /** 某节点是否挂着视频播放器（探针/调试用） */
+    public boolean hasVideoPlayer(String nodeId) {
+        return videoPlayers.containsKey(nodeId);
     }
 
     private ImageView buildImageView(StoryNode node, double w, double h,
@@ -452,7 +653,7 @@ public class ReaderView extends BorderPane implements SavePortal, FlowHost {
         box.setMinSize(w, h);
         box.setMaxSize(w, h);
         String color = cssColor(node.getStyle(), defColor);
-        TextFlow flow = RichText.flow(node.getText(), fs, color);
+        TextFlow flow = RichText.flow(resolveText(node, node.getText()), fs, color);
         flow.setMaxWidth(Math.max(30, w - 24));
         flow.setTextAlignment(alignment(node.getAlign()));
         box.getChildren().add(flow);
@@ -486,7 +687,7 @@ public class ReaderView extends BorderPane implements SavePortal, FlowHost {
         flow.setTextAlignment(alignment(node.getAlign()));
         panel.getChildren().add(flow);
 
-        DialogParagraph st = new DialogParagraph(node, flow, splitParagraphs(node.getText()),
+        DialogParagraph st = new DialogParagraph(node, flow, splitParagraphs(resolveText(node, node.getText())),
                 fs, color, node.typewriterEffective());
         dialogs.add(st);
 
@@ -536,6 +737,64 @@ public class ReaderView extends BorderPane implements SavePortal, FlowHost {
         return btn;
     }
 
+    /**
+     * 文本框节点：玩家可输入的输入控件。
+     * <ul>
+     *   <li>{@code multiline = false} → 单行 {@link TextField}；{@code true} → 多行 {@link TextArea}；</li>
+     *   <li><b>初始内容</b>：绑定的存档变量已存在（读档/逻辑层写入过）时取变量当前值，
+     *       否则用节点的 {@code text}——每次重建都重新取值，不缓存旧值；</li>
+     *   <li><b>写回变量</b>：绑定非空时监听输入内容，按 [option] 声明类型写入存档变量
+     *       （{@code setTyped}）。只“控件 → 变量”单向同步，绝不回写控件，避免死循环。</li>
+     * </ul>
+     * style/fontSize/visible/opacity/align 与其它节点类型保持一致的语义。
+     */
+    private Node buildTextBox(StoryNode node, double w, double h, double fs) {
+        String bind = node.getBind() == null ? "" : node.getBind().trim();
+        // 初始内容：绑定变量已存在（读档/逻辑层写过）→ 变量值优先；否则用节点 text（同样过表达式）
+        String init;
+        if (!bind.isEmpty() && flowVars.has(bind)) {
+            init = flowVars.get(bind, node.getText());
+        } else {
+            init = resolveText(node, node.getText());
+        }
+
+        TextInputControl input = node.isMultiline() ? new TextArea() : new TextField();
+        input.setText(init);
+        if (input instanceof TextArea area) {
+            area.setWrapText(true);
+        }
+        // 对齐：TextField 有 alignment 属性（Pos）；TextArea 在 JavaFX 中没有对应 API，
+        //       多行时的对齐只能靠节点自身的 style 控制，这里不做处理
+        if (input instanceof TextField field) {
+            field.setAlignment(pos(node.getAlign()));
+        }
+        // 与编辑器预览/对话框一致的输入框外观；节点自身的 style 放在后面，可覆盖默认值
+        String base = "-fx-background-color: rgba(12,14,26,0.85);"
+                + "-fx-background-radius: 8px;"
+                + "-fx-border-color: rgba(140,180,255,0.55); -fx-border-radius: 8px;"
+                // TextArea 的底板由内部的 .content 绘制（modena 皮肤），需覆盖它的外观颜色变量，
+                // 否则多行输入框会是系统默认亮色底
+                + (input instanceof TextArea ? "-fx-control-inner-background: rgba(12,14,26,0.85);" : "")
+                + "-fx-text-fill: " + cssColor(node.getStyle(), DEFAULT_TEXT_COLOR) + ";"
+                + "-fx-prompt-text-fill: rgba(160,168,200,0.85);"
+                + "-fx-font-size: " + StoryNode.trimDouble(fs) + "px;"
+                + "-fx-padding: 6px 10px 6px 10px;";
+        applyStyle(input, base + (node.getStyle() == null ? "" : node.getStyle()));
+        input.setPrefSize(w, h);
+        input.setMinSize(w, h);
+        input.setMaxSize(w, h);
+
+        if (!bind.isEmpty()) {
+            input.setPromptText("→ 绑定变量: " + bind);
+            // 用户输入 → 变量（setTyped 按 [option] 里声明的类型强制转换）；
+            // 不在监听器里回写控件文本，因此不存在自触发死循环
+            input.textProperty().addListener((obs, oldText, newText) -> {
+                flowVars.setTyped(bind, newText == null ? "" : newText, saveVarDefs());
+            });
+        }
+        return input;
+    }
+
     private void applyStyle(Node node, String style) {
         if (style != null && !style.isBlank()) {
             node.setStyle(style);
@@ -550,11 +809,76 @@ public class ReaderView extends BorderPane implements SavePortal, FlowHost {
         return def;
     }
 
+    // ---------- 文本里的表达式替换（@var / @node / @int …） ----------
+
+    /**
+     * 把文本里的表达式求值成实际文字：
+     * {@code @var(玩家名)} / {@code @node(属性名)} / {@code @node(节点id,属性名)} /
+     * {@code @int(x)} 等，其余文字原样保留。
+     * <p>不含 {@code @} 的纯文本直接返回（{@link Expr#resolve} 内部也会原样返回），
+     * 对话的 {@code ---} 分段与打字机都作用在“替换之后”的文本上。</p>
+     */
+    private String resolveText(StoryNode node, String text) {
+        if (text == null) return "";
+        if (text.indexOf('@') < 0) return text;
+        return Expr.resolve(text, scopeOf(node));
+    }
+
+    /**
+     * 文本渲染用的表达式作用域：只读存档变量与节点属性，
+     * 没有事件参数（{@code @param} 恒为空串）。
+     */
+    private Expr.Scope scopeOf(StoryNode node) {
+        return new Expr.Scope() {
+            @Override
+            public String var(String name, String def) {
+                return flowVars.get(name, def);
+            }
+
+            @Override
+            public void setVar(String name, String value) {
+                flowVars.setTyped(name, value, saveVarDefs());
+            }
+
+            @Override
+            public String nodeProp(String nodeId, String prop) {
+                String id = (nodeId == null || nodeId.isBlank())
+                        ? (node == null ? "" : node.getId()) : nodeId;
+                if (id.isBlank()) return "";
+                String v = property(id, prop);          // 先取引擎属性/逻辑层改过的覆盖值
+                if (v == null || v.isEmpty()) {
+                    StoryNode n = node(id);             // 再退回节点模型里的静态属性
+                    if (n != null) v = SignalBus.nodeStaticProp(n, prop);
+                }
+                return v == null ? "" : v;
+            }
+
+            @Override
+            public String sourceNodeId() {
+                return node == null ? "" : node.getId();
+            }
+
+            @Override
+            public String param(String name) {
+                return "";                              // 文本渲染没有事件参数
+            }
+        };
+    }
+
     private static javafx.scene.text.TextAlignment alignment(String align) {
         return switch (align == null ? "" : align.toLowerCase()) {
             case "center" -> javafx.scene.text.TextAlignment.CENTER;
             case "right" -> javafx.scene.text.TextAlignment.RIGHT;
             default -> javafx.scene.text.TextAlignment.LEFT;
+        };
+    }
+
+    /** 同上，但用于控件（TextField 的 alignment 是 {@link Pos}） */
+    private static Pos pos(String align) {
+        return switch (align == null ? "" : align.toLowerCase()) {
+            case "center" -> Pos.CENTER;
+            case "right" -> Pos.CENTER_RIGHT;
+            default -> Pos.CENTER_LEFT;
         };
     }
 
@@ -658,24 +982,15 @@ public class ReaderView extends BorderPane implements SavePortal, FlowHost {
     }
 
     // =====================================================================
-    // 按钮动作（跳过/存档/读档/加速/target/event …）
+    // 按钮动作（存档/读档/target/event …）
+    // 已移除：skip（跳过台词）、speed（加速）——旧地图里残留这两个动作会走 default 分支
     // =====================================================================
 
     private void onStoryAction(StoryNode node) {
         String action = node.getAction() == null ? "" : node.getAction().trim();
         switch (action) {
-            case "skip" -> {
-                for (DialogParagraph d : dialogs) finishParagraph(d);
-                toast("跳过：当前台词已全部显示");
-                Logs.info("[Player] 占位动作 跳过");
-            }
             case "save" -> performSave(node);
             case "load" -> performLoad(node);
-            case "speed" -> {
-                turbo = !turbo;
-                toast(turbo ? "加速：ON（对话以 8 倍速显示）" : "加速：OFF");
-                Logs.info("[Player] 加速 " + (turbo ? "开" : "关"));
-            }
             case "target" -> {
                 String target = node.getTarget() == null ? "" : node.getTarget().trim();
                 if (!project.hasScene(target)) {
@@ -779,6 +1094,9 @@ public class ReaderView extends BorderPane implements SavePortal, FlowHost {
                 Logs.warn("SaveHook.onEngineLoad 异常: " + e);
             }
         }
+        // 顺序保证：SaveHook 里已先 readFrom(存档)，这里再用 [option] 声明补齐缺失的初值
+        // —— 存档里已有的值优先，只有存档中没有的变量才会拿到初值
+        if (project != null) flowVars.applyDefaults(project.option().saveVars());
         String scene = data.getString("scene", "");
         if (scene.isBlank()) {
             return true; // 无 scene 变量也视为读取成功（变量由 SaveHook 消费）
@@ -796,13 +1114,14 @@ public class ReaderView extends BorderPane implements SavePortal, FlowHost {
     /** 插件层若正打开，则就地收起（保留刚渲染出的目标场景） */
     private void exitPluginIfShown() {
         if (!pluginMode()) return;
-        detachActivePlugin();
         pluginLayer.setVisible(false);
         pluginLayer.setManaged(false);
         pluginContent.setCenter(null);
         previousScene = null;
         pluginReturnScene = null;
         suppressSceneEvent = true;
+        // 这也是“插件被移出主舞台”的一种：从存档界面读档时同样要回调 onDetach
+        detachActivePlugin("读档收起插件层");
     }
 
     // ---------- 故事按钮动作（save/load） ----------
@@ -840,6 +1159,12 @@ public class ReaderView extends BorderPane implements SavePortal, FlowHost {
         if (pluginMode()) return;
         try {
             GamePlugin plugin = pluginLoader.load(eventId);
+            // 上一个插件（不同实例）先走 onDetach：避免旧插件的线程/计时器继续跑
+            if (activePlugin != null && activePlugin != plugin) {
+                detachActivePlugin("切换到插件 " + eventId);
+            }
+            activePlugin = plugin;
+            activePluginId = eventId;
             // 插件若同时实现 SaveHook，则自动注册参与后续 存档/读档
             if (plugin instanceof SaveHook h && !saveHooks.contains(h)) {
                 saveHooks.add(h);
@@ -877,8 +1202,12 @@ public class ReaderView extends BorderPane implements SavePortal, FlowHost {
     /** 把插件 Parent 放入主舞台中央的嵌入层，顶部生成“返回”标题栏 */
     private void embedPlugin(GamePlugin plugin, String eventId, Parent view) {
         clearDialogs();
-        detachActivePlugin(); // 防御：确保同一时刻只有一个插件在托管（runPlugin 已有重入保护）
+        // 防御：同一时刻只允许托管一个插件（正常路径已由 runPlugin 的“替换即 detach”保证）
+        if (activePlugin != null && activePlugin != plugin) {
+            detachActivePlugin("切换到插件 " + eventId);
+        }
         activePlugin = plugin;
+        activePluginId = eventId;
         // 返回目标优先级：本次事件的指定场景 ＞ 当前展示场景
         previousScene = (pluginReturnScene != null && project.hasScene(pluginReturnScene))
                 ? pluginReturnScene : sceneName;
@@ -894,30 +1223,13 @@ public class ReaderView extends BorderPane implements SavePortal, FlowHost {
     /** 点击【返回】：移除嵌入层，回到进入插件前的场景 */
     private void leavePlugin() {
         if (!pluginMode()) return;
-        detachActivePlugin();
         pluginLayer.setVisible(false);
         pluginLayer.setManaged(false);
         pluginContent.setCenter(null);
         suppressSceneEvent = true; // 防止场景事件再次把玩家拉回插件
+        detachActivePlugin("返回剧情");   // 插件从主舞台移除 → 回调 onDetach
         if (previousScene != null && project.hasScene(previousScene)) {
             renderScene(previousScene, false, false);
-        }
-    }
-
-    /**
-     * 释放当前嵌入的插件：回调 {@link GamePlugin#onDetach()}，让插件停止自己的
-     * 后台线程 / 计时器（实时小游戏必须在此停掉 AnimationTimer），并清空引用。
-     * 引擎在【返回剧情】与「读档收起插件层」两条路径上都会调用。
-     */
-    private void detachActivePlugin() {
-        GamePlugin plugin = activePlugin;
-        activePlugin = null;
-        if (plugin == null) return;
-        try {
-            plugin.onDetach();
-            Logs.plugin(plugin.getClass().getSimpleName(), "已 detach（onDetach 已回调）");
-        } catch (RuntimeException e) {
-            Logs.warn("插件 onDetach 抛出异常: " + plugin.getClass().getName() + "（" + e + "）");
         }
     }
 
@@ -1000,6 +1312,7 @@ public class ReaderView extends BorderPane implements SavePortal, FlowHost {
             case "text" -> n.setText(value);
             case "path" -> n.setPath(value);
             case "audio" -> n.setAudio(value);
+            case "video" -> n.setVideo(value);
             case "visible" -> n.setVisible(StoryNode.parseBoolSafe(value, true));
             case "opacity" -> n.setOpacity(StoryNode.parseDoubleSafe(value, 1.0));
             case "x" -> n.setX(StoryNode.parseDoubleSafe(value, n.getX()));
@@ -1013,6 +1326,7 @@ public class ReaderView extends BorderPane implements SavePortal, FlowHost {
             case "target" -> n.setTarget(value);
             case "scale" -> { /* 视图层属性：由 applyViewProps / setProperty 处理，模型不存 */ }
             case "rotation" -> { /* 同上 */ }
+            case "videoloop", "videovolume", "videopause" -> { /* 视频控制属性：只影响播放器，模型不存 */ }
             default -> Logs.warn("[Flow] 不支持的属性名: " + prop);
         }
     }
@@ -1059,6 +1373,10 @@ public class ReaderView extends BorderPane implements SavePortal, FlowHost {
             case "text" -> n.getText();
             case "path" -> n.getPath();
             case "audio" -> n.getAudio();
+            case "video" -> n.getVideo();
+            case "videoloop" -> videoProp(nodeId, "videoloop", "true");
+            case "videovolume" -> videoProp(nodeId, "videovolume", String.valueOf(masterVolume()));
+            case "videopause" -> videoProp(nodeId, "videopause", "false");
             case "visible" -> String.valueOf(n.isVisible());
             case "opacity" -> StoryNode.trimDouble(n.getOpacity());
             case "x" -> StoryNode.trimDouble(n.getX());
@@ -1089,6 +1407,38 @@ public class ReaderView extends BorderPane implements SavePortal, FlowHost {
         if (!rot.isEmpty()) {
             view.setRotate(StoryNode.parseDoubleSafe(rot, 0));
         }
+        // 视频控制属性：读档/重绘后把“暂停/音量”重新应用到播放器
+        if (videoPlayers.containsKey(node.getId())) {
+            String pause = flowVars.prop(node.getId(), "videopause", "");
+            if (!pause.isEmpty()) applyVideoControl(node.getId(), "videopause", pause);
+            String vol = flowVars.prop(node.getId(), "videovolume", "");
+            if (!vol.isEmpty()) applyVideoControl(node.getId(), "videovolume", vol);
+        }
+    }
+
+    /** 视频控制属性：直接作用于已挂上的播放器，不需要重建节点视图 */
+    private boolean applyVideoControl(String nodeId, String prop, String value) {
+        MediaPlayer p = videoPlayers.get(nodeId);
+        boolean handled = false;
+        switch (prop) {
+            case "videoloop" -> {
+                if (p != null) p.setCycleCount(StoryNode.parseBoolSafe(value, true) ? MediaPlayer.INDEFINITE : 1);
+                handled = true;
+            }
+            case "videovolume" -> {
+                if (p != null) p.setVolume(clamp(StoryNode.parseDoubleSafe(value, masterVolume()), 0, 1));
+                handled = true;
+            }
+            case "videopause" -> {
+                if (p != null) {
+                    if (StoryNode.parseBoolSafe(value, false)) p.pause(); else p.play();
+                }
+                handled = true;
+            }
+            default -> { }
+        }
+        if (handled) flowVars.recordProp(nodeId, prop, value);   // 随存档保存、重绘时重放
+        return handled;
     }
 
     @Override
@@ -1107,6 +1457,12 @@ public class ReaderView extends BorderPane implements SavePortal, FlowHost {
         // 视图层属性（缩放/旋转）：不落在模型上，直接作用于视图并记录覆盖
         if ("scale".equals(prop) || "rotation".equals(prop)) {
             applyViewOnly(nodeId, prop, value);
+            return;
+        }
+        // 视频控制属性（循环/音量/暂停）：只作用于播放器，不重建节点视图
+        if ("videoloop".equals(prop) || "videovolume".equals(prop) || "videopause".equals(prop)) {
+            applyVideoControl(nodeId, prop, value);
+            Logs.info("[Flow] 视频 " + nodeId + "." + prop + " ← " + value);
             return;
         }
         applyPropToModel(n, prop, value);
@@ -1251,6 +1607,76 @@ public class ReaderView extends BorderPane implements SavePortal, FlowHost {
 
     @Override
     public void log(String message) { Logs.info("[Flow] " + message); }
+
+    // ---------- FlowHost：插件支持（工程/地图目录、UI 线程、存档变量声明） ----------
+
+    /** 工程根目录 = config.ini 所在目录（与 AppConfig / LogicLoader 一致取 user.dir） */
+    @Override
+    public File projectDir() {
+        return new File(System.getProperty("user.dir"));
+    }
+
+    /** 当前已加载的地图文件夹（解析后的工程根即地图目录）；未知返回 null */
+    /** 主音量：取 [option] volume（插件播放音频/视频时作为默认音量） */
+    @Override
+    public double masterVolume() {
+        return project == null ? 0.8 : project.option().volume();
+    }
+
+    // ---------- FlowHost 的音频通道（插件用；实现见下方 playAudioChannel 等） ----------
+
+    @Override
+    public void playAudio(String channel, String path, boolean loop, double volume) {
+        playAudioChannel(channel, path, loop, volume);
+    }
+
+    @Override
+    public void stopAudio(String channel) {
+        stopAudioChannel(channel);
+    }
+
+    @Override
+    public void stopAllAudio() {
+        for (String ch : new java.util.ArrayList<>(audioChannels.keySet())) stopAudioChannel(ch);
+    }
+
+    @Override
+    public boolean pauseAudio(String channel, boolean pause) {
+        return pauseAudioChannel(channel, pause);
+    }
+
+    @Override
+    public boolean setAudioVolume(String channel, double volume) {
+        return setAudioChannelVolume(channel, volume);
+    }
+
+    @Override
+    public File mapDir() {
+        if (project != null && project.rootDir() != null) return project.rootDir();
+        return mapDir;
+    }
+
+    @Override
+    public boolean isUiThread() {
+        return Platform.isFxApplicationThread();
+    }
+
+    /** 插件可能在后台线程调用渲染接口：这里统一切回 JavaFX 线程 */
+    @Override
+    public void runOnUiThread(Runnable action) {
+        if (action == null) return;
+        if (Platform.isFxApplicationThread()) {
+            action.run();
+        } else {
+            Platform.runLater(action);
+        }
+    }
+
+    /** 地图 [option] 段声明的存档变量（供插件按声明类型强制转换）；无工程时空表 */
+    @Override
+    public List<SaveVarDef> saveVarDefs() {
+        return project == null ? List.of() : project.option().saveVars();
+    }
 
     // =====================================================================
     // Toast 提示

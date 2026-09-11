@@ -231,6 +231,11 @@ public final class ScriptParser {
                     ? currentScene.nodes().get(currentScene.nodes().size() - 1) : null);
         }
 
+        // 节点按 index 稳定排序（index 已落盘，手改脚本也能精确调层）
+        for (GameScene s : project.scenes().values()) {
+            s.sortByIndex();
+        }
+
         // 初始场景为空 → 回退第一个场景
         if (project.option().initialScene().isBlank() && project.firstScene() != null) {
             project.option().setInitialScene(project.firstScene().getName());

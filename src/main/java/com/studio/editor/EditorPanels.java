@@ -22,6 +22,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
+import javafx.scene.input.MouseButton;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -50,6 +51,42 @@ final class EditorPanels {
         private TreeItem<String> root;
         /** 程序化重建/选中时的重入抑制（防止 switchScene ⇄ refresh 无限循环） */
         private boolean selectingInternally = false;
+        /** 当前打开的右键菜单（用于点击别处时自动收起） */
+        private ContextMenu openMenu;
+        /** 上一次真正激活过的树项（用于“点同一个也能再激活”） */
+        private TreeItem<String> lastActivated;
+
+        /** 激活一个树项：场景 → 切换当前场景；节点 → 切到它所在场景并选中它 */
+        private void activate(TreeItem<String> sel) {
+            Object owner = itemOwner.get(sel);
+            if (owner instanceof GameScene scene) {
+                hub.switchScene(scene.getName());
+                hub.selectNode(null);
+            } else if (owner instanceof StoryNode node) {
+                GameScene owning = findSceneOf(node);
+                if (owning != null) hub.switchScene(owning.getName());
+                hub.selectNode(node);
+            }
+        }
+
+        /** 打开菜单并接管“自动收起”：点击界面任意其它位置/切换选择时都会关掉 */
+        private void openMenu(ContextMenu menu, javafx.scene.Node anchor, double screenX, double screenY) {
+            hideOpenMenu();
+            openMenu = menu;
+            menu.show(anchor, screenX, screenY);
+            menu.setOnHidden(e -> {
+                if (openMenu == menu) openMenu = null;
+            });
+        }
+
+        /** 收起层级树的右键菜单（EditorPane 全局点击过滤器会调用） */
+        void hideOpenMenu() {
+            if (openMenu != null) {
+                ContextMenu m = openMenu;
+                openMenu = null;
+                m.hide();
+            }
+        }
 
         SceneTreePanel(EditorHub hub) {
             this.hub = hub;
@@ -76,15 +113,15 @@ final class EditorPanels {
 
             tree.getSelectionModel().selectedItemProperty().addListener((o, old, sel) -> {
                 if (sel == null || selectingInternally) return;
-                Object owner = itemOwner.get(sel);
-                if (owner instanceof GameScene scene) {
-                    hub.switchScene(scene.getName());
-                    hub.selectNode(null);
-                } else if (owner instanceof StoryNode node) {
-                    GameScene owning = findSceneOf(node);
-                    if (owning != null) hub.switchScene(owning.getName());
-                    hub.selectNode(node);
-                }
+                lastActivated = sel;
+                activate(sel);
+            });
+            // 点“已经处于选中状态”的那一项时 selectedItemProperty 不会变化，
+            // 这里补一次激活，避免“场景在树里是选中的，但画布不显示、再点也没反应”。
+            tree.setOnMouseClicked(e -> {
+                if (e.getButton() != MouseButton.PRIMARY || selectingInternally) return;
+                TreeItem<String> sel = tree.getSelectionModel().getSelectedItem();
+                if (sel != null && sel == lastActivated) activate(sel);
             });
 
             // 右键菜单（场景/节点/空白）
@@ -126,7 +163,7 @@ final class EditorPanels {
                     }
                 }
                 if (!menu.getItems().isEmpty()) {
-                    menu.show(tree, e.getScreenX(), e.getScreenY());
+                    openMenu(menu, tree, e.getScreenX(), e.getScreenY());
                 }
             });
             getChildren().addAll(title, btns, tree);
@@ -135,6 +172,7 @@ final class EditorPanels {
 
         /** 结构/选择变化后重建树（程序化选中期间抑制监听，防无限重入） */
         void refresh(GameScene currentScene) {
+            hideOpenMenu();
             selectingInternally = true;
             try {
                 itemOwner.clear();
@@ -215,6 +253,8 @@ final class EditorPanels {
             building = true;
             try {
                 body.getChildren().clear();
+                // 顶部独立分区：新增节点模板（属于编辑器设置，与是否打开地图无关）
+                buildTemplateSection();
                 if (hub.project() == null || hub.scene() == null) {
                     Label empty = new Label("尚未打开地图。\n请使用 文件 → 打开/新建。");
                     empty.setWrapText(true);
@@ -234,6 +274,78 @@ final class EditorPanels {
             } finally {
                 building = false;
             }
+        }
+
+        // ---------- 新增节点模板区 ----------
+        /**
+         * 一栏「新增节点模板」：类型下拉 + 摘要 + 编辑模板状态。
+         * 模板只决定右键“添加节点”生成的新节点初值，不影响已有节点。
+         */
+        private void buildTemplateSection() {
+            body.getChildren().add(sectionTitle("➕ 新增节点模板"));
+
+            StoryNode tpl = hub.newNodeTemplate();
+            if (tpl == null) {
+                tpl = NodeType.createDefault(NodeType.TEXT.code(), 0, 0);
+                hub.setNewNodeTemplate(tpl);
+            }
+
+            ComboBox<NodeType> typeBox = new ComboBox<>();
+            typeBox.getItems().addAll(NodeType.values());
+            // 显示 icon + display（如 “⌨ 文本框”）
+            typeBox.setConverter(new javafx.util.StringConverter<NodeType>() {
+                @Override
+                public String toString(NodeType t) {
+                    return t == null ? "" : t.icon() + " " + t.display();
+                }
+
+                @Override
+                public NodeType fromString(String s) {
+                    return NodeType.from(s);
+                }
+            });
+            typeBox.setMaxWidth(Double.MAX_VALUE);
+            typeBox.getSelectionModel().select(tpl.getType());
+
+            Label summary = new Label(templateSummary(tpl));
+            summary.setWrapText(true);
+            summary.getStyleClass().add("hint-text");
+
+            // 切换类型 → 用该类型的默认值重建模板（尺寸/默认文本随之变化）并刷新摘要
+            typeBox.valueProperty().addListener((o, a, b) -> {
+                if (b == null) return;
+                hub.setNewNodeTemplate(NodeType.createDefault(b.code(), 0, 0));
+                summary.setText(templateSummary(hub.newNodeTemplate()));
+            });
+
+            Button editTpl = new Button("✏️ 编辑模板状态…");
+            editTpl.getStyleClass().add("tool-button");
+            editTpl.setMaxWidth(Double.MAX_VALUE);
+            editTpl.setOnAction(e -> {
+                // 编辑的是“模板本身”，不是场景里的节点
+                NodeDialogs.showTemplateDialog(hub, hub.newNodeTemplate());
+                summary.setText(templateSummary(hub.newNodeTemplate()));
+            });
+
+            Label note = new Label("右键“添加节点”生成的节点将与这里的状态一致"
+                    + "（只决定新节点的类型与初值，不影响已有节点）");
+            note.setWrapText(true);
+            note.getStyleClass().add("hint-text");
+
+            body.getChildren().addAll(row("新节点类型", typeBox), row("模板摘要", summary),
+                    editTpl, note, new Separator());
+        }
+
+        /** 一行式模板摘要：类型 尺寸｜初始内容｜信号数｜槽数 */
+        private static String templateSummary(StoryNode t) {
+            if (t == null) return "（未设置模板）";
+            String text = t.getText() == null ? "" : t.getText().replace("\n", " ").trim();
+            if (text.length() > 16) text = text.substring(0, 16) + "…";
+            return t.getType().display() + " "
+                    + StoryNode.trimDouble(t.getWidth()) + "×" + StoryNode.trimDouble(t.getHeight())
+                    + "｜初始内容: " + (text.isEmpty() ? "（空）" : text)
+                    + "｜信号 " + t.signals().size()
+                    + "｜槽 " + t.slots().size();
         }
 
         // ---------- 场景区 ----------
@@ -256,7 +368,14 @@ final class EditorPanels {
             Button optionBtn = new Button("⚙ 地图全局设置 [option]…");
             optionBtn.getStyleClass().add("tool-button");
             optionBtn.setOnAction(e -> NodeDialogs.showOptionDialog(hub));
-            body.getChildren().add(optionBtn);
+
+            // 场景属性窗口：属性 / 节点列表 / 信号与槽
+            Button scenePropsBtn = new Button("🧩 场景属性 / 节点 / 信号槽…");
+            scenePropsBtn.getStyleClass().add("tool-button");
+            scenePropsBtn.setMaxWidth(Double.MAX_VALUE);
+            scenePropsBtn.setOnAction(e -> SceneInspectorDialog.show(hub, hub.scene()));
+
+            body.getChildren().addAll(optionBtn, scenePropsBtn);
 
             // 场景级信号（键盘）与槽：地图全局监听器接收按键后分发
             TextArea sceneSig = new TextArea(NodeDialogs.signalsToText(scene.signals()));
@@ -283,11 +402,18 @@ final class EditorPanels {
 
         // ---------- 节点区 ----------
         private void buildNodeSection(StoryNode node) {
+
+
             body.getChildren().add(sectionTitle("节点: " + node.getType().display()));
             Runnable refreshView = () -> {
                 hub.nodeChanged(node);
                 hub.setDirty();
             };
+
+            Button full = new Button("📋 打开完整属性窗口…");
+            full.getStyleClass().add("tool-button");
+            full.setOnAction(e -> hub.openNodeDialog(node));
+            body.getChildren().add(full);
 
             ComboBox<String> typeBox = new ComboBox<>();
             for (NodeType t : NodeType.values()) typeBox.getItems().add(t.icon() + " " + t.display());
@@ -341,6 +467,20 @@ final class EditorPanels {
             HBox.setHgrow(audio, Priority.ALWAYS);
             body.getChildren().add(row("音频 audio", audioRow));
 
+            // 视频 video：非空时读取器用视频播放器渲染该节点（背景节点＝会动的背景图），空则用图片
+            TextField video = new TextField(node.getVideo());
+            video.setTooltip(new Tooltip("视频相对地图根目录（如 resources/video/opening.mp4）；"
+                    + "留空则用图片 path；也可用槽 @plugin(video) 在运行时切换"));
+            bind(video, v -> { node.setVideo(v); refreshView.run(); });
+            Button pickV = new Button("…选择视频");
+            pickV.setOnAction(e -> {
+                String rel = NodeDialogs.pickAndImportVideo(getScene().getWindow(), hub.project());
+                if (rel != null) video.setText(rel);
+            });
+            HBox videoRow = new HBox(6, video, pickV);
+            HBox.setHgrow(video, Priority.ALWAYS);
+            body.getChildren().add(row("视频 video", videoRow));
+
             TextArea text = new TextArea(node.getText());
             text.setWrapText(true);
             text.setPrefRowCount(3);
@@ -375,7 +515,9 @@ final class EditorPanels {
             bind(targetF, v -> { node.setTarget(v == null ? "" : v); refreshView.run(); });
 
             ComboBox<String> action = new ComboBox<>();
-            action.getItems().addAll("（无）", "target 跳转", "skip 跳过", "save 写存档", "load 读存档", "speed 加速", "event 插件");
+            // 注意：索引必须与 NodeDialogs.actionCodeFor/actionIndexFor 保持一致
+            // （skip/speed 两个旧动作已移除，读取器不再支持）
+            action.getItems().addAll("（无）", "target 跳转", "save 写存档", "load 读存档", "event 插件");
             action.getSelectionModel().select(NodeDialogs.actionIndexFor(node.getAction()));
             bind(action, v -> {
                 node.setAction(NodeDialogs.actionCodeFor(action.getSelectionModel().getSelectedIndex()));
@@ -428,11 +570,6 @@ final class EditorPanels {
                 hub.setDirty();
             });
             body.getChildren().add(row("槽 slot", nodeSlot));
-
-            Button full = new Button("📋 打开完整属性窗口…");
-            full.getStyleClass().add("tool-button");
-            full.setOnAction(e -> hub.openNodeDialog(node));
-            body.getChildren().add(full);
         }
 
         // ---------- 小工具 ----------

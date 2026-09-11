@@ -55,4 +55,52 @@ public interface FlowHost {
 
     /** 控制台日志 */
     void log(String message);
+
+    // =====================================================================
+    // 插件支持（编辑器/读取器实现；默认实现保证向后兼容）
+    // =====================================================================
+
+    /** 工程根目录（插件目录 plugins/ 的父目录），未知返回 null */
+    default java.io.File projectDir() { return null; }
+
+    /** 当前地图文件夹，未知返回 null */
+    default java.io.File mapDir() { return null; }
+
+    /**
+     * 在地图 [option] 段声明的存档变量列表（供插件按声明类型强制转换）。
+     * 默认返回空表。
+     */
+    default java.util.List<com.studio.model.SaveVarDef> saveVarDefs() { return java.util.List.of(); }
+
+    /** 主音量 0..1（读取器取 [option] volume；插件播放音频时作为默认音量） */
+    default double masterVolume() { return 0.8; }
+
+    // =====================================================================
+    // 音频通道（由读取器实现；插件通过 @plugin(audio) 使用）
+    //   channel 缺省约定：循环用 bgm、一次性用 se；也可自定义通道名同时播放多条
+    // =====================================================================
+
+    /** 在指定通道播放音频（路径相对地图文件夹；volume 0..1） */
+    default void playAudio(String channel, String path, boolean loop, double volume) { }
+
+    /** 停止某个通道 */
+    default void stopAudio(String channel) { }
+
+    /** 停止全部通道 */
+    default void stopAllAudio() { }
+
+    /** 暂停 / 继续某个通道；返回是否作用到了真实播放器 */
+    default boolean pauseAudio(String channel, boolean pause) { return false; }
+
+    /** 设置某通道音量；返回是否作用到了真实播放器 */
+    default boolean setAudioVolume(String channel, double volume) { return false; }
+
+    /** 是否处于 JavaFX 应用线程（默认 true） */
+    default boolean isUiThread() { return true; }
+
+    /**
+     * 保证在 JavaFX 线程上执行——插件可能在后台线程调用渲染接口，
+     * 渲染实现应在这里用 {@code Platform.runLater} 切回去。
+     */
+    default void runOnUiThread(Runnable action) { action.run(); }
 }

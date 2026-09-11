@@ -73,6 +73,12 @@ public class EditorPane extends BorderPane implements EditorHub {
     private StoryNode selectedNode;
     private boolean dirty = false;
 
+    /**
+     * 「新增节点模板」：右键“添加节点”/工具箱生成新节点时按它复制初值
+     * （类型、尺寸、文本、信号、槽…）。默认是普通文本节点，可在右侧检查器里改。
+     */
+    private StoryNode newNodeTemplate = NodeType.createDefault(NodeType.TEXT.code(), 0, 0);
+
     // ---- 视图 ----
     private final EditorCanvas canvas = new EditorCanvas(this);
     private final EditorPanels.SceneTreePanel treePanel = new EditorPanels.SceneTreePanel(this);
@@ -87,6 +93,23 @@ public class EditorPane extends BorderPane implements EditorHub {
     private final StackPane emptyOverlay = new StackPane();
 
     private final CheckMenuItem gridItem = new CheckMenuItem("显示网格");
+
+    // =====================================================================
+    // 撤销 / 恢复（栈结构：栈顶 = 最近一次操作“之前”的工程快照）
+    // =====================================================================
+
+    /** 最多保留多少步历史（避免大工程占用过多内存） */
+    private static final int MAX_UNDO = 80;
+
+    private final java.util.ArrayDeque<Snapshot> undoStack = new java.util.ArrayDeque<>();
+    private final java.util.ArrayDeque<Snapshot> redoStack = new java.util.ArrayDeque<>();
+    /** 恢复快照期间为 true */
+    private boolean restoring = false;
+    private MenuItem undoItem;
+    private MenuItem redoItem;
+
+    /** 一次可撤销操作的状态快照（含当前场景名与选中节点，恢复后视图能回到原处） */
+    private record Snapshot(String label, GameProject project, String sceneName, String nodeId) { }
     private boolean skipSceneBoxListener = false;
     private boolean shortcutsInstalled = false;
 
@@ -120,6 +143,11 @@ public class EditorPane extends BorderPane implements EditorHub {
     private void installShortcuts(Scene sc) {
         if (shortcutsInstalled) return;
         shortcutsInstalled = true;
+        // 点击界面任意位置都收起右键菜单（以前必须点一下画布才会消失）
+        sc.addEventFilter(javafx.scene.input.MouseEvent.MOUSE_PRESSED, e -> {
+            canvas.hideOpenMenu();
+            treePanel.hideOpenMenu();
+        });
         sc.addEventFilter(javafx.scene.input.KeyEvent.KEY_PRESSED, e -> {
             javafx.scene.Node focus = sc.getFocusOwner();
             boolean typing = focus instanceof javafx.scene.control.TextInputControl;
@@ -129,6 +157,20 @@ public class EditorPane extends BorderPane implements EditorHub {
                 return;
             }
             if (!e.isControlDown()) return;
+            // 在输入框里打字时，Ctrl+Z/Y 交给输入框自己的撤销，不抢
+            if (!typing) {
+                switch (e.getCode()) {
+                    case Z -> {
+                        if (e.isShiftDown()) redo(); else undo();
+                        e.consume();
+                        return;
+                    }
+                    case Y -> { redo(); e.consume(); return; }
+                    case UP -> { moveSelectedLayer(+1); e.consume(); return; }
+                    case DOWN -> { moveSelectedLayer(-1); e.consume(); return; }
+                    default -> { }
+                }
+            }
             switch (e.getCode()) {
                 case S -> { saveMap(); e.consume(); }
                 case O -> { openMapDialog(); e.consume(); }
@@ -161,6 +203,8 @@ public class EditorPane extends BorderPane implements EditorHub {
         MenuItem branch = item("打开分支剧情示例（含 2048）…", e -> openBranchDemoMap());
         MenuItem saveRoom = item("打开存档演示地图（3 槽存档台）…", e -> openSaveRoomDemoMap());
         MenuItem signalLab = item("打开信号演示地图（信号/槽+逻辑层）…", e -> openSignalLabMap());
+        MenuItem varDemo = item("打开存档变量演示地图（变量/表达式/插件）…", e -> openVarDemoMap());
+        MenuItem logicDemo = item("打开逻辑门演示地图（双开关控制三盏灯）…", e -> openLogicGateDemoMap());
 
         MenuItem save = item("保存地图 (Ctrl+S)", e -> saveMap());
         save.setAccelerator(KeyCombination.keyCombination("Ctrl+S"));
@@ -169,7 +213,7 @@ public class EditorPane extends BorderPane implements EditorHub {
         MenuItem del = item("删除当前地图…", e -> deleteMap());
 
         MenuItem exit = item("退出", e -> requestExit());
-        fileMenu.getItems().addAll(open, fresh, demo, branch, saveRoom, signalLab,
+        fileMenu.getItems().addAll(open, fresh, demo, branch, saveRoom, signalLab, varDemo, logicDemo,
                 new SeparatorMenuItem(), save, export, del, new SeparatorMenuItem(), exit);
 
         // ---------- 编辑 ----------
@@ -182,7 +226,17 @@ public class EditorPane extends BorderPane implements EditorHub {
         MenuItem dupNode = item("复制选中节点", e -> duplicateSelected());
         MenuItem delNode = item("删除选中节点 (Del)", e -> deleteSelectedNode());
         delNode.setAccelerator(KeyCombination.keyCombination("Delete"));
-        editMenu.getItems().addAll(editNode, dupNode, delNode);
+        MenuItem layerUp = item("⬆ 上移一层（向顶层）", e -> moveSelectedLayer(+1));
+        layerUp.setAccelerator(KeyCombination.keyCombination("Ctrl+Up"));
+        MenuItem layerDown = item("⬇ 下移一层（向底层）", e -> moveSelectedLayer(-1));
+        layerDown.setAccelerator(KeyCombination.keyCombination("Ctrl+Down"));
+        undoItem = item("撤销 (Ctrl+Z)", e -> undo());
+        undoItem.setAccelerator(KeyCombination.keyCombination("Ctrl+Z"));
+        redoItem = item("重做 (Ctrl+Y)", e -> redo());
+        redoItem.setAccelerator(KeyCombination.keyCombination("Ctrl+Y"));
+        updateUndoState();
+        editMenu.getItems().addAll(undoItem, redoItem, new SeparatorMenuItem(),
+                editNode, dupNode, delNode, new SeparatorMenuItem(), layerUp, layerDown);
 
         // ---------- 场景 ----------
         Menu sceneMenu = new Menu("场景(S)");
@@ -193,7 +247,8 @@ public class EditorPane extends BorderPane implements EditorHub {
                 }),
                 item("删除当前场景…", e -> deleteSceneViaTree()),
                 new SeparatorMenuItem(),
-                item("地图全局设置 [option]…", e -> NodeDialogs.showOptionDialog(this)));
+                item("地图全局设置 [option]…", e -> NodeDialogs.showOptionDialog(this)),
+                item("🧩 场景属性（属性 / 节点 / 信号槽）…", e -> SceneInspectorDialog.show(this, currentScene)));
 
         // ---------- 视图 ----------
         Menu viewMenu = new Menu("视图(V)");
@@ -224,6 +279,7 @@ public class EditorPane extends BorderPane implements EditorHub {
                         + "JDK 21 + JavaFX 21 · 纯 Java 无 FXML\n\n"
                         + "地图 = 文件夹(scenario.txt + resources/)，\n"
                         + "支持 [option]/[场景]/{节点} 双向读写与插件化事件。")),
+                item("📖 使用帮助（脚本 / 样式 / 信号槽 / 快捷键）…", e -> HelpDialogs.show(stage)),
                 item("脚本语法速查…", e -> Ui.info(stage, "scenario.txt 语法速查",
                         syntaxHelp())));
 
@@ -237,6 +293,117 @@ public class EditorPane extends BorderPane implements EditorHub {
         return i;
     }
 
+    // =====================================================================
+    // 撤销 / 恢复
+    // =====================================================================
+
+    /**
+     * 记录一步可撤销操作。<b>必须在真正修改工程之前调用</b>：
+     * 它把“当前状态”压入撤销栈，之后用户按 Ctrl+Z 就能回到这里。
+     *
+     * @param label 操作名（显示在菜单与提示里，如“添加节点”“移动节点”）
+     */
+    @Override
+    public void pushUndo(String label) {
+        if (restoring || project == null) return;
+        undoStack.push(new Snapshot(label, project.copy(),
+                currentScene == null ? null : currentScene.getName(),
+                selectedNode == null ? null : selectedNode.getId()));
+        while (undoStack.size() > MAX_UNDO) undoStack.removeLast();
+        redoStack.clear();
+        updateUndoState();
+    }
+
+    @Override
+    public void undo() {
+        if (project == null) return;
+        if (undoStack.isEmpty()) {
+            notify("没有可撤销的操作");
+            return;
+        }
+        Snapshot s = undoStack.pop();
+        redoStack.push(new Snapshot(s.label(), project.copy(), currentSceneName(), selectedNodeId()));
+        restoreSnapshot(s);
+        updateUndoState();
+        notify("已撤销：" + s.label() + "（还可撤销 " + undoStack.size() + " 步）");
+    }
+
+    @Override
+    public void redo() {
+        if (project == null) return;
+        if (redoStack.isEmpty()) {
+            notify("没有可重做的操作");
+            return;
+        }
+        Snapshot s = redoStack.pop();
+        undoStack.push(new Snapshot(s.label(), project.copy(), currentSceneName(), selectedNodeId()));
+        restoreSnapshot(s);
+        updateUndoState();
+        notify("已重做：" + s.label());
+    }
+
+    private String currentSceneName() { return currentScene == null ? null : currentScene.getName(); }
+
+    private String selectedNodeId() { return selectedNode == null ? null : selectedNode.getId(); }
+
+    /** 把快照内容写回当前工程（保持 project / option 对象引用不变，界面各处都在用它们） */
+    private void restoreSnapshot(Snapshot s) {
+        restoring = true;
+        try {
+            project.option().copyFrom(s.project().option());
+            project.scenes().clear();
+            for (java.util.Map.Entry<String, GameScene> e : s.project().scenes().entrySet()) {
+                project.scenes().put(e.getKey(), e.getValue().copy()); // 再拷一份，快照可重复使用
+            }
+            GameScene sc = s.sceneName() == null ? null : project.getScene(s.sceneName());
+            if (sc == null) sc = project.firstScene();
+            currentScene = sc;
+            selectedNode = null;
+            if (sc != null && s.nodeId() != null) {
+                for (StoryNode n : sc.nodes()) {
+                    if (s.nodeId().equals(n.getId())) { selectedNode = n; break; }
+                }
+            }
+            sceneStructureChanged();
+            if (sc != null) switchScene(sc.getName());
+            canvas.select(selectedNode);
+            setDirty();
+        } finally {
+            restoring = false;
+        }
+    }
+
+    private void updateUndoState() {
+        if (undoItem != null) {
+            undoItem.setDisable(undoStack.isEmpty());
+            undoItem.setText(undoStack.isEmpty() ? "撤销 (Ctrl+Z)"
+                    : "撤销 " + undoStack.peek().label() + " (Ctrl+Z)");
+        }
+        if (redoItem != null) {
+            redoItem.setDisable(redoStack.isEmpty());
+            redoItem.setText(redoStack.isEmpty() ? "重做 (Ctrl+Y)"
+                    : "重做 " + redoStack.peek().label() + " (Ctrl+Y)");
+        }
+    }
+
+    /** 选中节点上移/下移一层（编辑菜单与 Ctrl+↑ / Ctrl+↓） */
+    private void moveSelectedLayer(int delta) {
+        if (currentScene == null || selectedNode == null) {
+            notify("未选中节点");
+            return;
+        }
+        int i = currentScene.nodes().indexOf(selectedNode);
+        if (i < 0) return;
+        int target = i + delta;
+        if (target < 0 || target >= currentScene.nodes().size()) {
+            notify(delta > 0 ? "已经是最上层了" : "已经是最底层了");
+            return;
+        }
+        pushUndo(delta > 0 ? "上移一层" : "下移一层");
+        currentScene.moveTo(selectedNode, target);
+        nodesLayerChanged();
+    }
+
     private static String syntaxHelp() {
         return """
                 # 注释行
@@ -244,6 +411,7 @@ public class EditorPane extends BorderPane implements EditorHub {
                 initialScene = Start
                 background = #0d0f1c
                 volume = 0.8
+                savevar = 金币 | int | 0   ← 存档变量（可多行，编辑器里可增删）
 
                 [Start]               ← 场景段（[场景名]）
                 event = minesweeper   ← 场景级属性：进入场景触发的插件
@@ -257,8 +425,10 @@ public class EditorPane extends BorderPane implements EditorHub {
                 }
 
                 节点属性速查：
-                type: bg背景|char立绘|text文本|name人物名|dialog对话|button按钮|music音乐
-                x / y / width / height / path(图片) / audio(音频) / text(富文本)
+                type: bg背景|char立绘|text文本|textbox文本框|name人物名|dialog对话|button按钮|music音乐
+                x / y / width / height / index(层级，0=最底层)
+                path(图片) / audio(音频) / text(富文本)
+                multiline(文本框多行) / bind(文本框绑定的存档变量)
                 style(内联CSS) / event(插件) / action(按钮动作) / target(跳转场景)
                 visible / fontSize / align / opacity
                 """;
@@ -476,6 +646,8 @@ public class EditorPane extends BorderPane implements EditorHub {
     public void openNodeDialog(StoryNode node) {
         if (node == null) return;
         selectedNode = node;
+        // 属性窗口是“边改边生效”的（取消时自己会还原），所以在打开前先记一步快照
+        pushUndo("修改节点属性");
         NodeDialogs.showNodeDialog(this, node);
         canvas.select(node);
     }
@@ -483,8 +655,56 @@ public class EditorPane extends BorderPane implements EditorHub {
     @Override
     public void createNodeAt(String typeCode, double x, double y) {
         if (currentScene == null || project == null) return;
-        StoryNode node = NodeType.createDefault(typeCode, x, y);
+        // ① 取模板并复制：新节点带着模板的状态（只影响新节点，不改动已有节点）
+        StoryNode node = newNodeTemplate().copy();
+        NodeType want = NodeType.from(typeCode);
+        // ② 模板类型 ≠ 菜单所选类型 → 换类型，并补上该类型的默认尺寸/默认文本，
+        //    避免“文本模板的尺寸”被套到立绘/背景等其它类型上
+        if (node.getType() != want) {
+            node.setTypeCode(want.code());
+            node.setWidth(want.defaultWidth());
+            node.setHeight(want.defaultHeight());
+            node.setText(defaultTextOf(want));
+            if (want != NodeType.TEXTBOX) {
+                // “多行 / 绑定变量”是文本框专属属性，不带到其它类型上
+                node.setMultiline(false);
+                node.setBind("");
+            }
+        }
+        // ③ 位置 = 右键（或拖放落点）坐标
+        node.setX(x);
+        node.setY(y);
+        // ④ 生成当前场景内不重复的新 id
+        node.setId(nextNodeId(want.display()));
         addNode(node);
+    }
+
+    /** 参考 {@link NodeType#createDefault} 的默认文本（图片/音乐类节点没有默认文字） */
+    private static String defaultTextOf(NodeType t) {
+        switch (t) {
+            case TEXT: return "双击或右键编辑文字…";
+            case TEXTBOX: return "请输入…";
+            case NAME: return "角色名";
+            case DIALOG: return "「在这里输入对话内容……」";
+            case BUTTON: return "按钮";
+            default: return "";
+        }
+    }
+
+    /** 生成当前场景内不重复的节点 id：显示名_序号（如 文本框_1） */
+    private String nextNodeId(String prefix) {
+        int n = 1;
+        String id = prefix + "_" + n;
+        while (idTaken(id)) id = prefix + "_" + (++n);
+        return id;
+    }
+
+    private boolean idTaken(String id) {
+        if (currentScene == null) return false;
+        for (StoryNode n : currentScene.nodes()) {
+            if (id.equals(n.getId())) return true;
+        }
+        return false;
     }
 
     @Override
@@ -498,6 +718,7 @@ public class EditorPane extends BorderPane implements EditorHub {
                 node.setId(base + "_" + (k++));
             }
         }
+        pushUndo("添加节点");
         currentScene.addNode(node);
         selectedNode = node;
         canvas.refreshScene();
@@ -511,6 +732,7 @@ public class EditorPane extends BorderPane implements EditorHub {
     @Override
     public void deleteNode(StoryNode node) {
         if (node == null || currentScene == null || !currentScene.contains(node)) return;
+        pushUndo("删除节点");
         currentScene.removeNode(node);
         if (selectedNode == node) selectedNode = null;
         canvas.refreshScene();
@@ -526,6 +748,27 @@ public class EditorPane extends BorderPane implements EditorHub {
         // 尺寸变化 → 同步包装尺寸；随后刷新视觉
         canvas.refreshNodeVisual(node);
         setDirty();
+    }
+
+    // ---------- 新增节点模板 ----------
+
+    @Override
+    public StoryNode newNodeTemplate() {
+        if (newNodeTemplate == null) {
+            newNodeTemplate = NodeType.createDefault(NodeType.TEXT.code(), 0, 0);
+        }
+        return newNodeTemplate;
+    }
+
+    /**
+     * 替换新增节点模板。注意：模板只是“以后新建节点”的初值来源，
+     * 不属于场景内容，因此这里不标记工程为未保存（也不刷新画布）；
+     * 检查器里的模板摘要由调用方（EditorPanels）自行刷新。
+     */
+    @Override
+    public void setNewNodeTemplate(StoryNode node) {
+        if (node == null) return;
+        newNodeTemplate = node;
     }
 
     @Override
@@ -552,6 +795,7 @@ public class EditorPane extends BorderPane implements EditorHub {
         Optional<String> name = Ui.askText(stage, "新增场景", null, "场景名称：",
                 project.uniqueSceneName("新场景"));
         if (name.isEmpty() || name.get().isBlank()) return;
+        pushUndo("新增场景");
         String n = project.uniqueSceneName(name.get().trim());
         project.addScene(n);
         setDirty();
@@ -567,6 +811,7 @@ public class EditorPane extends BorderPane implements EditorHub {
         Optional<String> name = Ui.askText(stage, "重命名场景", null,
                 "将 \"" + scene.getName() + "\" 重命名为：", scene.getName());
         if (name.isEmpty() || name.get().isBlank()) return;
+        pushUndo("重命名场景");
         if (project.renameScene(scene.getName(), name.get().trim())) {
             setDirty();
             sceneStructureChanged();
@@ -588,6 +833,7 @@ public class EditorPane extends BorderPane implements EditorHub {
                 "确定删除场景 [" + name + "] 及其全部节点吗？", "该操作不可撤销。")) {
             return;
         }
+        pushUndo("删除场景");
         project.removeScene(name);
         setDirty();
         selectedNode = null;
@@ -684,6 +930,35 @@ public class EditorPane extends BorderPane implements EditorHub {
             if (!new File(dir, "scenario.txt").isFile()) {
                 com.studio.util.SignalLabMapFactory.createMap(dir);
                 notify("已生成信号演示地图: " + dir.getAbsolutePath());
+            }
+            openMap(dir);
+        } catch (IOException e) {
+            Ui.error(stage, "生成示例失败", e.getMessage(), e);
+        }
+    }
+
+    /** 生成并打开“逻辑门”示例地图（两个开关控制三盏灯：灯3 = 灯1 且 灯2） */
+    private void openLogicGateDemoMap() {
+        try {
+            File dir = new File(System.getProperty("user.dir"),
+                    com.studio.util.LogicGateDemoMapFactory.DEFAULT_FOLDER);
+            if (!new File(dir, "scenario.txt").isFile()) {
+                com.studio.util.LogicGateDemoMapFactory.createMap(dir);
+                notify("已生成逻辑门演示地图: " + dir.getAbsolutePath());
+            }
+            openMap(dir);
+        } catch (IOException e) {
+            Ui.error(stage, "生成示例失败", e.getMessage(), e);
+        }
+    }
+    /** 生成并打开“存档变量 / 表达式 / @plugin”示例地图 */
+    private void openVarDemoMap() {
+        try {
+            File dir = new File(System.getProperty("user.dir"),
+                    com.studio.util.VarDemoMapFactory.DEFAULT_FOLDER);
+            if (!new File(dir, "scenario.txt").isFile()) {
+                com.studio.util.VarDemoMapFactory.createMap(dir);
+                notify("已生成存档变量演示地图: " + dir.getAbsolutePath());
             }
             openMap(dir);
         } catch (IOException e) {
@@ -877,6 +1152,14 @@ public class EditorPane extends BorderPane implements EditorHub {
             currentScene = null;
             selectedNode = null;
             canvas.showScene(null);
+        } else {
+            // 打开地图后要把“初始场景”真正画到画布上：
+            // 以前只刷新了底色，左侧树虽然选中了初始场景，画布却是空的。
+            if (currentScene == null || !project.scenes().containsKey(currentScene.getName())) {
+                GameScene init = project.initialScene();
+                currentScene = init != null ? init : project.firstScene();
+            }
+            canvas.showScene(currentScene);
         }
         treePanel.refresh(currentScene);
         updateSceneBox();

@@ -26,10 +26,11 @@ import java.nio.file.Files;
  *   │ [星野遥]          [苏晚晴]             │
  *   │  ┌──────── 对话内容 ────────┐        │
  *   │  └──────────────────────────┘        │
- *   │  [跳过][存档][读档][加速]  (demo加[前往])│
+ *   │  [继续][存档][读档]        (demo加[前往])│
  *   └─────────────────────────────────────┘
  * </pre>
- * 按钮均绑定“占位动作”（读取器内输出日志即可）。
+ * 按钮动作：继续 = target（跳转到模板里的下一个场景，只有一个场景时指向自身）、
+ * 存档/读档 = save/load；读取器已移除 skip(跳过)/speed(加速) 两个占位动作。
  */
 public final class MapTemplateFactory {
 
@@ -124,13 +125,19 @@ public final class MapTemplateFactory {
         dialog.setId("对话_主");
         s.addNode(dialog);
 
-        // 底部按钮（按顺序：跳过/存档/读档/加速 + demo 的跳转按钮）
+        // 底部按钮（继续 = 跳转下一个场景 / 存档 / 读档 + demo 的跳转按钮）
+        // 原「跳过(skip)」「加速(speed)」两个动作已从读取器移除：跳过改为 target 跳转，
+        // 加速按钮直接删除（其功能由场景/节点的逐字显示设置承担）。
         String[] labels = demoFlow
-                ? new String[]{"跳过", "存档", "读档", "加速", "▶ 前往森林"}
-                : new String[]{"跳过", "存档", "读档", "加速"};
+                ? new String[]{"继续", "存档", "读档", "▶ 前往森林"}
+                : new String[]{"继续", "存档", "读档"};
         String[] actions = demoFlow
-                ? new String[]{"skip", "save", "load", "speed", "target"}
-                : new String[]{"skip", "save", "load", "speed"};
+                ? new String[]{"target", "save", "load", "target"}
+                : new String[]{"target", "save", "load"};
+        // target 的目标场景 = 模板里的“下一个场景”：demo 流程里 Start 之后是 Forest
+        //（与「▶ 前往森林」指向同一场景，保留两个按钮只为演示按钮文案可自定义）；
+        // 只有单个场景时（新建地图模板）指向场景自身，保证目标始终存在、不会报“目标场景不存在”
+        String nextScene = demoFlow ? "Forest" : "Start";
 
         double bw = 150, bh = 52, gap = 16;
         double total = labels.length * bw + (labels.length - 1) * gap;
@@ -141,7 +148,7 @@ public final class MapTemplateFactory {
             btn.setId("按钮_" + labels[i]);
             btn.setText(labels[i]);
             btn.setAction(actions[i]);
-            if (actions[i].equals("target")) btn.setTarget("Forest");
+            if (actions[i].equals("target")) btn.setTarget(nextScene);
             s.addNode(btn);
         }
     }

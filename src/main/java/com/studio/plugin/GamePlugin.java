@@ -49,6 +49,9 @@ public interface GamePlugin {
     /** 展示名称（出现在嵌入标题栏与日志中） */
     default String displayName() { return getClass().getSimpleName(); }
 
-    /** 读取器将其从主舞台移除时回调（用于停止后台线程/计时器） */
+    /**
+     * 插件被从主舞台移除时回调：点【← 返回剧情】、被另一个插件替换、或播放器窗口关闭时都会调用，
+     * 每运行一次插件最多回调一次。适合在这里停后台线程 / 停计时器 / 释放媒体资源。
+     */
     default void onDetach() { }
 }
