@@ -205,6 +205,7 @@ public class EditorPane extends BorderPane implements EditorHub {
         MenuItem signalLab = item("打开信号演示地图（信号/槽+逻辑层）…", e -> openSignalLabMap());
         MenuItem varDemo = item("打开存档变量演示地图（变量/表达式/插件）…", e -> openVarDemoMap());
         MenuItem logicDemo = item("打开逻辑门演示地图（双开关控制三盏灯）…", e -> openLogicGateDemoMap());
+        MenuItem breakout = item("打开打砖块演示地图（breakout 插件）…", e -> openBreakoutDemoMap());
 
         MenuItem save = item("保存地图 (Ctrl+S)", e -> saveMap());
         save.setAccelerator(KeyCombination.keyCombination("Ctrl+S"));
@@ -213,7 +214,7 @@ public class EditorPane extends BorderPane implements EditorHub {
         MenuItem del = item("删除当前地图…", e -> deleteMap());
 
         MenuItem exit = item("退出", e -> requestExit());
-        fileMenu.getItems().addAll(open, fresh, demo, branch, saveRoom, signalLab, varDemo, logicDemo,
+        fileMenu.getItems().addAll(open, fresh, demo, branch, saveRoom, signalLab, varDemo, logicDemo, breakout,
                 new SeparatorMenuItem(), save, export, del, new SeparatorMenuItem(), exit);
 
         // ---------- 编辑 ----------
@@ -974,6 +975,21 @@ public class EditorPane extends BorderPane implements EditorHub {
             if (!new File(dir, "scenario.txt").isFile()) {
                 com.studio.util.SaveRoomMapFactory.createMap(dir);
                 notify("已生成存档演示地图: " + dir.getAbsolutePath());
+            }
+            openMap(dir);
+        } catch (IOException e) {
+            Ui.error(stage, "生成示例失败", e.getMessage(), e);
+        }
+    }
+
+    /** 生成并打开“打砖块”示例地图（场景事件与按钮事件两种触发方式） */
+    private void openBreakoutDemoMap() {
+        try {
+            File dir = new File(System.getProperty("user.dir"),
+                    com.studio.util.BreakoutMapFactory.DEFAULT_FOLDER);
+            if (!new File(dir, "scenario.txt").isFile()) {
+                com.studio.util.BreakoutMapFactory.createMap(dir);
+                notify("已生成打砖块演示地图: " + dir.getAbsolutePath());
             }
             openMap(dir);
         } catch (IOException e) {
