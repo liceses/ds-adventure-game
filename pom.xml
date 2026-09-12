@@ -120,11 +120,5 @@
         <fx.mainClass>com.studio.launcher.PlayerApp</fx.mainClass>
       </properties>
     </profile>
-    <profile>
-      <id>snake</id>
-      <properties>
-        <fx.mainClass>com.example.snake.Main</fx.mainClass>
-      </properties>
-    </profile>
   </profiles>
 </project>
