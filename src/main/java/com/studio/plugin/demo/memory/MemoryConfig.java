@@ -44,7 +44,7 @@ public final class MemoryConfig {
     private int columns = 6;
     private double flipBackDelay = 0.9;
     private double peekSeconds = 1.2;
-    private int peekUses = 1;
+    private int peekUses = 3;
     private boolean twoPlayer;
     private String theme = THEME_ANIMALS;
 
