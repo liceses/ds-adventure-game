@@ -1,6 +1,7 @@
 package com.studio.plugin.demo.breakout;
 
 import com.studio.plugin.GamePlugin;
+import com.studio.util.Logs;
 import javafx.animation.AnimationTimer;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
@@ -36,11 +37,14 @@ import java.util.Set;
  * <p>玩法规格见 <code>docs/ds-adventrue/打砖块.md</code>：底部挡板左右移动接球，
  * 球向上弹打掉砖块，砖块有不同颜色与不同血量，掉球扣一条命，打完全部砖块过关。</p>
  *
- * <p>实现要点：</p>
+ * <p>接入方式（对照 CONTRIBUTING §2 小游戏接入规范）：</p>
  * <ul>
- *   <li>规则计算全部委托给 {@link BreakoutGame}，本类只负责界面与输入，规则可脱离 JavaFX 单测；</li>
- *   <li>{@link #createEmbeddedView} 返回本游戏界面，读取器会嵌入主舞台中央并自动加"返回"标题栏；</li>
- *   <li>{@link #onDetach()} 幂等停止游戏循环，避免离开小游戏后 AnimationTimer 仍在跑。</li>
+ *   <li><b>嵌入模式</b>：{@link #createEmbeddedView} 返回本游戏界面，读取器把它放进主舞台中央，
+ *       并自动加「🎮 插件名 … ← 返回剧情」标题栏 —— <b>不另开窗口</b>；</li>
+ *   <li><b>返回剧情</b>：自建返回按钮走 {@link GamePlugin#PARAM_BACK_CALLBACK}，
+ *       先停循环收尾再切回剧情（§2.6 第 4 条）；</li>
+ *   <li><b>生命周期</b>：{@link #onDetach()} 幂等停止 AnimationTimer，避免返回剧情后循环残留（§2.6）；</li>
+ *   <li>规则计算全部委托给 {@link BreakoutGame}，本类只负责界面与输入，规则可脱离 JavaFX 单测。</li>
  * </ul>
  */
 public class BreakoutPlugin implements GamePlugin {
@@ -74,12 +78,10 @@ public class BreakoutPlugin implements GamePlugin {
     private static final Color BALL_FILL = Color.web("#fff4c8");
     private static final Color BALL_GLOW = Color.web("#fff0b0", 0.16);
     private static final Color BRICK_SHINE = Color.web("#ffffff", 0.28);
-    private static final Color VEIL = Color.web("#000000", 0.6);
     private static final Color TITLE_TEXT = Color.web("#8ae4ff");
     private static final Color WIN_TEXT = Color.web("#7ae08a");
     private static final Color LOSE_TEXT = Color.web("#e06a6a");
     private static final Color BODY_TEXT = Color.web("#d0d4e0");
-    private static final Color HINT_TEXT = Color.web("#ffd54f");
 
     /** 砖块按行取色，行数超过数组长度时循环使用。 */
     private static final Color[] ROW_COLORS = {
@@ -106,6 +108,11 @@ public class BreakoutPlugin implements GamePlugin {
     private Label overlayTitle;
     private Label overlayDesc;
 
+    /** 引擎传入的「返回剧情」回调（CONTRIBUTING §2.3）；为 null 说明不在嵌入流程里。 */
+    private Runnable backCallback;
+    /** 触发本插件的事件 ID，取自 {@link GamePlugin#PARAM_PLUGIN_ID}，用于日志。 */
+    private String pluginId = "breakout";
+
     private AnimationTimer loop;
     private boolean paused;
     private double accumulator;
@@ -118,12 +125,16 @@ public class BreakoutPlugin implements GamePlugin {
 
     @Override
     public void execute(Stage stage, Map<String, Object> params) {
-        boolean embedded = params != null && params.get(PARAM_EMBEDDED) instanceof Boolean b && b;
-        if (embedded) {
-            return; // 嵌入模式下由读取器托管 createEmbeddedView 返回的界面
+        readPluginId(params);
+        if (isEmbedded(params)) {
+            // 嵌入流程：界面由读取器托管 createEmbeddedView 的返回值。
+            // 这里必须什么都不做，更不能自己 new Stage —— 否则就变成"另开一个窗口"。
+            Logs.plugin(pluginId, "execute：嵌入模式，界面交给读取器托管");
+            return;
         }
+        Logs.plugin(pluginId, "execute：窗口模式，独立运行（仅供开发期调试，接入剧情时不走这条）");
         Stage window = new Stage();
-        window.setTitle("打砖块（插件窗口模式）");
+        window.setTitle("打砖块（插件窗口模式 · 仅独立调试）");
         window.setScene(new Scene(buildView()));
         window.setOnHidden(e -> stopLoop());
         window.show();
@@ -132,7 +143,23 @@ public class BreakoutPlugin implements GamePlugin {
 
     @Override
     public Parent createEmbeddedView(Map<String, Object> params) {
+        readPluginId(params);
+        // 引擎会把这个 Parent 放进主舞台中央，并在顶部自动生成「← 返回剧情」标题栏
+        this.backCallback = params == null ? null : (Runnable) params.get(PARAM_BACK_CALLBACK);
+        Logs.plugin(pluginId, "createEmbeddedView：构建嵌入界面"
+                + (backCallback == null ? "（未拿到 back.callback）" : "（已拿到 back.callback）"));
         return buildView();
+    }
+
+    private static boolean isEmbedded(Map<String, Object> params) {
+        return params != null && params.get(PARAM_EMBEDDED) instanceof Boolean b && b;
+    }
+
+    private void readPluginId(Map<String, Object> params) {
+        Object id = params == null ? null : params.get(PARAM_PLUGIN_ID);
+        if (id instanceof String s && !s.isBlank()) {
+            pluginId = s;
+        }
     }
 
     @Override
@@ -142,7 +169,8 @@ public class BreakoutPlugin implements GamePlugin {
 
     @Override
     public void onDetach() {
-        stopLoop(); // ★ 引擎在插件被移除时回调，必须停掉循环
+        stopLoop(); // ★ 引擎在插件被移除时回调，必须停掉循环（CONTRIBUTING §2.6）
+        Logs.plugin(pluginId, "onDetach：游戏循环已停止");
     }
 
     // =====================================================================
@@ -201,6 +229,12 @@ public class BreakoutPlugin implements GamePlugin {
         HBox.setHgrow(spacer, Priority.ALWAYS);
 
         HBox header = new HBox(HEADER_SPACING, scoreLabel, infoLabel, spacer, livesLabel, pause, restart);
+        // 嵌入模式下自建「返回剧情」按钮：走引擎回调，先收尾再切场景（CONTRIBUTING §2.6 第 4 条）
+        if (backCallback != null) {
+            Button back = new Button("← 返回剧情");
+            back.setOnAction(e -> leaveToStory());
+            header.getChildren().add(back);
+        }
         header.setAlignment(Pos.CENTER_LEFT);
         header.setPadding(new Insets(HEADER_PADDING));
         header.setStyle("-fx-background-color: " + toHex(HEADER_BG) + ";");
@@ -272,6 +306,14 @@ public class BreakoutPlugin implements GamePlugin {
             accumulator = 0;
         }
         render();
+    }
+
+    /** 结束本局并返回剧情：先停循环收尾，再调引擎回调（CONTRIBUTING §2.6 第 4 条）。 */
+    private void leaveToStory() {
+        stopLoop();
+        if (backCallback != null) {
+            backCallback.run();
+        }
     }
 
     private void restart() {
