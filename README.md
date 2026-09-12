@@ -33,6 +33,7 @@
 | 9 个小游戏玩法说明 | `docs/ds-adventrue/*.md`（贪吃蛇 / 飞机大战 / 2048 / 打砖块 / 记忆翻牌 / 连连看 / 扫雷 / 推箱子 / 五子棋） |
 | 剧情大纲 / 人物设定 / 剧本 | `docs/ds-adventrue/剧情大纲*.md`、`人物设定集.md`、`剧本/`、`剧本-原声/`、`剧本-v0.1-候选/` |
 | 需求与设计图 | `docs/ds-adventrue/需求文档.txt`、`docs/ds-adventrue/图/` |
+| **引擎对接与剧本接入** | `docs/ds-adventrue/引擎对接说明.md`（面向协作者：路线、映射、待决事项、里程碑） |
 | 素材清单 | `docs/ds-adventrue/资产清单.md` |
 
 ---
