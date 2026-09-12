@@ -472,14 +472,47 @@ final class SceneInspectorDialog {
         HBox slotBar = new HBox(8, slotAdd, slotApply, slotDel);
         slotBar.setAlignment(Pos.CENTER_LEFT);
 
+        // 插件选择器：自带 + 外部（注册表登记 / classes / jar 里编译好的），可输入关键字筛选
+        javafx.scene.control.ComboBox<com.studio.plugin.builtin.PluginInfo> pluginPicker =
+                PluginPickerField.create(hub, 280);
+        Button pluginInsert = new Button("＋ 插入插件槽");
+        pluginInsert.setTooltip(new javafx.scene.control.Tooltip(
+                "把选中的插件按它自己的用法追加成一条场景槽（点一下列表里就多一行）"));
+        pluginInsert.setOnAction(e -> {
+            com.studio.plugin.builtin.PluginInfo info = NodeDialogs.pickedPlugin(pluginPicker);
+            if (info == null) {
+                Ui.warn(null, "还没选插件",
+                        "请先在上面的下拉框里选一个插件（可以直接打字筛选，例如 full / 全屏 / 截图），\n"
+                                + "再点「＋ 插入插件槽」。当前可用插件共 " + pluginPicker.getItems().size() + " 个。");
+                return;
+            }
+            String line = NodeDialogs.templateOf(info);
+            java.util.List<String> warnings = new ArrayList<>();
+            SlotDef def = SignalCodec.decodeSlot(line, warnings);
+            if (def == null) {
+                Ui.warn(null, "模板无法解析", String.join("\n", warnings));
+                return;
+            }
+            scene.slots().add(def);
+            slotRows.setAll(scene.slots());
+            slotTable.getSelectionModel().selectLast();
+            mark.run();
+            slotText.setText(line);   // 留在输入框里，方便接着改成自己的变量名
+            hub.notify("已插入插件槽：" + info.id() + " → " + def.getSignal() + " | " + def.getAction());
+        });
+        HBox pluginBar = new HBox(8, new Label("自带插件："), pluginPicker, pluginInsert);
+        pluginBar.setAlignment(Pos.CENTER_LEFT);
+
         Label tip = new Label("提示：这些是**场景级**信号与槽（写在 [场景名] 段里），"
                 + "节点自己的信号/槽在「节点」页双击进入节点属性窗口里改。"
-                + "槽按信号名全场景订阅：同一场景里同名信号的所有槽都会一起触发。");
+                + "槽按信号名全场景订阅：同一场景里同名信号的所有槽都会一起触发。"
+                + "另外「场景进入」/「场景离开」是引擎自动发的信号：直接写 slot = 场景进入 | … 即可自动执行，"
+                + "不需要在信号表里声明。");
         tip.getStyleClass().add("hint-text");
         tip.setWrapText(true);
 
         VBox sigBox = new VBox(6, new Label("场景信号（键盘全局监听器按名称分发）"), sigTable, sigText, sigBar);
-        VBox slotBox = new VBox(6, new Label("场景槽（订阅信号后由引擎执行）"), slotTable, slotText, slotBar);
+        VBox slotBox = new VBox(6, new Label("场景槽（订阅信号后由引擎执行）"), slotTable, slotText, slotBar, pluginBar);
         VBox box = new VBox(12, sigBox, slotBox, tip);
         box.setPadding(new Insets(12));
         VBox.setVgrow(sigTable, Priority.ALWAYS);

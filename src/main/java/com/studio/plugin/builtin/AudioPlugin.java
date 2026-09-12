@@ -158,6 +158,15 @@ public class AudioPlugin implements SlotPlugin {
         }
     }
 
+    /** 编辑器插件目录（选择器 / 手册自动生成用） */
+    public static java.util.List<PluginInfo> catalog() {
+        java.util.List<PluginInfo> out = new java.util.ArrayList<>();
+        out.add(new PluginInfo("audio", "音频", "音效,声音",
+                "@plugin(audio) | loop | resources/audio/theme.mp3 | bgm",
+                "放音频：loop 循环 / play 一次性 / stop / pause / resume / volume / stopall，支持多通道"));
+        return out;
+    }
+
     @Override
     public String toString() { return "AudioPlugin(" + id + ")"; }
 }

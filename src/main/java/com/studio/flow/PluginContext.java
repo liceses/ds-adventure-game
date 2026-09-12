@@ -34,6 +34,7 @@ public class PluginContext {
     private final PluginRuntime runtime;
     private final String pluginId;
     private SignalEvent event;
+    private String[] rawArgs = new String[0];
 
     public PluginContext(FlowContext flow, PluginRuntime runtime, String pluginId) {
         this.flow = flow;
@@ -45,6 +46,32 @@ public class PluginContext {
     public PluginContext withEvent(SignalEvent event) {
         this.event = event;
         return this;
+    }
+
+    /**
+     * 绑定本次调用的<b>原始参数文本</b>（引擎内部使用）。
+     *
+     * <p>插件收到的 {@code args} 是<b>求值后</b>的字符串，看不出哪个参数原本写成
+     * {@code @var(网络)}。异步插件（例如 {@code @plugin(http)} / {@code @plugin(llm)}）
+     * 在请求返回时已经离开了本次调用，没法再通过返回值回写，于是需要原始文本
+     * 才能知道“结果该写回哪个变量”：{@link #outputVarName()}。</p>
+     */
+    public PluginContext withRawArgs(String[] rawArgs) {
+        this.rawArgs = rawArgs == null ? new String[0] : rawArgs.clone();
+        return this;
+    }
+
+    /** 本次调用的原始参数字段（未求值；可能为空数组） */
+    public String[] rawArgs() { return rawArgs == null ? new String[0] : rawArgs.clone(); }
+
+    /**
+     * 输出位（最后一个参数）如果写成 {@code @var(名)}，返回这个变量名；否则返回空串。
+     * <p>异步插件用它把结果写回变量：{@code ctx.setVar(ctx.outputVarName(), value)}。</p>
+     */
+    public String outputVarName() {
+        String[] raw = rawArgs();
+        if (raw.length == 0) return "";
+        return Expr.varRefName(raw[raw.length - 1]);
     }
 
     public String pluginId() { return pluginId; }

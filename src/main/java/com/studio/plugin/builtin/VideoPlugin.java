@@ -135,6 +135,15 @@ public class VideoPlugin implements SlotPlugin {
         }
     }
 
+    /** 编辑器插件目录（选择器 / 手册自动生成用） */
+    public static java.util.List<PluginInfo> catalog() {
+        java.util.List<PluginInfo> out = new java.util.ArrayList<>();
+        out.add(new PluginInfo("video", "视频", "影片,视频嵌入,视频",
+                "@plugin(video) | play | 背景 | resources/video/opening.mp4 | loop",
+                "把视频挂到节点上代替图片：play 嵌入 / pause / resume / volume / stop（清空后回图片）"));
+        return out;
+    }
+
     @Override
     public String toString() { return "VideoPlugin(" + id + ")"; }
 }

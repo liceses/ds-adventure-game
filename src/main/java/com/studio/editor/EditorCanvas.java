@@ -73,9 +73,22 @@ public class EditorCanvas extends StackPane {
     // ---- 节点视图缓存 ----
     private final Map<StoryNode, Pane> wrapperMap = new HashMap<>();
 
-    // ---- 缩放 ----
+    // ---- 缩放与平移（视窗）----
     private double zoom = 0.9;
     private boolean autoFit = true;
+    /** 平移量：放大后用来把地图的不同区域拖进可视范围（右键拖动 / 中键拖动） */
+    private double panX = 0, panY = 0;
+    /** 正在平移 */
+    private boolean panning = false;
+    /** 这一次右键操作已经变成“拖动”，因此不要再弹右键菜单 */
+    private boolean suppressMenuOnce = false;
+    private double panStartSceneX, panStartSceneY;
+    private double panStartPanX, panStartPanY;
+    /** 超过这个像素才算“拖动”，否则仍按“右键单击=弹菜单”处理 */
+    private static final double PAN_THRESHOLD = 4.0;
+    /** 拖到边缘时额外留出的余量（像素，取下面两个比例/下限中的较大者） */
+    private static final double PAN_MARGIN_MIN = 180.0;
+    private static final double PAN_MARGIN_RATIO = 0.35;
 
     private final Label coordHint = new Label();
 
@@ -91,9 +104,47 @@ public class EditorCanvas extends StackPane {
         boardHost.getChildren().add(boardStack);
         boardHost.setAlignment(Pos.CENTER);
 
-        boardHost.widthProperty().addListener((o, a, b) -> applyFitIfAuto());
-        boardHost.heightProperty().addListener((o, a, b) -> applyFitIfAuto());
+        boardHost.widthProperty().addListener((o, a, b) -> { applyFitIfAuto(); clampPan(); });
+        boardHost.heightProperty().addListener((o, a, b) -> { applyFitIfAuto(); clampPan(); });
         boardHost.setOnScroll(this::onScrollZoom);
+        // ===== 按住右键（或中键）拖动 = 平移视窗 =====
+        // 放大之后地图会比可视区域大，四周看不到；这里用“右键拖动”把它拖进来。
+        // 注意与右键菜单的区分：按下后移动超过阈值才算拖动，此时不再弹菜单（suppressMenuOnce）。
+        boardHost.addEventFilter(MouseEvent.MOUSE_PRESSED, e -> {
+            if (e.getButton() == MouseButton.SECONDARY || e.getButton() == MouseButton.MIDDLE) {
+                panning = false;
+                suppressMenuOnce = false;
+                panStartSceneX = e.getSceneX();
+                panStartSceneY = e.getSceneY();
+                panStartPanX = panX;
+                panStartPanY = panY;
+            }
+        });
+        boardHost.addEventFilter(MouseEvent.MOUSE_DRAGGED, e -> {
+            if (!e.isSecondaryButtonDown() && !e.isMiddleButtonDown()) return;
+            double dx = e.getSceneX() - panStartSceneX;
+            double dy = e.getSceneY() - panStartSceneY;
+            if (!panning && Math.hypot(dx, dy) < PAN_THRESHOLD) return;   // 还没到“拖动”的程度
+            panning = true;
+            suppressMenuOnce = true;      // 拖动过程中/之后都不弹右键菜单
+            hideOpenMenu();
+            panX = panStartPanX + dx;
+            panY = panStartPanY + dy;
+            clampPan();
+            applyPan();
+            boardHost.setCursor(Cursor.CLOSED_HAND);
+            e.consume();
+        });
+        boardHost.addEventFilter(MouseEvent.MOUSE_RELEASED, e -> {
+            if (e.getButton() != MouseButton.SECONDARY && e.getButton() != MouseButton.MIDDLE) return;
+            boolean wasPanning = panning;
+            panning = false;
+            boardHost.setCursor(Cursor.DEFAULT);
+            if (wasPanning) {
+                hub.notify("已平移视窗（右键拖动；Ctrl+0 可复位）");
+                e.consume();
+            }
+        });
         boardHost.setOnMouseMoved(e -> {
             Point2D p = toLogical(e.getSceneX(), e.getSceneY());
             coordHint.setText("X=" + fmt(p.getX()) + "  Y=" + fmt(p.getY()));
@@ -115,6 +166,12 @@ public class EditorCanvas extends StackPane {
         //（背景节点不参与命中，避免整屏背景把“空白处”吃掉）。
         board.setOnContextMenuRequested(e -> {
             if (hub.scene() == null) return;
+            // 刚刚用右键拖动平移过视窗 → 这一次不弹菜单（否则一拖完就弹出来挡住画面）
+            if (suppressMenuOnce) {
+                suppressMenuOnce = false;
+                e.consume();
+                return;
+            }
             Point2D p = toLogical(e.getSceneX(), e.getSceneY());
             // 右键位置夹在画布范围内（新节点生成在右键处）
             final double x = Math.max(0, Math.min(CW, p.getX()));
@@ -155,6 +212,20 @@ public class EditorCanvas extends StackPane {
             });
             copy.setDisable(sel == null);
             menu.getItems().add(copy);
+
+            // 个性化节点：把当前调好的节点存成模板，之后可以在「个性化节点」窗口里套用到新节点
+            MenuItem asPreset = new MenuItem("⭐ 添加为个性化节点…");
+            asPreset.setOnAction(ev -> {
+                if (sel == null) return;
+                hub.selectNode(sel);
+                EditorActions.addSelectedNodeAsPreset(hub);
+            });
+            asPreset.setDisable(sel == null);
+            menu.getItems().add(asPreset);
+
+            MenuItem presetList = new MenuItem("⭐ 个性化节点列表…");
+            presetList.setOnAction(ev -> NodePresetDialog.showFrom(hub));
+            menu.getItems().add(presetList);
 
             menu.getItems().add(new SeparatorMenuItem());
 
@@ -239,6 +310,13 @@ public class EditorCanvas extends StackPane {
         palette.setTranslateY(84);
         coordHint.setTranslateX(14);
         coordHint.setTranslateY(-8);
+
+        // 画布区域自己裁剪：放大后画布会超出这块区域，如果不裁剪就会盖到左右两侧的面板上
+        //（裁掉之后画布区域就是一个“窗口”，配合右键拖动平移来看地图的各个角落）
+        javafx.scene.shape.Rectangle canvasClip = new javafx.scene.shape.Rectangle();
+        canvasClip.widthProperty().bind(widthProperty());
+        canvasClip.heightProperty().bind(heightProperty());
+        setClip(canvasClip);
     }
 
     // =====================================================================
@@ -349,16 +427,23 @@ public class EditorCanvas extends StackPane {
 
     public void setGridVisible(boolean on) { gridCanvas.setVisible(on); }
 
-    // ---- 缩放 ----
+    // ---- 缩放 / 平移 ----
     public void zoomIn() { setZoomManual(zoom * 1.15); }
     public void zoomOut() { setZoomManual(zoom / 1.15); }
-    public void fitZoom() { autoFit = true; applyFitIfAuto(); }
+    public void fitZoom() { autoFit = true; panX = 0; panY = 0; applyFitIfAuto(); applyPan(); }
     public double zoom() { return zoom; }
+    public double panX() { return panX; }
+    public double panY() { return panY; }
+
+    /** 复位平移（不清缩放）；视图菜单「复位视窗」用 */
+    public void resetPan() { panX = 0; panY = 0; applyPan(); }
 
     private void setZoomManual(double z) {
         autoFit = false;
         zoom = Math.max(0.2, Math.min(4.0, z));
         applyZoom();
+        clampPan();
+        applyPan();
     }
 
     private void applyFitIfAuto() {
@@ -374,6 +459,42 @@ public class EditorCanvas extends StackPane {
         boardHost.setScaleX(zoom);
         boardHost.setScaleY(zoom);
         hub.setStatusZoom(zoom * 100);
+    }
+
+    /**
+     * 平移视窗：把缩放后的画布整体位移，让放大后看不见的四周能拖进可视范围。
+     * <p>与缩放的先后顺序无关 —— JavaFX 的 translate 在缩放之外生效，所以这里的像素就是屏幕像素。</p>
+     */
+    private void applyPan() {
+        boardHost.setTranslateX(panX);
+        boardHost.setTranslateY(panY);
+    }
+
+    /**
+     * 夹住平移量：最多让画布边缘越过可视区边缘一段距离（
+     * {@link #PAN_MARGIN_MIN} 与可视区 35% 中的较大者）。
+     *
+     * <p>为什么要“越过”而不是刚好对齐：刚好对齐时，把地图上边缘拖到可视区上边缘之后就再也拖不动了，
+     * 想让地图停在画面偏下的位置（方便对照其它面板、或者边看边改）就没有余地。
+     * 现在留出足够余量，四周都能继续拖一段；同时仍然保证“怎么拖都不会把地图完全甩出屏幕”。</p>
+     */
+    private void clampPan() {
+        double viewW = boardHost.getWidth();
+        double viewH = boardHost.getHeight();
+        if (viewW <= 0 || viewH <= 0) { panX = 0; panY = 0; return; }
+        double scaledW = CW * zoom;
+        double scaledH = CH * zoom;
+        double marginX = Math.max(PAN_MARGIN_MIN, viewW * PAN_MARGIN_RATIO);
+        double marginY = Math.max(PAN_MARGIN_MIN, viewH * PAN_MARGIN_RATIO);
+        double maxX = Math.max(0, (scaledW - viewW) / 2.0) + marginX;
+        double maxY = Math.max(0, (scaledH - viewH) / 2.0) + marginY;
+        panX = Math.max(-maxX, Math.min(maxX, panX));
+        panY = Math.max(-maxY, Math.min(maxY, panY));
+    }
+
+    /** 当前可见区域（用于探针/状态栏判断“看得到哪一块”） */
+    public javafx.geometry.Bounds visibleBoardRectInScene() {
+        return board.localToScene(board.getBoundsInLocal());
     }
 
     private void onScrollZoom(ScrollEvent e) {

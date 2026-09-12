@@ -314,6 +314,13 @@ final class EditorPanels {
             // 切换类型 → 用该类型的默认值重建模板（尺寸/默认文本随之变化）并刷新摘要
             typeBox.valueProperty().addListener((o, a, b) -> {
                 if (b == null) return;
+                // 如果当前模板已经是这个类型（例如刚「应用了个性化节点」后下拉框跟着选中），
+                // 就不要再重建模板，否则会把个性化节点的属性覆盖掉
+                StoryNode cur = hub.newNodeTemplate();
+                if (cur != null && cur.getType() == b) {
+                    summary.setText(templateSummary(cur));
+                    return;
+                }
                 hub.setNewNodeTemplate(NodeType.createDefault(b.code(), 0, 0));
                 summary.setText(templateSummary(hub.newNodeTemplate()));
             });
@@ -327,13 +334,25 @@ final class EditorPanels {
                 summary.setText(templateSummary(hub.newNodeTemplate()));
             });
 
+            // 个性化节点：一键打开模板列表窗口（可把当前模板存为新模板、也可套用已有模板）
+            Button presets = new Button("⭐ 个性化节点…");
+            presets.getStyleClass().add("tool-button");
+            presets.setMaxWidth(Double.MAX_VALUE);
+            presets.setTooltip(new javafx.scene.control.Tooltip(
+                    "打开个性化节点列表：应用到新建节点 / 新建（用当前模板状态）/ 删除 / 重命名。\n"
+                            + "模板统一存在工程根目录的 " + com.studio.editor.NodePresetStore.FILE_NAME + " 里。"));
+            presets.setOnAction(e -> {
+                NodePresetDialog.showFrom(hub);
+                summary.setText(templateSummary(hub.newNodeTemplate()));
+            });
+
             Label note = new Label("右键“添加节点”生成的节点将与这里的状态一致"
                     + "（只决定新节点的类型与初值，不影响已有节点）");
             note.setWrapText(true);
             note.getStyleClass().add("hint-text");
 
             body.getChildren().addAll(row("新节点类型", typeBox), row("模板摘要", summary),
-                    editTpl, note, new Separator());
+                    editTpl, presets, note, new Separator());
         }
 
         /** 一行式模板摘要：类型 尺寸｜初始内容｜信号数｜槽数 */

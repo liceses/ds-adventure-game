@@ -57,6 +57,67 @@ public class PluginRuntime {
             final String op = id;
             BUILTIN.put(op, () -> new com.studio.plugin.builtin.VideoPlugin(op));
         }
+        // 系统操作插件：退出游戏 / 打开文件 / 选择文件 / 打开所在目录（随编辑器发行）
+        for (String id : com.studio.plugin.builtin.SystemPlugin.ids()) {
+            final String op = id;
+            BUILTIN.put(op, () -> com.studio.plugin.builtin.SystemPlugin.of(op));
+        }
+        // 流程控制：条件选择（三目）/ 延时 / 定时器
+        for (String id : com.studio.plugin.builtin.ControlPlugin.ids()) {
+            final String op = id;
+            BUILTIN.put(op, () -> com.studio.plugin.builtin.ControlPlugin.of(op));
+        }
+        // 随机：整数 / 小数 / 概率 / 候选挑选
+        for (String id : com.studio.plugin.builtin.RandomPlugin.ids()) {
+            final String op = id;
+            BUILTIN.put(op, () -> com.studio.plugin.builtin.RandomPlugin.of(op));
+        }
+        // 交互：确认框 / 输入框
+        for (String id : com.studio.plugin.builtin.DialogPlugin.ids()) {
+            final String op = id;
+            BUILTIN.put(op, () -> com.studio.plugin.builtin.DialogPlugin.of(op));
+        }
+        // 文本与格式
+        for (String id : com.studio.plugin.builtin.TextPlugin.ids()) {
+            final String op = id;
+            BUILTIN.put(op, () -> com.studio.plugin.builtin.TextPlugin.of(op));
+        }
+        // 演出：立绘 / 背景 / 特效
+        for (String id : com.studio.plugin.builtin.StagePlugin.ids()) {
+            final String op = id;
+            BUILTIN.put(op, () -> com.studio.plugin.builtin.StagePlugin.of(op));
+        }
+        // 存档管理
+        for (String id : com.studio.plugin.builtin.SavePlugin.ids()) {
+            final String op = id;
+            BUILTIN.put(op, () -> com.studio.plugin.builtin.SavePlugin.of(op));
+        }
+        // 调试
+        for (String id : com.studio.plugin.builtin.DebugPlugin.ids()) {
+            final String op = id;
+            BUILTIN.put(op, () -> com.studio.plugin.builtin.DebugPlugin.of(op));
+        }
+        // 网络 / 列表 / 数据 / 系统扩展 / 时间
+        for (String id : com.studio.plugin.builtin.NetPlugin.ids()) {
+            final String op = id;
+            BUILTIN.put(op, () -> com.studio.plugin.builtin.NetPlugin.of(op));
+        }
+        for (String id : com.studio.plugin.builtin.ListPlugin.ids()) {
+            final String op = id;
+            BUILTIN.put(op, () -> new com.studio.plugin.builtin.ListPlugin(op));
+        }
+        for (String id : com.studio.plugin.builtin.JsonPlugin.ids()) {
+            final String op = id;
+            BUILTIN.put(op, () -> new com.studio.plugin.builtin.JsonPlugin(op));
+        }
+        for (String id : com.studio.plugin.builtin.DesktopPlugin.ids()) {
+            final String op = id;
+            BUILTIN.put(op, () -> com.studio.plugin.builtin.DesktopPlugin.of(op));
+        }
+        for (String id : com.studio.plugin.builtin.TimePlugin.ids()) {
+            final String op = id;
+            BUILTIN.put(op, () -> new com.studio.plugin.builtin.TimePlugin(op));
+        }
     }
 
     /** 自带插件的 id 列表（编辑器/文档使用） */
@@ -202,9 +263,20 @@ public class PluginRuntime {
      * @return 插件返回的数组（用于回写 @var 位置）；失败返回 null
      */
     public String[] execute(String idOrClass, FlowContext flow, SignalEvent event, String[] args) {
+        return execute(idOrClass, flow, event, args, null);
+    }
+
+    /**
+     * 执行插件（带原始参数文本版本）。
+     *
+     * @param rawArgs 槽里“动作之后”的<b>原始</b>字段（未求值，形如 {@code @var(网络)}）；
+     *                异步插件（http/llm）靠它知道结果该写回哪个变量名
+     */
+    public String[] execute(String idOrClass, FlowContext flow, SignalEvent event,
+                            String[] args, String[] rawArgs) {
         SlotPlugin plugin = plugin(idOrClass);
         if (plugin == null) return null;
-        PluginContext ctx = new PluginContext(flow, this, idOrClass).withEvent(event);
+        PluginContext ctx = new PluginContext(flow, this, idOrClass).withEvent(event).withRawArgs(rawArgs);
         lock.lock();
         try {
             String[] in = args == null ? new String[0] : args;

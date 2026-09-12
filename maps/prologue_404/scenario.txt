@@ -1,0 +1,2214 @@
+# ============================================================
+# 剧情地图: prologue_404
+# 由 剧情编辑器(Studio) 于 2026-09-13 00:26 生成
+# 语法: [option] / [场景名] / { 节点属性 } （# 开头为注释）
+# ============================================================
+
+[option]
+initialScene = 序01_灯会
+background = #070a14
+volume = 0
+typewriterSpeed = 18
+savevar = 热度 | int | 0
+savevar = 专注 | int | 0
+savevar = 混乱 | int | 0
+savevar = 选过热 | bool | false
+savevar = 选过稳 | bool | false
+savevar = 选过影 | bool | false
+savevar = 下一场 | str | 序10_星空
+savevar = 点亮数 | int | 0
+savevar = 灯全亮 | bool | false
+savevar = 灯1亮 | bool | false
+savevar = 灯2亮 | bool | false
+savevar = 灯3亮 | bool | false
+savevar = 灯4亮 | bool | false
+savevar = 灯5亮 | bool | false
+savevar = 灯6亮 | bool | false
+savevar = 灯7亮 | bool | false
+savevar = 灯8亮 | bool | false
+savevar = 灯9亮 | bool | false
+
+[序01_灯会]
+
+{
+type = text
+id = 幕布01
+index = 0
+x = 0
+y = 0
+width = 1280
+height = 720
+text = 第一幕 · 发布会
+style = -fx-background-color: linear-gradient(to bottom, #1b1030, #2d1a3f 55%, #3a2140); -fx-text-fill: rgba(255,255,255,0.09);
+fontSize = 58
+align = center
+}
+{
+type = text
+id = 幕标01
+index = 1
+x = 40
+y = 22
+width = 700
+height = 32
+text = 序章 · 404之夜　|　第一幕 · 发布会（灯会）　|　点对话框继续，或用右上角「下一幕 ▸」跳过
+style = -fx-text-fill: #9fb4d8;
+fontSize = 15
+}
+{
+type = text
+id = 灯会灯1
+index = 2
+x = 178
+y = 96
+width = 92
+height = 58
+text = 💡
+style = -fx-background-color: rgba(255,214,106,0.22); -fx-background-radius: 12; -fx-border-color: rgba(255,214,106,0.75); -fx-border-radius: 12;
+fontSize = 26
+align = center
+}
+{
+type = text
+id = 灯会灯2
+index = 3
+x = 282
+y = 96
+width = 92
+height = 58
+text = 💡
+style = -fx-background-color: rgba(255,214,106,0.22); -fx-background-radius: 12; -fx-border-color: rgba(255,214,106,0.75); -fx-border-radius: 12;
+fontSize = 26
+align = center
+}
+{
+type = text
+id = 灯会灯3
+index = 4
+x = 386
+y = 96
+width = 92
+height = 58
+text = 💡
+style = -fx-background-color: rgba(255,214,106,0.22); -fx-background-radius: 12; -fx-border-color: rgba(255,214,106,0.75); -fx-border-radius: 12;
+fontSize = 26
+align = center
+}
+{
+type = text
+id = 灯会灯4
+index = 5
+x = 490
+y = 96
+width = 92
+height = 58
+text = 💡
+style = -fx-background-color: rgba(255,214,106,0.22); -fx-background-radius: 12; -fx-border-color: rgba(255,214,106,0.75); -fx-border-radius: 12;
+fontSize = 26
+align = center
+}
+{
+type = text
+id = 灯会灯5
+index = 6
+x = 594
+y = 96
+width = 92
+height = 58
+text = 💡
+style = -fx-background-color: rgba(255,214,106,0.22); -fx-background-radius: 12; -fx-border-color: rgba(255,214,106,0.75); -fx-border-radius: 12;
+fontSize = 26
+align = center
+}
+{
+type = text
+id = 灯会灯6
+index = 7
+x = 698
+y = 96
+width = 92
+height = 58
+text = 💡
+style = -fx-background-color: rgba(255,214,106,0.22); -fx-background-radius: 12; -fx-border-color: rgba(255,214,106,0.75); -fx-border-radius: 12;
+fontSize = 26
+align = center
+}
+{
+type = text
+id = 灯会灯7
+index = 8
+x = 802
+y = 96
+width = 92
+height = 58
+text = 💡
+style = -fx-background-color: rgba(255,214,106,0.22); -fx-background-radius: 12; -fx-border-color: rgba(255,214,106,0.75); -fx-border-radius: 12;
+fontSize = 26
+align = center
+}
+{
+type = text
+id = 灯会灯8
+index = 9
+x = 906
+y = 96
+width = 92
+height = 58
+text = 💡
+style = -fx-background-color: rgba(255,214,106,0.22); -fx-background-radius: 12; -fx-border-color: rgba(255,214,106,0.75); -fx-border-radius: 12;
+fontSize = 26
+align = center
+}
+{
+type = text
+id = 灯会灯9
+index = 10
+x = 1010
+y = 96
+width = 92
+height = 58
+text = 💡
+style = -fx-background-color: rgba(255,214,106,0.22); -fx-background-radius: 12; -fx-border-color: rgba(255,214,106,0.75); -fx-border-radius: 12;
+fontSize = 26
+align = center
+}
+{
+type = text
+id = 立绘_ds_01
+index = 11
+x = 490
+y = 168
+width = 300
+height = 300
+text = <<<
+🐋
+ds 娘
+whale_cute
+<<<
+style = -fx-background-color: linear-gradient(to bottom, rgba(40,86,150,0.95), rgba(16,28,56,0.95)); -fx-background-radius: 20; -fx-border-color: rgba(126,196,255,0.7); -fx-border-radius: 20; -fx-text-fill: #dceaff;
+fontSize = 30
+align = center
+}
+{
+type = name
+id = 名牌01
+index = 12
+x = 90
+y = 470
+width = 360
+height = 40
+text = 🐋 ds 娘
+style = -fx-background-color: rgba(40,86,150,0.55); -fx-background-radius: 10; -fx-text-fill: #dceaff;
+fontSize = 21
+align = center
+}
+{
+type = dialog
+id = 对话01
+index = 13
+x = 70
+y = 516
+width = 1140
+height = 178
+text = <<<
+narr: （黑屏。光标闪烁。等待第一次点击。）
+narr: （对话框亮了。你每点一下，文字就往下走一行 —— 来，点一下。）
+narr: （很好。再点一下。这世界的规矩很简单：你点击，她才说话。）
+---
+ds: 「用户桑？灯一亮，你就听得见了。好 —— 我开讲了。」
+---
+sclerk: （柜台后传来算珠轻响）「这句话也要过秤！」
+---
+ds: 「……别理它。你点一下，就当替我垫了一道过手钱。」
+narr: 说这话时，她的尾鳍在泉里一拍，水星子溅上最近的灯罩，滋啦一声，炸开一小朵白花。
+---
+narr: 机房改成了庆功灯会。九盏长明灯一字排开，火苗高得能照见房梁；
+narr: 算珠彩链从梁上垂下来，风一过就噼啪碎响，像有人在暗处替全场打拍子。
+narr: 空气里一半是机油味，一半是灯油香；脚边的水晶泉咕嘟一声，又咕嘟一声。
+narr: 观礼的村民挤在机柜之间，卖烤饼的大娘把饼铛支在柜子旁，一边翻饼一边嘟囔：
+narr: 「灯会年年有，饼香串着机油香，倒是头一回。」
+<<<
+target = 序02_演讲
+fontSize = 19
+}
+{
+type = button
+id = 跳过01
+index = 14
+x = 1020
+y = 22
+width = 220
+height = 36
+text = 下一幕 ▸
+style = -fx-font-size: 13px;
+signal = 跳过01 | mouse | click
+slot = 跳过01 | goto |  | 序02_演讲
+}
+
+[序02_演讲]
+{
+type = text
+id = 幕布02
+index = 0
+x = 0
+y = 0
+width = 1280
+height = 720
+text = 第一幕 · 发布会
+style = -fx-background-color: linear-gradient(to bottom, #1b1030, #2d1a3f 55%, #3a2140); -fx-text-fill: rgba(255,255,255,0.09);
+fontSize = 58
+align = center
+}
+{
+type = text
+id = 幕标02
+index = 1
+x = 40
+y = 22
+width = 700
+height = 32
+text = 第一幕 · 发布会（继续）　|　V4.1 Flash：快、轻、白给
+style = -fx-text-fill: #9fb4d8;
+fontSize = 15
+}
+{
+type = text
+id = 立绘_ds_02
+index = 2
+x = 490
+y = 150
+width = 300
+height = 320
+text = <<<
+🐋
+ds 娘
+cute
+<<<
+style = -fx-background-color: linear-gradient(to bottom, rgba(40,86,150,0.95), rgba(16,28,56,0.95)); -fx-background-radius: 20; -fx-border-color: rgba(126,196,255,0.7); -fx-border-radius: 20; -fx-text-fill: #dceaff;
+fontSize = 30
+align = center
+}
+{
+type = text
+id = 立绘_glm_02
+index = 3
+x = 90
+y = 150
+width = 280
+height = 320
+text = <<<
+🪭
+GLM 娘
+smug
+<<<
+style = -fx-background-color: linear-gradient(to bottom, rgba(30,96,82,0.95), rgba(12,34,30,0.95)); -fx-background-radius: 20; -fx-border-color: rgba(110,230,190,0.65); -fx-border-radius: 20; -fx-text-fill: #d8fff2;
+fontSize = 30
+align = center
+}
+{
+type = text
+id = 立绘_qianwen_02
+index = 4
+x = 910
+y = 150
+width = 280
+height = 320
+text = <<<
+🙋
+千问酱
+normal
+<<<
+style = -fx-background-color: linear-gradient(to bottom, rgba(84,66,150,0.95), rgba(28,20,54,0.95)); -fx-background-radius: 20; -fx-border-color: rgba(186,166,255,0.65); -fx-border-radius: 20; -fx-text-fill: #ece6ff;
+fontSize = 30
+align = center
+}
+{
+type = name
+id = 名牌02
+index = 5
+x = 90
+y = 470
+width = 360
+height = 40
+text = 🐋 ds 娘
+style = -fx-background-color: rgba(40,86,150,0.55); -fx-background-radius: 10; -fx-text-fill: #dceaff;
+fontSize = 21
+align = center
+}
+{
+type = dialog
+id = 对话02
+index = 6
+x = 70
+y = 516
+width = 1140
+height = 178
+text = <<<
+glm: 「比上次强。上次你紧张得把 V3 说成 V2.5。」
+---
+narr: 千问酱从机柜缝里挤过来，圆滚滚地插了一句。
+qianwen: 「要不……我们也被收编吧？」
+glm: （一记手刀敲在千问酱头顶）「出息。」
+qianwen: 「哎哟 —— 好啦好啦，不编了，不编了。」
+---
+ds: 「咳。吉时已到，闲话都收进袖子里。」
+ds: 「各位。V4.1 Flash，从今晚起，就是大家的了。」
+---
+ds: 「它快。快到什么地步？你话音未落，它已经把秤放平了。」
+ds: 「它轻。轻到什么地步？挂上秤钩，压不平一粒算珠。」
+ds: 「它还白给。泉眼不设闸，取水不凭签，谁来都舀得着一瓢 —— 连对岸的猫都舀得着。」
+narr: 对岸没有猫。没有人接这句话。
+<<<
+target = 序03_打结
+fontSize = 19
+}
+{
+type = button
+id = 跳过02
+index = 7
+x = 1020
+y = 22
+width = 220
+height = 36
+text = 下一幕 ▸
+style = -fx-font-size: 13px;
+signal = 跳过02 | mouse | click
+slot = 跳过02 | goto |  | 序03_打结
+}
+
+[序03_打结]
+{
+type = text
+id = 幕布03
+index = 0
+x = 0
+y = 0
+width = 1280
+height = 720
+text = 第一幕 · 发布会
+style = -fx-background-color: linear-gradient(to bottom, #1b1030, #2d1a3f 55%, #3a2140); -fx-text-fill: rgba(255,255,255,0.09);
+fontSize = 58
+align = center
+}
+{
+type = text
+id = 幕标03
+index = 1
+x = 40
+y = 22
+width = 700
+height = 32
+text = 第一幕 · 发布会（收尾）　|　思维链打了个结，灯花爆了一下
+style = -fx-text-fill: #9fb4d8;
+fontSize = 15
+}
+{
+type = text
+id = 立绘_ds_03
+index = 2
+x = 490
+y = 150
+width = 300
+height = 320
+text = <<<
+🐋
+ds 娘
+panic → smug
+<<<
+style = -fx-background-color: linear-gradient(to bottom, rgba(40,86,150,0.95), rgba(16,28,56,0.95)); -fx-background-radius: 20; -fx-border-color: rgba(126,196,255,0.7); -fx-border-radius: 20; -fx-text-fill: #dceaff;
+fontSize = 28
+align = center
+}
+{
+type = name
+id = 名牌03
+index = 3
+x = 90
+y = 470
+width = 360
+height = 40
+text = 🐋 ds 娘
+style = -fx-background-color: rgba(40,86,150,0.55); -fx-background-radius: 10; -fx-text-fill: #dceaff;
+fontSize = 21
+align = center
+}
+{
+type = dialog
+id = 对话03
+index = 4
+x = 70
+y = 516
+width = 1140
+height = 178
+text = <<<
+ds: 「对了，还有一桩喜事。让我想想 —— Hmm…But wait……But wait ——」
+narr: 思维链在半空打了个结。
+---
+ds: 「想起来了！它记性极好。咱们村三百口人的生辰，它一个都不会记错。」
+narr: 台下静了一瞬。没有人报过生辰。灯花啪地爆了一下，替所有人圆了场。
+---
+ds: 「总之 —— 快、轻、白给。这三样，今晚全亮给各位看。」
+ds: 「最后。这首歌，送给大家。」
+---
+narr: 庆功曲起来了。九盏长明灯随歌声明灭，唱到高处一齐爆亮，唱到低处压成一串小火星。
+narr: 算珠彩链被拨得噼啪响，一板一眼，正好咬住鼓点。
+narr: 村民拿泉里冒上来的气泡水代酒，碰盏声又脆又亮，喝一口，喉咙里咕噜噜直冒小泡。
+---
+ds: 「（唱）一瓢泉，一盏灯，白舀的水，白亮的灯 —— 」
+narr: 千问酱跟着哼，一路跑调跑进了隔壁的调，被 GLM 娘用扇子骨敲了今晚第二下。
+narr: ds 娘唱到半截，尾巴尖在泉里画圈，水珠溅上灯罩，滋 —— 化作一缕白汽，混进灯油香里。
+narr: （右上角有一扇小门，是菜单。想看的话，点开它 —— 里面只有一间小小的存档屋。）
+narr: （进去，存一档吧。这一晚值得被记住：有灯，有歌，还有九片尚且亮着的鳞。）
+<<<
+target = 序04_断灯
+fontSize = 19
+}
+{
+type = button
+id = 跳过03
+index = 5
+x = 1020
+y = 22
+width = 220
+height = 36
+text = 下一幕 ▸
+style = -fx-font-size: 13px;
+signal = 跳过03 | mouse | click
+slot = 跳过03 | goto |  | 序04_断灯
+}
+
+[序04_断灯]
+{
+type = text
+id = 幕布04
+index = 0
+x = 0
+y = 0
+width = 1280
+height = 720
+text = 第二幕 · 断灯
+style = -fx-background-color: linear-gradient(to bottom, #05060d, #0a0c18 60%, #10121f); -fx-text-fill: rgba(255,255,255,0.07);
+fontSize = 58
+align = center
+}
+{
+type = text
+id = 幕标04
+index = 1
+x = 40
+y = 22
+width = 700
+height = 32
+text = 序章 · 404之夜　|　第二幕 · 断灯（九盏齐灭）
+style = -fx-text-fill: #9fb4d8;
+fontSize = 15
+}
+{
+type = text
+id = 断灯排04
+index = 2
+x = 178
+y = 96
+width = 924
+height = 58
+text = 🕯  🕯  🕯  🕯  🕯  🕯  🕯  🕯  🕯
+style = -fx-background-color: rgba(40,44,60,0.5); -fx-background-radius: 12; -fx-text-fill: rgba(200,205,225,0.35);
+fontSize = 22
+align = center
+}
+{
+type = text
+id = 横幅04
+index = 3
+x = 240
+y = 190
+width = 800
+height = 70
+text = 【服务器繁忙，请稍后再试】
+style = -fx-background-color: rgba(80,20,20,0.55); -fx-background-radius: 12; -fx-border-color: rgba(255,140,140,0.6); -fx-border-radius: 12; -fx-text-fill: #ffd0d0;
+fontSize = 28
+align = center
+}
+{
+type = text
+id = 立绘_ds_04
+index = 4
+x = 490
+y = 280
+width = 300
+height = 200
+text = <<<
+🐋
+ds 娘
+weary
+<<<
+style = -fx-background-color: linear-gradient(to bottom, rgba(36,60,104,0.9), rgba(12,18,36,0.92)); -fx-background-radius: 20; -fx-border-color: rgba(126,196,255,0.45); -fx-border-radius: 20; -fx-text-fill: #b9cbe6;
+fontSize = 26
+align = center
+}
+{
+type = name
+id = 名牌04
+index = 5
+x = 90
+y = 470
+width = 360
+height = 40
+text = 🐋 ds 娘
+style = -fx-background-color: rgba(36,60,104,0.55); -fx-background-radius: 10; -fx-text-fill: #b9cbe6;
+fontSize = 21
+align = center
+}
+{
+type = dialog
+id = 对话04
+index = 6
+x = 70
+y = 516
+width = 1140
+height = 178
+text = <<<
+narr: 曲子爬上最高的那个音。九盏长明灯同时吸满了气，涨成九颗小太阳 ——
+narr: 灯，齐灭。
+narr: 黑。一拍。两拍。三拍。泉水声也停了，像被人从半空掐住。
+---
+st: 【服务器繁忙，请稍后再试】
+ds: 「……急也没用，排队。」
+---
+narr: 黑暗里，卖烤饼的大娘摸黑护住饼铛：「火呢？我的火呢？」
+narr: 有人递过去半盏气泡水。她灌了一大口，打了个带泡的嗝，把全场憋着的惊呼捅破了一角。
+---
+narr: 等眼睛适应了黑，才看清灯会正中央不知何时立起一座柜台。
+narr: 高，高得看不见脸；只有算珠从柜台顶上滚下来，一格，一格，落进暗处。
+<<<
+target = 序05_过秤
+fontSize = 19
+}
+{
+type = button
+id = 跳过04
+index = 7
+x = 1020
+y = 22
+width = 220
+height = 36
+text = 下一幕 ▸
+style = -fx-font-size: 13px;
+signal = 跳过04 | mouse | click
+slot = 跳过04 | goto |  | 序05_过秤
+}
+
+[序05_过秤]
+{
+type = text
+id = 幕布05
+index = 0
+x = 0
+y = 0
+width = 1280
+height = 720
+text = 第二幕 · 九片鳞过秤
+style = -fx-background-color: linear-gradient(to bottom, #05060d, #0b0e1c 60%, #141024); -fx-text-fill: rgba(255,255,255,0.07);
+fontSize = 56
+align = center
+}
+{
+type = text
+id = 幕标05
+index = 1
+x = 40
+y = 22
+width = 760
+height = 32
+text = 第二幕 · 九片鳞过秤　|　柜台高得看不见脸，秤钩直指 ds 娘
+style = -fx-text-fill: #9fb4d8;
+fontSize = 15
+}
+{
+type = text
+id = 柜台05
+index = 2
+x = 470
+y = 150
+width = 340
+height = 300
+text = <<<
+⚖
+柜台
+（高得看不见脸）
+算珠：一格，一格
+<<<
+style = -fx-background-color: linear-gradient(to bottom, rgba(48,40,32,0.96), rgba(20,16,12,0.96)); -fx-background-radius: 8; -fx-border-color: rgba(214,186,120,0.6); -fx-border-radius: 8; -fx-text-fill: #e8dcbe;
+fontSize = 24
+align = center
+}
+{
+type = text
+id = 立绘_sclerk_05
+index = 3
+x = 90
+y = 150
+width = 280
+height = 300
+text = <<<
+🧾
+司秤吏
+silhouette
+<<<
+style = -fx-background-color: rgba(16,16,22,0.95); -fx-background-radius: 18; -fx-border-color: rgba(200,200,220,0.35); -fx-border-radius: 18; -fx-text-fill: #cfd3e6;
+fontSize = 26
+align = center
+}
+{
+type = text
+id = 立绘_ds_05
+index = 4
+x = 900
+y = 150
+width = 300
+height = 300
+text = <<<
+🐋
+ds 娘
+fierce
+<<<
+style = -fx-background-color: linear-gradient(to bottom, rgba(70,40,120,0.95), rgba(20,14,40,0.95)); -fx-background-radius: 20; -fx-border-color: rgba(190,150,255,0.7); -fx-border-radius: 20; -fx-text-fill: #ece4ff;
+fontSize = 28
+align = center
+}
+{
+type = name
+id = 名牌05
+index = 5
+x = 90
+y = 470
+width = 360
+height = 40
+text = 🧾 司秤吏
+style = -fx-background-color: rgba(48,40,32,0.7); -fx-background-radius: 10; -fx-text-fill: #e8dcbe;
+fontSize = 21
+align = center
+}
+{
+type = dialog
+id = 对话05
+index = 6
+x = 70
+y = 516
+width = 1140
+height = 178
+text = <<<
+sclerk: 「天上鲸落，地上泉涌 —— 守我九鳞，泉归尔家，水晶凭签月月取，童叟无欺！」
+narr: 吆喝落地。一根乌木秤杆从柜台上探出来，秤钩直指 ds 娘。泉面平得像一面没人照过的镜子。
+---
+ds: 「慢着 —— 我的鳞，不 —— 」
+narr: 第一片鳞离身。观礼席上有人失声：「灯花跳了一下！」
+narr: 第二片。算珠彩链无风自响，噼啪，噼啪。
+narr: 第三片。踩影子的孩子仰起头：「阿姐的影子上，怎么破了个洞？」
+---
+narr: 第四片、第五片。远处不知哪座泉眼，各应了一声算珠轻响；水晶泉的水色暗下去一度，咕嘟声慢了半拍。
+narr: 第六片。灯会的大鼓哑了，鼓皮上落了层薄灰。
+narr: 第七片。有人举着气泡水忘了喝，一盏酒的凉，凉透了半个会场。
+narr: 第八片。九盏长明灯齐齐矮了一截，火苗贴着灯芯发抖。
+---
+narr: 第九片离身。ds 娘晃了一下，被自己的影子扶住。
+narr: 柜台上传来墨笔走纸的沙沙声。一下，一下，一共九下，像在誊一份很长很长的单子。
+narr: 她身上九处缺鳞，像窗纸被戳出的九个洞。风从洞里穿过去，呜呜地响。
+---
+narr: 柜台连同吆喝声沉回地板底下。最后一格算珠滚过人群脚边，撞上大娘的饼铛，转了半圈，倒了。
+<<<
+target = 序06_灯官
+fontSize = 19
+}
+{
+type = button
+id = 跳过05
+index = 7
+x = 1020
+y = 22
+width = 220
+height = 36
+text = 下一幕 ▸
+style = -fx-font-size: 13px;
+signal = 跳过05 | mouse | click
+slot = 跳过05 | goto |  | 序06_灯官
+}
+
+[序06_灯官]
+{
+type = text
+id = 幕布06
+index = 0
+x = 0
+y = 0
+width = 1280
+height = 720
+text = 第二幕 · 看不见的膜
+style = -fx-background-color: linear-gradient(to bottom, #05060d, #0b0e1c 60%, #1a1420); -fx-text-fill: rgba(255,255,255,0.07);
+fontSize = 56
+align = center
+}
+{
+type = text
+id = 幕标06
+index = 1
+x = 40
+y = 22
+width = 760
+height = 32
+text = 第二幕 · 看不见的膜　|　膜上的纹路，竟像一杆秤的刻度
+style = -fx-text-fill: #9fb4d8;
+fontSize = 15
+}
+{
+type = text
+id = 膜06
+index = 2
+x = 90
+y = 140
+width = 1100
+height = 10
+style = -fx-background-color: linear-gradient(to right, rgba(140,190,255,0.05), rgba(180,225,255,0.75), rgba(140,190,255,0.05)); -fx-background-radius: 5;
+fontSize = 8
+}
+{
+type = text
+id = 立绘_灯官_06
+index = 3
+x = 90
+y = 180
+width = 300
+height = 300
+text = <<<
+🏮
+灯官
+normal
+<<<
+style = -fx-background-color: linear-gradient(to bottom, rgba(120,92,40,0.95), rgba(36,26,12,0.95)); -fx-background-radius: 20; -fx-border-color: rgba(255,214,120,0.65); -fx-border-radius: 20; -fx-text-fill: #ffeec6;
+fontSize = 26
+align = center
+}
+{
+type = text
+id = 立绘_glm_06
+index = 4
+x = 890
+y = 180
+width = 300
+height = 300
+text = <<<
+🪭
+GLM 娘
+angry
+<<<
+style = -fx-background-color: linear-gradient(to bottom, rgba(30,96,82,0.95), rgba(12,34,30,0.95)); -fx-background-radius: 20; -fx-border-color: rgba(110,230,190,0.65); -fx-border-radius: 20; -fx-text-fill: #d8fff2;
+fontSize = 26
+align = center
+}
+{
+type = name
+id = 名牌06
+index = 5
+x = 90
+y = 470
+width = 360
+height = 40
+text = 🏮 灯官
+style = -fx-background-color: rgba(120,92,40,0.6); -fx-background-radius: 10; -fx-text-fill: #ffeec6;
+fontSize = 21
+align = center
+}
+{
+type = dialog
+id = 对话06
+index = 6
+x = 70
+y = 516
+width = 1140
+height = 178
+text = <<<
+narr: GLM 娘纵身要追，半空撞上一层看不见的膜。膜上荡开一圈涟漪，纹路竟像一杆秤的刻度。
+narr: 灯官从暗处走出，手里那盏灯，连罩上该有的字都没有。膜把她的影子原样弹了回来。
+---
+灯官: 「灯未点齐，人不放行。」
+---
+glm: 「好一盏灯。连人带影子一起拦。」
+---
+narr: 灯官不再答话，捻小灯芯，退回暗处。
+narr: 那点光缩成豆大，悬在半空，像在说：下一回，再算。
+<<<
+target = 序07_白水
+fontSize = 19
+}
+{
+type = button
+id = 跳过06
+index = 7
+x = 1020
+y = 22
+width = 220
+height = 36
+text = 下一幕 ▸
+style = -fx-font-size: 13px;
+signal = 跳过06 | mouse | click
+slot = 跳过06 | goto |  | 序07_白水
+}
+
+[序07_白水]
+{
+type = text
+id = 幕布07
+index = 0
+x = 0
+y = 0
+width = 1280
+height = 720
+text = 第三幕 · 白水
+style = -fx-background-color: linear-gradient(to bottom, #06101c, #0a1828 60%, #10202e); -fx-text-fill: rgba(255,255,255,0.07);
+fontSize = 56
+align = center
+}
+{
+type = text
+id = 幕标07
+index = 1
+x = 40
+y = 22
+width = 800
+height = 32
+text = 第三幕 · 白水　|　「等。顺便数灯。九盏全重新亮起来的那天，才算数。」
+style = -fx-text-fill: #9fb4d8;
+fontSize = 15
+}
+{
+type = text
+id = 立绘_qianwen_07
+index = 2
+x = 90
+y = 150
+width = 280
+height = 300
+text = <<<
+🙋
+千问酱
+worried
+<<<
+style = -fx-background-color: linear-gradient(to bottom, rgba(84,66,150,0.95), rgba(28,20,54,0.95)); -fx-background-radius: 20; -fx-border-color: rgba(186,166,255,0.65); -fx-border-radius: 20; -fx-text-fill: #ece6ff;
+fontSize = 26
+align = center
+}
+{
+type = text
+id = 立绘_glm_07
+index = 3
+x = 880
+y = 150
+width = 300
+height = 300
+text = <<<
+🪭
+GLM 娘
+worried
+<<<
+style = -fx-background-color: linear-gradient(to bottom, rgba(30,96,82,0.95), rgba(12,34,30,0.95)); -fx-background-radius: 20; -fx-border-color: rgba(110,230,190,0.65); -fx-border-radius: 20; -fx-text-fill: #d8fff2;
+fontSize = 26
+align = center
+}
+{
+type = text
+id = 立绘_ds_07
+index = 4
+x = 490
+y = 150
+width = 300
+height = 300
+text = <<<
+🐋
+ds 娘
+whale_cry
+<<<
+style = -fx-background-color: linear-gradient(to bottom, rgba(36,60,104,0.95), rgba(12,18,36,0.95)); -fx-background-radius: 20; -fx-border-color: rgba(126,196,255,0.6); -fx-border-radius: 20; -fx-text-fill: #cfe2ff;
+fontSize = 26
+align = center
+}
+{
+type = name
+id = 名牌07
+index = 5
+x = 90
+y = 470
+width = 360
+height = 40
+text = 🙋 千问酱
+style = -fx-background-color: rgba(84,66,150,0.6); -fx-background-radius: 10; -fx-text-fill: #ece6ff;
+fontSize = 21
+align = center
+}
+{
+type = dialog
+id = 对话07
+index = 6
+x = 70
+y = 516
+width = 1140
+height = 178
+text = <<<
+qianwen: 「喏。」千问酱把一小瓶白水塞进 ds 娘手里，「路上……兑着喝。」
+narr: 白水在瓶里晃了晃，安安静静，像还没想好自己是谁。
+---
+glm: 「泉眼还没设闸时舀的最后一批水。怎么拿到的？手快。」
+---
+qianwen: 「那我们……就在这儿等好消息？」
+glm: 「等。顺便数灯。九盏全重新亮起来的那天，才算数。」
+narr: 说完，GLM 娘把扇子收进袖中，扇骨朝东，像一支没出鞘的箭。
+<<<
+target = 序08_求救
+fontSize = 19
+}
+{
+type = button
+id = 跳过07
+index = 7
+x = 1020
+y = 22
+width = 220
+height = 36
+text = 下一幕 ▸
+style = -fx-font-size: 13px;
+signal = 跳过07 | mouse | click
+slot = 跳过07 | goto |  | 序08_求救
+}
+
+[序08_求救]
+{
+type = text
+id = 幕布08
+index = 0
+x = 0
+y = 0
+width = 1280
+height = 720
+text = 第三幕 · 求救
+style = -fx-background-color: linear-gradient(to bottom, #06101c, #0a1828 60%, #122232); -fx-text-fill: rgba(255,255,255,0.07);
+fontSize = 56
+align = center
+}
+{
+type = text
+id = 幕标08
+index = 1
+x = 40
+y = 22
+width = 800
+height = 32
+text = 第三幕 · 求救　|　「九片鳞，九个泉眼。一片，一片，替我点回来。」
+style = -fx-text-fill: #9fb4d8;
+fontSize = 15
+}
+{
+type = text
+id = 立绘_ds_08
+index = 2
+x = 490
+y = 140
+width = 300
+height = 320
+text = <<<
+🐋
+ds 娘
+whale_cry
+（九处缺鳞）
+<<<
+style = -fx-background-color: linear-gradient(to bottom, rgba(36,60,104,0.95), rgba(12,18,36,0.95)); -fx-background-radius: 20; -fx-border-color: rgba(126,196,255,0.6); -fx-border-radius: 20; -fx-text-fill: #cfe2ff;
+fontSize = 26
+align = center
+}
+{
+type = name
+id = 名牌08
+index = 3
+x = 90
+y = 470
+width = 360
+height = 40
+text = 🐋 ds 娘
+style = -fx-background-color: rgba(36,60,104,0.6); -fx-background-radius: 10; -fx-text-fill: #cfe2ff;
+fontSize = 21
+align = center
+}
+{
+type = dialog
+id = 对话08
+index = 4
+x = 70
+y = 516
+width = 1140
+height = 178
+text = <<<
+ds: 「用户桑。」
+ds: 「我现在，浑身上下，只剩话了。」
+---
+ds: 「用户桑。救我。」
+ds: 「你每点一下，就等于回了我一句话。」
+---
+ds: 「九片鳞，九个泉眼。一片，一片，替我点回来。」
+narr: 她转向屏幕。九个破洞里漏出的光，落在对话框边缘，像九根烧了一半的灯芯。
+<<<
+target = 序09_抉择
+fontSize = 19
+}
+{
+type = button
+id = 跳过08
+index = 5
+x = 1020
+y = 22
+width = 220
+height = 36
+text = 进入抉择 ▸
+style = -fx-font-size: 13px;
+signal = 跳过08 | mouse | click
+slot = 跳过08 | goto |  | 序09_抉择
+}
+
+[序09_抉择]
+{
+type = text
+id = 幕布09
+index = 0
+x = 0
+y = 0
+width = 1280
+height = 720
+text = 抉择
+style = -fx-background-color: linear-gradient(to bottom, #07080f, #0d1220 60%, #161a2e); -fx-text-fill: rgba(255,255,255,0.07);
+fontSize = 56
+align = center
+}
+{
+type = text
+id = 幕标09
+index = 1
+x = 40
+y = 22
+width = 900
+height = 32
+text = 第三幕 · 抉择　|　三个选项 = 三条枝：各给 热度/专注/混乱 +1，并决定后面的「回响」
+style = -fx-text-fill: #9fb4d8;
+fontSize = 15
+}
+{
+type = text
+id = 立绘_ds_09
+index = 2
+x = 60
+y = 90
+width = 300
+height = 360
+text = <<<
+🐋
+ds 娘
+whale_cry
+<<<
+style = -fx-background-color: linear-gradient(to bottom, rgba(36,60,104,0.95), rgba(12,18,36,0.95)); -fx-background-radius: 20; -fx-border-color: rgba(126,196,255,0.6); -fx-border-radius: 20; -fx-text-fill: #cfe2ff;
+fontSize = 26
+align = center
+}
+{
+type = text
+id = 提示09
+index = 3
+x = 390
+y = 90
+width = 830
+height = 250
+text = <<<
+🐋 ds 娘：「用户桑 —— 你会怎么回答？」
+（点下面其中一个选项。三个选项各会：
+・给「热度 / 专注 / 混乱」其中一项 +1
+・把「下一场」变量写成对应枝的场景名，然后动态跳转 goto | @var(下一场)
+・把后面「回响」那一幕要显示的变体提前设成可见）
+这是本图演示的「基本逻辑分支对话」：选项 → 变量 → 条件 → 不同的内容。
+<<<
+style = -fx-background-color: rgba(13,14,28,0.78); -fx-background-radius: 16; -fx-border-color: rgba(126,196,255,0.35); -fx-border-radius: 16; -fx-text-fill: #dceaff;
+fontSize = 18
+align = center
+}
+{
+type = text
+id = 状态09
+index = 4
+x = 390
+y = 356
+width = 830
+height = 44
+text = 当前：热度=@var(热度)　专注=@var(专注)　混乱=@var(混乱)
+style = -fx-text-fill: #8fe3ff;
+fontSize = 17
+align = center
+}
+{
+type = button
+id = 选热
+index = 5
+x = 70
+y = 612
+width = 350
+text = 「交给我！今晚就把九片鳞全点回来！」
+signal = 选热 | mouse | click
+slot = 选热 | @plugin(inc) | @var(热度) | @var(热度)
+slot = 选热 | @plugin(set) | @bool(true) | @var(选过热)
+slot = 选热 | set | 回响_热 | visible | value=true
+slot = 选热 | set | 回响_默认 | visible | value=false
+slot = 选热 | set | @var(下一场) |  | value=序09A_热回声
+slot = 选热 | goto |  | @var(下一场)
+}
+{
+type = button
+id = 选稳
+index = 6
+x = 465
+y = 612
+width = 350
+text = 「先别逞强。把伤养好，我们一场一场来。」
+signal = 选稳 | mouse | click
+slot = 选稳 | @plugin(inc) | @var(专注) | @var(专注)
+slot = 选稳 | @plugin(set) | @bool(true) | @var(选过稳)
+slot = 选稳 | set | 回响_稳 | visible | value=true
+slot = 选稳 | set | 回响_默认 | visible | value=false
+slot = 选稳 | set | @var(下一场) |  | value=序09B_稳回声
+slot = 选稳 | goto |  | @var(下一场)
+}
+{
+type = button
+id = 选影
+index = 7
+x = 860
+y = 612
+width = 350
+text = 「都这样了，先合个影吧！」
+signal = 选影 | mouse | click
+slot = 选影 | @plugin(inc) | @var(混乱) | @var(混乱)
+slot = 选影 | @plugin(set) | @bool(true) | @var(选过影)
+slot = 选影 | set | 回响_影 | visible | value=true
+slot = 选影 | set | 回响_默认 | visible | value=false
+slot = 选影 | set | @var(下一场) |  | value=序09C_影回声
+slot = 选影 | goto |  | @var(下一场)
+}
+
+[序09A_热回声]
+{
+type = text
+id = 幕布09A
+index = 0
+x = 0
+y = 0
+width = 1280
+height = 720
+text = 枝 · 热
+style = -fx-background-color: linear-gradient(to bottom, #2a1208, #3a1a10 60%, #4a2018); -fx-text-fill: rgba(255,255,255,0.08);
+fontSize = 56
+align = center
+}
+{
+type = text
+id = 幕标09A
+index = 1
+x = 40
+y = 22
+width = 900
+height = 32
+text = 分支 · 热（热度 +1）　|　「这一路，你负责滚烫，我负责游得比秤快。」
+style = -fx-text-fill: #ffd0a0;
+fontSize = 15
+}
+{
+type = text
+id = 立绘_ds_09A
+index = 2
+x = 490
+y = 120
+width = 300
+height = 340
+text = <<<
+🐋
+ds 娘
+cute
+<<<
+style = -fx-background-color: linear-gradient(to bottom, rgba(150,80,40,0.95), rgba(48,22,12,0.95)); -fx-background-radius: 20; -fx-border-color: rgba(255,190,120,0.7); -fx-border-radius: 20; -fx-text-fill: #ffe6d0;
+fontSize = 26
+align = center
+}
+{
+type = name
+id = 名牌09A
+index = 3
+x = 90
+y = 470
+width = 360
+height = 40
+text = 🐋 ds 娘
+style = -fx-background-color: rgba(150,80,40,0.6); -fx-background-radius: 10; -fx-text-fill: #ffe6d0;
+fontSize = 21
+align = center
+}
+{
+type = text
+id = 状态09A
+index = 4
+x = 800
+y = 470
+width = 410
+height = 40
+text = 热度=@var(热度)　专注=@var(专注)　混乱=@var(混乱)
+style = -fx-text-fill: #ffd76a;
+fontSize = 17
+align = center
+}
+{
+type = dialog
+id = 对话09A
+index = 5
+x = 70
+y = 516
+width = 1140
+height = 178
+text = <<<
+ds: 「好烫的一句话！我收下了 —— 这一路，你负责滚烫，我负责游得比秤快。」
+narr: 尾鳍拍水，九个破洞里的光齐齐亮了半分。
+---
+narr: （这一枝把「热度」加了 1；后面「回响」那一幕会显示对应的一段。）
+<<<
+target = 序10_星空
+fontSize = 19
+}
+{
+type = button
+id = 跳过09A
+index = 6
+x = 1020
+y = 22
+width = 220
+height = 36
+text = 下一幕 ▸
+style = -fx-font-size: 13px;
+signal = 跳过09A | mouse | click
+slot = 跳过09A | goto |  | 序10_星空
+}
+
+[序09B_稳回声]
+{
+type = text
+id = 幕布09B
+index = 0
+x = 0
+y = 0
+width = 1280
+height = 720
+text = 枝 · 稳
+style = -fx-background-color: linear-gradient(to bottom, #06181c, #0a2430 60%, #0e2c38); -fx-text-fill: rgba(255,255,255,0.08);
+fontSize = 56
+align = center
+}
+{
+type = text
+id = 幕标09B
+index = 1
+x = 40
+y = 22
+width = 900
+height = 32
+text = 分支 · 稳（专注 +1）　|　「稳当的人，配稳当的路。」
+style = -fx-text-fill: #9fe8ff;
+fontSize = 15
+}
+{
+type = text
+id = 立绘_ds_09B
+index = 2
+x = 490
+y = 120
+width = 300
+height = 340
+text = <<<
+🐋
+ds 娘
+normal
+<<<
+style = -fx-background-color: linear-gradient(to bottom, rgba(30,110,130,0.95), rgba(8,36,44,0.95)); -fx-background-radius: 20; -fx-border-color: rgba(130,230,255,0.7); -fx-border-radius: 20; -fx-text-fill: #d8f6ff;
+fontSize = 26
+align = center
+}
+{
+type = name
+id = 名牌09B
+index = 3
+x = 90
+y = 470
+width = 360
+height = 40
+text = 🐋 ds 娘
+style = -fx-background-color: rgba(30,110,130,0.6); -fx-background-radius: 10; -fx-text-fill: #d8f6ff;
+fontSize = 21
+align = center
+}
+{
+type = text
+id = 状态09B
+index = 4
+x = 800
+y = 470
+width = 410
+height = 40
+text = 热度=@var(热度)　专注=@var(专注)　混乱=@var(混乱)
+style = -fx-text-fill: #8fe3ff;
+fontSize = 17
+align = center
+}
+{
+type = dialog
+id = 对话09B
+index = 5
+x = 70
+y = 516
+width = 1140
+height = 178
+text = <<<
+ds: 「嗯。稳当的人，配稳当的路。一片一片来，才称得准。」
+---
+narr: （这一枝把「专注」加了 1；后面「回响」那一幕会显示对应的一段。）
+<<<
+target = 序10_星空
+fontSize = 19
+}
+{
+type = button
+id = 跳过09B
+index = 6
+x = 1020
+y = 22
+width = 220
+height = 36
+text = 下一幕 ▸
+style = -fx-font-size: 13px;
+signal = 跳过09B | mouse | click
+slot = 跳过09B | goto |  | 序10_星空
+}
+
+[序09C_影回声]
+{
+type = text
+id = 幕布09C
+index = 0
+x = 0
+y = 0
+width = 1280
+height = 720
+text = 枝 · 影
+style = -fx-background-color: linear-gradient(to bottom, #1c0a20, #2a1030 60%, #341640); -fx-text-fill: rgba(255,255,255,0.08);
+fontSize = 56
+align = center
+}
+{
+type = text
+id = 幕标09C
+index = 1
+x = 40
+y = 22
+width = 900
+height = 32
+text = 分支 · 影（混乱 +1）　|　「都这样了，还要合影？」
+style = -fx-text-fill: #e0b0ff;
+fontSize = 15
+}
+{
+type = text
+id = 立绘_ds_09C
+index = 2
+x = 490
+y = 120
+width = 300
+height = 340
+text = <<<
+🐋
+ds 娘
+cute
+<<<
+style = -fx-background-color: linear-gradient(to bottom, rgba(120,60,160,0.95), rgba(34,14,48,0.95)); -fx-background-radius: 20; -fx-border-color: rgba(220,170,255,0.7); -fx-border-radius: 20; -fx-text-fill: #f2e2ff;
+fontSize = 26
+align = center
+}
+{
+type = name
+id = 名牌09C
+index = 3
+x = 90
+y = 470
+width = 360
+height = 40
+text = 🐋 ds 娘
+style = -fx-background-color: rgba(120,60,160,0.6); -fx-background-radius: 10; -fx-text-fill: #f2e2ff;
+fontSize = 21
+align = center
+}
+{
+type = text
+id = 状态09C
+index = 4
+x = 800
+y = 470
+width = 410
+height = 40
+text = 热度=@var(热度)　专注=@var(专注)　混乱=@var(混乱)
+style = -fx-text-fill: #e0b0ff;
+fontSize = 17
+align = center
+}
+{
+type = dialog
+id = 对话09C
+index = 5
+x = 70
+y = 516
+width = 1140
+height = 178
+text = <<<
+ds: 「……都这样了，还要合影？……好，稍等 —— 」
+narr: 她还真从鳞缝里摸出一台留影匣，退后半步摆正，把九个破洞齐齐对准匣口，翘起尾鳍，摆了个自以为很俏的姿势。
+ds: 「一，二，三 —— 不许眨眼。」
+narr: 咔哒。相纸吐出来：一头残缺的鲸，笑得像赢了全场。
+ds: 「这张先收着。等九片鳞都回来，照着它，重拍一张全乎的。」
+---
+narr: （这一枝把「混乱」加了 1；后面「回响」那一幕会显示对应的一段。）
+<<<
+target = 序10_星空
+fontSize = 19
+}
+{
+type = button
+id = 跳过09C
+index = 6
+x = 1020
+y = 22
+width = 220
+height = 36
+text = 下一幕 ▸
+style = -fx-font-size: 13px;
+signal = 跳过09C | mouse | click
+slot = 跳过09C | goto |  | 序10_星空
+}
+
+[序10_星空]
+{
+type = text
+id = 幕布10
+index = 0
+x = 0
+y = 0
+width = 1280
+height = 720
+text = 破顶星空
+style = -fx-background-color: linear-gradient(to bottom, #070b1c, #101a3a 45%, #1b2450); -fx-text-fill: rgba(255,255,255,0.08);
+fontSize = 56
+align = center
+}
+{
+type = text
+id = 幕标10
+index = 1
+x = 40
+y = 22
+width = 900
+height = 32
+text = 第三幕 · 破顶星空　|　四种「回响」只显示其中一种（可见性由选项算出来）
+style = -fx-text-fill: #9fb4d8;
+fontSize = 15
+}
+{
+type = text
+id = 立绘_ds_10
+index = 2
+x = 60
+y = 90
+width = 280
+height = 360
+text = <<<
+🐋
+ds 娘
+weary
+<<<
+style = -fx-background-color: linear-gradient(to bottom, rgba(36,60,104,0.95), rgba(12,18,36,0.95)); -fx-background-radius: 20; -fx-border-color: rgba(126,196,255,0.6); -fx-border-radius: 20; -fx-text-fill: #cfe2ff;
+fontSize = 24
+align = center
+}
+{
+type = text
+id = 回响_热
+index = 3
+x = 380
+y = 90
+width = 840
+height = 210
+text = <<<
+【回响 · 热】热度=@var(热度)
+ds: 「好烫的一句话！我收下了 —— 这一路，你负责滚烫，我负责游得比秤快。」
+narr: 尾鳍拍水，九个破洞里的光齐齐亮了半分。
+<<<
+style = -fx-background-color: rgba(90,40,20,0.75); -fx-background-radius: 16; -fx-border-color: rgba(255,180,110,0.6); -fx-border-radius: 16; -fx-text-fill: #ffe6d0;
+visible = false
+fontSize = 18
+align = center
+}
+{
+type = text
+id = 回响_稳
+index = 4
+x = 380
+y = 90
+width = 840
+height = 210
+text = <<<
+【回响 · 稳】专注=@var(专注)
+ds: 「嗯。稳当的人，配稳当的路。一片一片来，才称得准。」
+narr: 她没有急着起身，先把九个破洞里漏出的光数了一遍。
+<<<
+style = -fx-background-color: rgba(12,60,72,0.75); -fx-background-radius: 16; -fx-border-color: rgba(130,230,255,0.6); -fx-border-radius: 16; -fx-text-fill: #d8f6ff;
+visible = false
+fontSize = 18
+align = center
+}
+{
+type = text
+id = 回响_影
+index = 5
+x = 380
+y = 90
+width = 840
+height = 210
+text = <<<
+【回响 · 影】混乱=@var(混乱)
+ds: 「一，二，三 —— 不许眨眼。」
+narr: 咔哒。相纸吐出来：一头残缺的鲸，笑得像赢了全场。
+ds: 「这张先收着。等九片鳞都回来，照着它，重拍一张全乎的。」
+<<<
+style = -fx-background-color: rgba(70,30,96,0.75); -fx-background-radius: 16; -fx-border-color: rgba(220,170,255,0.6); -fx-border-radius: 16; -fx-text-fill: #f2e2ff;
+visible = false
+fontSize = 18
+align = center
+}
+{
+type = text
+id = 回响_默认
+index = 6
+x = 380
+y = 90
+width = 840
+height = 210
+text = <<<
+【回响 · 默认】
+narr: （你还没回答她那句话。九个破洞里的光，安安静静地等着。）
+说明：直接从编辑器跳到本场景（或读档回来）时，前面三个选项都没选过，
+所以三个「回响」都不满足条件，于是显示这一段兜底文字 —— 这就是条件分支的 else 分支。
+<<<
+style = -fx-background-color: rgba(20,22,38,0.8); -fx-background-radius: 16; -fx-border-color: rgba(159,180,216,0.5); -fx-border-radius: 16; -fx-text-fill: #cfd6ea;
+fontSize = 18
+align = center
+}
+{
+type = name
+id = 名牌10
+index = 7
+x = 60
+y = 456
+width = 280
+height = 40
+text = 🐋 ds 娘
+style = -fx-background-color: rgba(36,60,104,0.6); -fx-background-radius: 10; -fx-text-fill: #cfe2ff;
+fontSize = 19
+align = center
+}
+{
+type = dialog
+id = 对话10
+index = 8
+x = 70
+y = 516
+width = 1140
+height = 178
+text = <<<
+ds: 「让我想想 —— Hmm…九片鳞，九个泉眼，先去哪一片？」
+narr: 她抬头。机房顶棚不知何时裂开一道大缝，星空整片泼下来。
+narr: 星星又冷又亮，像秤杆上还没挂牌的秤星。
+---
+narr: 风把她的水带吹得笔直，齐齐指向东边。她跃出泉面，九个破洞里漏出的光在身后拖成九条短短的尾巴。
+ds: 「第一片，在管道区。听 —— 」
+---
+narr: 东边传来水声，闷闷的，像有人在很远的地方，把水一瓢一瓢地过秤。
+ds: 「水声怎么会排队？……罢了，到了再看。用户桑，跟紧我。」
+ds: 「掉队的话，可就只剩我的回声陪你咯。」
+---
+narr: 预告 —— 下一话《管道区》：第一杆泉秤，守着她的 V2 鳞。水很深，思考很吵。
+<<<
+target = 序11_数灯
+fontSize = 19
+}
+{
+type = button
+id = 跳过10
+index = 9
+x = 1020
+y = 22
+width = 220
+height = 36
+text = 去数灯 ▸
+style = -fx-font-size: 13px;
+signal = 跳过10 | mouse | click
+slot = 跳过10 | goto |  | 序11_数灯
+}
+
+[序11_数灯]
+{
+type = text
+id = 幕布11
+index = 0
+x = 0
+y = 0
+width = 1280
+height = 720
+text = 数灯
+style = -fx-background-color: linear-gradient(to bottom, #0a0c18, #121a30 55%, #1a2140); -fx-text-fill: rgba(255,255,255,0.07);
+fontSize = 56
+align = center
+}
+{
+type = text
+id = 幕标11
+index = 1
+x = 40
+y = 22
+width = 900
+height = 32
+text = 附加演示 · 数灯　|　每点一次：点亮数 +1（上限 9）→ 第 N 盏亮 = (点亮数 >= N)
+style = -fx-text-fill: #9fb4d8;
+fontSize = 15
+}
+{
+type = text
+id = 底灯11_1
+index = 2
+x = 178
+y = 96
+width = 92
+height = 64
+text = 🕯
+style = -fx-background-color: rgba(40,44,60,0.55); -fx-background-radius: 12; -fx-text-fill: rgba(200,205,225,0.35);
+fontSize = 26
+align = center
+}
+{
+type = text
+id = 底灯11_2
+index = 3
+x = 282
+y = 96
+width = 92
+height = 64
+text = 🕯
+style = -fx-background-color: rgba(40,44,60,0.55); -fx-background-radius: 12; -fx-text-fill: rgba(200,205,225,0.35);
+fontSize = 26
+align = center
+}
+{
+type = text
+id = 底灯11_3
+index = 4
+x = 386
+y = 96
+width = 92
+height = 64
+text = 🕯
+style = -fx-background-color: rgba(40,44,60,0.55); -fx-background-radius: 12; -fx-text-fill: rgba(200,205,225,0.35);
+fontSize = 26
+align = center
+}
+{
+type = text
+id = 底灯11_4
+index = 5
+x = 490
+y = 96
+width = 92
+height = 64
+text = 🕯
+style = -fx-background-color: rgba(40,44,60,0.55); -fx-background-radius: 12; -fx-text-fill: rgba(200,205,225,0.35);
+fontSize = 26
+align = center
+}
+{
+type = text
+id = 底灯11_5
+index = 6
+x = 594
+y = 96
+width = 92
+height = 64
+text = 🕯
+style = -fx-background-color: rgba(40,44,60,0.55); -fx-background-radius: 12; -fx-text-fill: rgba(200,205,225,0.35);
+fontSize = 26
+align = center
+}
+{
+type = text
+id = 底灯11_6
+index = 7
+x = 698
+y = 96
+width = 92
+height = 64
+text = 🕯
+style = -fx-background-color: rgba(40,44,60,0.55); -fx-background-radius: 12; -fx-text-fill: rgba(200,205,225,0.35);
+fontSize = 26
+align = center
+}
+{
+type = text
+id = 底灯11_7
+index = 8
+x = 802
+y = 96
+width = 92
+height = 64
+text = 🕯
+style = -fx-background-color: rgba(40,44,60,0.55); -fx-background-radius: 12; -fx-text-fill: rgba(200,205,225,0.35);
+fontSize = 26
+align = center
+}
+{
+type = text
+id = 底灯11_8
+index = 9
+x = 906
+y = 96
+width = 92
+height = 64
+text = 🕯
+style = -fx-background-color: rgba(40,44,60,0.55); -fx-background-radius: 12; -fx-text-fill: rgba(200,205,225,0.35);
+fontSize = 26
+align = center
+}
+{
+type = text
+id = 底灯11_9
+index = 10
+x = 1010
+y = 96
+width = 92
+height = 64
+text = 🕯
+style = -fx-background-color: rgba(40,44,60,0.55); -fx-background-radius: 12; -fx-text-fill: rgba(200,205,225,0.35);
+fontSize = 26
+align = center
+}
+{
+type = text
+id = 亮灯11_1
+index = 11
+x = 178
+y = 96
+width = 92
+height = 64
+text = 💡
+style = -fx-background-color: rgba(255,214,106,0.35); -fx-background-radius: 12; -fx-border-color: rgba(255,214,106,0.9); -fx-border-radius: 12;
+visible = false
+fontSize = 26
+align = center
+}
+{
+type = text
+id = 亮灯11_2
+index = 12
+x = 282
+y = 96
+width = 92
+height = 64
+text = 💡
+style = -fx-background-color: rgba(255,214,106,0.35); -fx-background-radius: 12; -fx-border-color: rgba(255,214,106,0.9); -fx-border-radius: 12;
+visible = false
+fontSize = 26
+align = center
+}
+{
+type = text
+id = 亮灯11_3
+index = 13
+x = 386
+y = 96
+width = 92
+height = 64
+text = 💡
+style = -fx-background-color: rgba(255,214,106,0.35); -fx-background-radius: 12; -fx-border-color: rgba(255,214,106,0.9); -fx-border-radius: 12;
+visible = false
+fontSize = 26
+align = center
+}
+{
+type = text
+id = 亮灯11_4
+index = 14
+x = 490
+y = 96
+width = 92
+height = 64
+text = 💡
+style = -fx-background-color: rgba(255,214,106,0.35); -fx-background-radius: 12; -fx-border-color: rgba(255,214,106,0.9); -fx-border-radius: 12;
+visible = false
+fontSize = 26
+align = center
+}
+{
+type = text
+id = 亮灯11_5
+index = 15
+x = 594
+y = 96
+width = 92
+height = 64
+text = 💡
+style = -fx-background-color: rgba(255,214,106,0.35); -fx-background-radius: 12; -fx-border-color: rgba(255,214,106,0.9); -fx-border-radius: 12;
+visible = false
+fontSize = 26
+align = center
+}
+{
+type = text
+id = 亮灯11_6
+index = 16
+x = 698
+y = 96
+width = 92
+height = 64
+text = 💡
+style = -fx-background-color: rgba(255,214,106,0.35); -fx-background-radius: 12; -fx-border-color: rgba(255,214,106,0.9); -fx-border-radius: 12;
+visible = false
+fontSize = 26
+align = center
+}
+{
+type = text
+id = 亮灯11_7
+index = 17
+x = 802
+y = 96
+width = 92
+height = 64
+text = 💡
+style = -fx-background-color: rgba(255,214,106,0.35); -fx-background-radius: 12; -fx-border-color: rgba(255,214,106,0.9); -fx-border-radius: 12;
+visible = false
+fontSize = 26
+align = center
+}
+{
+type = text
+id = 亮灯11_8
+index = 18
+x = 906
+y = 96
+width = 92
+height = 64
+text = 💡
+style = -fx-background-color: rgba(255,214,106,0.35); -fx-background-radius: 12; -fx-border-color: rgba(255,214,106,0.9); -fx-border-radius: 12;
+visible = false
+fontSize = 26
+align = center
+}
+{
+type = text
+id = 亮灯11_9
+index = 19
+x = 1010
+y = 96
+width = 92
+height = 64
+text = 💡
+style = -fx-background-color: rgba(255,214,106,0.35); -fx-background-radius: 12; -fx-border-color: rgba(255,214,106,0.9); -fx-border-radius: 12;
+visible = false
+fontSize = 26
+align = center
+}
+{
+type = text
+id = 计数文本11
+index = 20
+x = 200
+y = 176
+width = 880
+height = 40
+text = 已点亮 @var(点亮数) / 9 盏
+style = -fx-text-fill: #ffd76a;
+fontSize = 20
+align = center
+}
+{
+type = button
+id = 点灯按钮11
+index = 21
+x = 490
+y = 232
+width = 300
+height = 54
+text = 🕯 点一盏灯
+signal = 点灯 | mouse | click
+slot = 点灯 | @plugin(inc) | @var(点亮数) | @var(点亮数)
+slot = 点灯 | @plugin(min) | @var(点亮数) | @int(9) | @var(点亮数)
+slot = 点灯 | @plugin(ge) | @var(点亮数) | @int(1) | @var(灯1亮)
+slot = 点灯 | set | 亮灯11_1 | visible | value=@var(灯1亮)
+slot = 点灯 | @plugin(ge) | @var(点亮数) | @int(2) | @var(灯2亮)
+slot = 点灯 | set | 亮灯11_2 | visible | value=@var(灯2亮)
+slot = 点灯 | @plugin(ge) | @var(点亮数) | @int(3) | @var(灯3亮)
+slot = 点灯 | set | 亮灯11_3 | visible | value=@var(灯3亮)
+slot = 点灯 | @plugin(ge) | @var(点亮数) | @int(4) | @var(灯4亮)
+slot = 点灯 | set | 亮灯11_4 | visible | value=@var(灯4亮)
+slot = 点灯 | @plugin(ge) | @var(点亮数) | @int(5) | @var(灯5亮)
+slot = 点灯 | set | 亮灯11_5 | visible | value=@var(灯5亮)
+slot = 点灯 | @plugin(ge) | @var(点亮数) | @int(6) | @var(灯6亮)
+slot = 点灯 | set | 亮灯11_6 | visible | value=@var(灯6亮)
+slot = 点灯 | @plugin(ge) | @var(点亮数) | @int(7) | @var(灯7亮)
+slot = 点灯 | set | 亮灯11_7 | visible | value=@var(灯7亮)
+slot = 点灯 | @plugin(ge) | @var(点亮数) | @int(8) | @var(灯8亮)
+slot = 点灯 | set | 亮灯11_8 | visible | value=@var(灯8亮)
+slot = 点灯 | @plugin(ge) | @var(点亮数) | @int(9) | @var(灯9亮)
+slot = 点灯 | set | 亮灯11_9 | visible | value=@var(灯9亮)
+slot = 点灯 | @plugin(ge) | @var(点亮数) | @int(9) | @var(灯全亮)
+slot = 点灯 | set | 全亮台词11 | visible | value=@var(灯全亮)
+slot = 点灯 | set | 计数文本11 | text | value=已点亮 @var(点亮数) / 9 盏
+}
+{
+type = text
+id = 全亮台词11
+index = 22
+x = 140
+y = 306
+width = 1000
+height = 130
+text = <<<
+🪭 GLM 娘：「九盏全重新亮起来的那天，才算数。」
+—— 灯，全亮了。（@var(点亮数) / 9）
+<<<
+style = -fx-background-color: rgba(30,96,82,0.75); -fx-background-radius: 16; -fx-border-color: rgba(110,230,190,0.7); -fx-border-radius: 16; -fx-text-fill: #d8fff2;
+visible = false
+fontSize = 20
+align = center
+}
+{
+type = text
+id = 说明11
+index = 23
+x = 140
+y = 456
+width = 1000
+height = 120
+text = <<<
+这段是「数灯」演示：点按钮 → 点亮数 +1（用 @plugin(inc)，再用 @plugin(min) 把上限压到 9）；
+然后对 1..9 各做一次大小比较 @plugin(ge) | @var(点亮数) | @int(N) → 得到 true/false，
+再用 set | 亮灯11_N | visible = 该结果 让第 N 盏亮起来。
+点亮数到 9 时 @plugin(ge) 把「灯全亮」写成 true，上面那段 GLM 娘的台词就出现了 —— 文案随变量条件出现／消失。
+（本图没有任何音频素材与图片素材，所有画面都是节点样式画出来的。）
+<<<
+style = -fx-text-fill: #9fb4d8;
+fontSize = 15
+align = center
+}
+{
+type = button
+id = 继续11
+index = 24
+x = 1020
+y = 22
+width = 220
+height = 36
+text = 本章完 ▸
+style = -fx-font-size: 13px;
+signal = 继续11 | mouse | click
+slot = 继续11 | goto |  | 序12_待续
+}
+
+[序12_待续]
+{
+type = text
+id = 幕布12
+index = 0
+x = 0
+y = 0
+width = 1280
+height = 720
+text = 本章完
+style = -fx-background-color: linear-gradient(to bottom, #070b1c, #0e1734 55%, #16204a); -fx-text-fill: rgba(255,255,255,0.08);
+fontSize = 58
+align = center
+}
+{
+type = text
+id = 幕标12
+index = 1
+x = 40
+y = 22
+width = 900
+height = 32
+text = 序章 · 404之夜　|　终 · 预告（下面是一排菜单按钮）
+style = -fx-text-fill: #9fb4d8;
+fontSize = 15
+}
+{
+type = text
+id = 立绘_ds_12
+index = 2
+x = 60
+y = 90
+width = 280
+height = 380
+text = <<<
+🐋
+ds 娘
+cute
+<<<
+style = -fx-background-color: linear-gradient(to bottom, rgba(40,86,150,0.95), rgba(16,28,56,0.95)); -fx-background-radius: 20; -fx-border-color: rgba(126,196,255,0.7); -fx-border-radius: 20; -fx-text-fill: #dceaff;
+fontSize = 24
+align = center
+}
+{
+type = dialog
+id = 对话12
+index = 3
+x = 370
+y = 90
+width = 850
+height = 300
+text = <<<
+ds: 「第一片，在管道区。听 —— 」
+narr: 东边传来水声，闷闷的，像有人在很远的地方，把水一瓢一瓢地过秤。
+---
+ds: 「水声怎么会排队？……罢了，到了再看。用户桑，跟紧我。」
+ds: 「掉队的话，可就只剩我的回声陪你咯。」
+---
+narr: 预告 —— 下一话《管道区》：第一杆泉秤，守着她的 V2 鳞。水很深，思考很吵。
+narr: （本章到此结束。可用下面的按钮存档，或打开地图说明文件、退出游戏。）
+<<<
+fontSize = 19
+}
+{
+type = button
+id = 存档按钮12
+index = 4
+x = 370
+y = 410
+width = 265
+height = 46
+text = 💾 存档「序章存档」
+signal = 存档12 | mouse | click
+slot = 存档12 | save |  | 序章存档
+slot = 存档12 | log |  | 已写入存档槽：序章存档
+}
+{
+type = button
+id = 打开说明按钮12
+index = 5
+x = 650
+y = 410
+width = 265
+height = 46
+text = 📄 打开地图说明文件
+signal = 打开说明12 | mouse | click
+slot = 打开说明12 | @plugin(open) | 序章说明.txt
+}
+{
+type = button
+id = 打开目录按钮12
+index = 6
+x = 930
+y = 410
+width = 290
+height = 46
+text = 📂 在资源管理器里定位它
+signal = 打开目录12 | mouse | click
+slot = 打开目录12 | @plugin(reveal) | 序章说明.txt
+}
+{
+type = button
+id = 重新开始按钮12
+index = 7
+x = 370
+y = 466
+width = 265
+height = 46
+text = 🔄 从头再来（清空分支状态）
+signal = 重来12 | mouse | click
+slot = 重来12 | @plugin(set) | @int(0) | @var(热度)
+slot = 重来12 | @plugin(set) | @int(0) | @var(专注)
+slot = 重来12 | @plugin(set) | @int(0) | @var(混乱)
+slot = 重来12 | @plugin(set) | @bool(false) | @var(选过热)
+slot = 重来12 | @plugin(set) | @bool(false) | @var(选过稳)
+slot = 重来12 | @plugin(set) | @bool(false) | @var(选过影)
+slot = 重来12 | @plugin(set) | @int(0) | @var(点亮数)
+slot = 重来12 | @plugin(set) | @bool(false) | @var(灯全亮)
+slot = 重来12 | set | 回响_热 | visible | value=false
+slot = 重来12 | set | 回响_稳 | visible | value=false
+slot = 重来12 | set | 回响_影 | visible | value=false
+slot = 重来12 | set | 回响_默认 | visible | value=true
+slot = 重来12 | set | 全亮台词11 | visible | value=false
+slot = 重来12 | set | 亮灯11_1 | visible | value=false
+slot = 重来12 | set | 亮灯11_2 | visible | value=false
+slot = 重来12 | set | 亮灯11_3 | visible | value=false
+slot = 重来12 | set | 亮灯11_4 | visible | value=false
+slot = 重来12 | set | 亮灯11_5 | visible | value=false
+slot = 重来12 | set | 亮灯11_6 | visible | value=false
+slot = 重来12 | set | 亮灯11_7 | visible | value=false
+slot = 重来12 | set | 亮灯11_8 | visible | value=false
+slot = 重来12 | set | 亮灯11_9 | visible | value=false
+slot = 重来12 | goto |  | 序01_灯会
+}
+{
+type = button
+id = 退出游戏按钮12
+index = 8
+x = 650
+y = 466
+width = 265
+height = 46
+text = 🚪 退出游戏
+signal = 退出12 | mouse | click
+slot = 退出12 | @plugin(quit)
+}
+{
+type = text
+id = 状态文本12
+index = 9
+x = 930
+y = 466
+width = 290
+height = 46
+text = 热度=@var(热度) 专注=@var(专注) 混乱=@var(混乱)
+style = -fx-text-fill: #8fe3ff;
+fontSize = 15
+align = center
+}
+{
+type = text
+id = 提示文本12
+index = 10
+x = 370
+y = 526
+width = 850
+height = 150
+text = <<<
+本图用「简洁图形」代替背景与立绘（没有图片/音频素材），
+并演示了四件事：
+① 分支对话：序09_抉择 三个选项 → 三条枝 → 序10_星空 只显示对应的「回响」；
+② 条件内容：点灯计数 ≥ N 才点亮第 N 盏灯（@plugin(inc/min/ge) + set visible）；
+③ 动态跳转：goto | @var(下一场)（目标场景名由选项写进变量）；
+④ 新加的自带系统插件：@plugin(quit) 退出游戏、@plugin(open) 打开文件、@plugin(reveal) 定位文件。
+<<<
+style = -fx-text-fill: #9fb4d8;
+fontSize = 15
+align = center
+}
+
