@@ -1,4 +1,20 @@
 # 更新日志 (Changelog)
+## [v1.8] 合并 PR #6（内置插件全家桶 + 场景自动信号 + 序章地图）
+
+### Added
+- 合并 PR #6：21 个内置插件（select/after/every/stoptimer、rand、confirm/input、文本与格式、cast/bg/fx、audio/video、存档槽位、json/list、系统含 fullscreen、http/llm、clock/debug/trace/dump）与 BuiltinCatalog 插件目录
+- 引擎：新增「场景进入 / 场景离开」自动信号（带防重入）；宿主新增 animate / snapshot / toggleFullscreen；PluginContext.rawArgs()/outputVarName()
+- 编辑器：打开地图列表窗口、拖放打开、右键平移、外部编辑工作流、个性化节点模板（node-presets.txt）
+- 地图：`maps/prologue_404`（序章 15 幕 / 142 节点，零素材可玩）
+
+### Changed
+- `plugins/README.txt` → `plugins/README.md`（含上游全部内容 + 插件手册章节）；同步修正 CONTRIBUTING / README 中的 5 处引用
+- 《引擎对接说明》升至 v1.1：缺口①「场景进入」已实现、缺口⑥ 由 `select` 覆盖、缺口④ 多数由 `fx`/`bg`/`cast` 覆盖；剩余工作收窄为「编译器 + 小游戏结果契约 + `@ending` + UI 栏」
+- `.gitignore`：`maps/` → `maps/*` + `!maps/prologue_404/`（只放开这一张地图）
+
+### Fixed
+- 槽给「别的场景」的节点设属性被静默丢弃 → 记为属性覆盖，该幕渲染时生效（PR #6）
+
 ## [v1.7] 合并 PR #3 / #4，并将 PR #5 改造为贪吃蛇插件
 
 ### Added

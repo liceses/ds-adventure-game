@@ -34,6 +34,7 @@
 | 剧情大纲 / 人物设定 / 剧本 | `docs/ds-adventrue/剧情大纲*.md`、`人物设定集.md`、`剧本/`、`剧本-原声/`、`剧本-v0.1-候选/` |
 | 需求与设计图 | `docs/ds-adventrue/需求文档.txt`、`docs/ds-adventrue/图/` |
 | **引擎对接与剧本接入** | `docs/ds-adventrue/引擎对接说明.md`（面向协作者：路线、映射、待决事项、里程碑） |
+| **内置插件手册** | [`plugins/README.md`](plugins/README.md)（21 个内置插件 + 外部插件接入） |
 | 素材清单 | `docs/ds-adventrue/资产清单.md` |
 
 ---
@@ -189,7 +190,7 @@ mvnw.cmd -q exec:java "-Dexec.mainClass=com.studio.parser.ParserSelfTest"
 | 五子棋 | P1 | 待实现 |
 
 统一接入约定：小游戏实现 `com.studio.plugin.GamePlugin`，返回的 `Parent` 会被嵌入 Player 主舞台中央，
-顶部自动生成「🎮 插件名 … ← 返回剧情」标题栏；外部插件开发流程见 `plugins/README.txt`。
+顶部自动生成「🎮 插件名 … ← 返回剧情」标题栏；外部插件开发流程与内置插件手册见 [`plugins/README.md`](plugins/README.md)。
 
 ---
 
@@ -315,6 +316,7 @@ public interface GamePlugin {
 3. **三槽存档台**：「打开存档演示地图（3 槽存档台）…」生成 `maps/demo_save_room`；槽 1/2/3 各配保存 / 读取 / 删除，读档会跳回存档时场景。
 4. **信号 / 槽 + 逻辑层**：「打开信号演示地图（信号/槽+逻辑层）…」生成 `maps/demo_signal_lab`；按钮触发信号 → 槽 `call` → `logic/SignalLabLogic` 改变量与样式；按 `F`/`L` 演示场景级与节点级键盘信号。
 5. **双立绘轮流高亮**：`maps/demo_signal_characters` 是纯地图文件夹（脚本 + 素材 + 自带逻辑），点击推进时说话者高亮（opacity 1.0 / scale 1.08），对话走完按 `target` 自动跳转。
+6. **序章地图 `maps/prologue_404`**（PR #6）：15 幕 / 142 节点，**零图片零音频**（渐变底 + emoji 角色卡）即可玩通，演示三选一分支、汇合幕条件变体、计数比较、动态跳转与菜单插件。
 
 ---
 

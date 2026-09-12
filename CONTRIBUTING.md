@@ -45,7 +45,7 @@ mvnw.cmd clean compile        :: 首次会联网拉依赖 + Maven
 |---|---|---|
 | 源码位置 | `src/main/java/com/studio/plugin/demo/`（或自建子包） | `plugins/examples/` 或你的独立工程 |
 | 如何进库 | 源码直接提交，随主程序编译 | 只提交**源码**；`plugins/classes/**`、`plugins/*.jar` **被 `.gitignore` 忽略，无法入库** |
-| 队友体验 | 拉下来 `mvnw.cmd -Pplayer javafx:run` 即可玩 | 队友需自行编译（见 `plugins/README.txt`） |
+| 队友体验 | 拉下来 `mvnw.cmd -Pplayer javafx:run` 即可玩 | 队友需自行编译（见 `plugins/README.md`） |
 | 适用 | 课程作业、需要评审验收的小游戏 | 独立分发、不想进主工程 |
 
 **结论：课程作业一律走形态 A。**
@@ -444,7 +444,7 @@ src/main/java/com/studio/flow/**                       信号/槽引擎
 | 文档 | 位置 |
 |---|---|
 | 项目总览、需求实现对照 | [`README.md`](README.md) |
-| 外部插件编译与接入（历史说明） | [`plugins/README.txt`](plugins/README.txt) |
+| 插件手册（内置插件全家桶 + 外部插件接入） | [`plugins/README.md`](plugins/README.md) |
 | 逻辑层（信号/槽）说明 | [`logic/README.md`](logic/README.md) |
 | 剧情脚本语法 | README §7 |
 | 9 个小游戏玩法说明 | `docs/ds-adventrue/*.md` |
