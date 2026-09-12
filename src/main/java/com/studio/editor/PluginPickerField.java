@@ -96,7 +96,7 @@ public final class PluginPickerField {
                 .append(" + 外部 ").append(Math.max(0, (all == null ? 0 : all.size()) - builtin)).append("）\n");
         sb.append("外部插件来自 plugins/varplugins.ini、plugins/plugins.ini，以及 plugins/classes、plugins/*.jar\n");
         sb.append("在输入框里打关键字即可筛选（例如 full、全屏、截图、音频）\n");
-        sb.append("选中后点「＋ 插入插件槽」，会把一行可用的槽写进下面的输入框");
+        sb.append("选中后点「＋ 插入插件槽」，直接追加一条槽（模板同时留在输入框里，方便改成自己的变量名）");
         if (hub != null) {
             int problems = hub.pluginCatalogDetailed().problems().size();
             if (problems > 0) {
