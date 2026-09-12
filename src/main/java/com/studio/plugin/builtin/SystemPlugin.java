@@ -436,9 +436,9 @@ public class SystemPlugin implements SlotPlugin {
         java.util.List<PluginInfo> out = new java.util.ArrayList<>();
         out.add(new PluginInfo("quit", "系统", "exit,退出,退出游戏,离开游戏", "@plugin(quit)",
                 "退出游戏：交宿主收尾（释放媒体/插件）后关闭播放器窗口；宿主不接管时不会擅自结束进程"));
-        out.add(new PluginInfo("open", "系统", "openfile,打开,打开文件", "@plugin(open) | 文档/攻略.txt",
+        out.add(new PluginInfo("open", "系统", "openfile,打开,打开文件,开启文件", "@plugin(open) | 文档/攻略.txt",
                 "用系统默认程序打开文件（相对地图文件夹；也支持 http(s) 链接）；不给路径则先弹文件选择框"));
-        out.add(new PluginInfo("pick", "系统", "pickfile,选择文件,选文件", "@plugin(pick) | png;jpg | @var(选中文件)",
+        out.add(new PluginInfo("pick", "系统", "pickfile,选择文件,选文件,选择一个文件", "@plugin(pick) | png;jpg | @var(选中文件)",
                 "弹文件选择框，把选中的绝对路径写回输出位（玩家取消时保持原值）"));
         out.add(new PluginInfo("reveal", "系统", "opendir,打开目录,打开文件夹,所在目录", "@plugin(reveal) | saves/slot1.txt",
                 "在文件管理器里打开该文件所在目录并选中它"));

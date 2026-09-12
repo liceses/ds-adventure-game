@@ -532,27 +532,10 @@ final class NodeDialogs {
                 + "也可写 @int(@var(分数))、@double(1.05)、@str(@var(名字)) 或普通字面量"));
 
         // 插件选择器：列表来自「插件总目录」—— 自带内置插件 + 外部插件（注册表登记的、classes/jar 里已编译的）
+        //   支持输入关键字筛选（七十多个插件靠滚动找太费劲，例如 full → fullscreen）
         PluginCatalog.Catalog pluginCat = hub.pluginCatalogDetailed();
         javafx.scene.control.ComboBox<com.studio.plugin.builtin.PluginInfo> pluginPicker =
-                new javafx.scene.control.ComboBox<>();
-        pluginPicker.getItems().setAll(pluginCat.items());
-        pluginPicker.setPrefWidth(300);
-        pluginPicker.setPromptText("选择插件（自带 + 外部，可输入搜索）");
-        pluginPicker.setEditable(true);
-        pluginPicker.setConverter(new javafx.util.StringConverter<com.studio.plugin.builtin.PluginInfo>() {
-            @Override public String toString(com.studio.plugin.builtin.PluginInfo info) {
-                return info == null ? "" : (info.group() + " · " + info.id());
-            }
-            @Override public com.studio.plugin.builtin.PluginInfo fromString(String s) { return null; }
-        });
-        pluginPicker.setTooltip(new Tooltip("共 " + pluginPicker.getItems().size()
-                + " 个可用插件（自带 " + com.studio.plugin.builtin.BuiltinCatalog.all().size()
-                + " + 外部 " + Math.max(0, pluginPicker.getItems().size()
-                - com.studio.plugin.builtin.BuiltinCatalog.all().size()) + "）\n"
-                + "外部插件来自 plugins/varplugins.ini、plugins/plugins.ini 以及 plugins/classes、plugins/*.jar\n"
-                + "选中后点右边按钮，会把一行可用的槽写进下面的输入框"
-                + (pluginCat.problems().isEmpty() ? "" : "\n（有 " + pluginCat.problems().size()
-                + " 个注册项不能用于槽，详见「使用帮助」或控制台日志）")));
+                PluginPickerField.create(hub, 300);
         Button pluginInsert = new Button("＋ 插入插件槽");
         pluginInsert.getStyleClass().add("tool-button");
         pluginInsert.setOnAction(e -> {

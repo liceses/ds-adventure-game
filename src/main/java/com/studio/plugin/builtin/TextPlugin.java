@@ -87,12 +87,12 @@ public class TextPlugin extends BuiltinPlugin {
     /** 编辑器插件目录 */
     public static List<PluginInfo> catalog() {
         List<PluginInfo> out = new ArrayList<>();
-        out.add(new PluginInfo("concat", "文本", "拼接", "@plugin(concat) | @var(姓) | @var(名) | @var(全名)", "把输入按顺序拼接成一个字符串"));
+        out.add(new PluginInfo("concat", "文本", "拼接,joinstr", "@plugin(concat) | @var(姓) | @var(名) | @var(全名)", "把输入按顺序拼接成一个字符串"));
         out.add(new PluginInfo("upper", "文本", "大写", "@plugin(upper) | @var(名字) | @var(名字)", "转成大写"));
         out.add(new PluginInfo("lower", "文本", "小写", "@plugin(lower) | @var(名字) | @var(名字)", "转成小写"));
         out.add(new PluginInfo("trim", "文本", "去空格", "@plugin(trim) | @var(文本) | @var(文本)", "去掉首尾空白"));
         out.add(new PluginInfo("len", "文本", "长度,strlen", "@plugin(len) | @var(台词) | @var(字数)", "取文本长度（字符数）"));
-        out.add(new PluginInfo("sub", "文本", "截取,substr", "@plugin(sub) | @var(台词) | 0 | 12 | @var(开头)", "截取一段：起点（可为负=从末尾算）+ 长度"));
+        out.add(new PluginInfo("sub", "文本", "截取,substr,截断", "@plugin(sub) | @var(台词) | 0 | 12 | @var(开头)", "截取一段：起点（可为负=从末尾算）+ 长度（注意：这个短名给文本用了，数学减法请写 @plugin(减法)）"));
         out.add(new PluginInfo("replace", "文本", "替换", "@plugin(replace) | @var(台词) | 你 | 您 | @var(礼貌台词)", "把文本里的某段替换成另一段"));
         out.add(new PluginInfo("pad", "文本", "补齐", "@plugin(pad) | @var(编号) | 4 | 0 | @var(编号4位)", "左补齐到指定宽度（常用于编号/倒计时）"));
         out.add(new PluginInfo("repeat", "文本", "重复", "@plugin(repeat) | - | 24 | @var(分隔线)", "把文本重复 N 次（画分隔线很方便）"));

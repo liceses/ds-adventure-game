@@ -64,7 +64,7 @@ public class RandomPlugin extends BuiltinPlugin {
     /** 编辑器插件目录 */
     public static List<PluginInfo> catalog() {
         List<PluginInfo> out = new ArrayList<>();
-        out.add(new PluginInfo("rand", "随机", "random,随机",
+        out.add(new PluginInfo("rand", "随机", "random,randomnumber,随机",
                 "@plugin(rand) | int | 1 | 6 | @var(点数)",
                 "随机数：int 整数 / double 小数 / chance 概率判定 / pick 从候选里挑一个 / seed 设定种子"));
         return out;

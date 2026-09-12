@@ -53,6 +53,11 @@ public class MathPlugin implements SlotPlugin {
     static {
         IDS.put("add", Op.ADD);
         IDS.put("sub", Op.SUB);
+        // "sub" 这个短名被 TextPlugin 的「截取」也注册了，而自带插件表是“后注册者生效”，
+        // 于是 @plugin(sub) 实际执行的是文本截取，减法在运行时变成了不可达。
+        // 这里给减法再登记两个不会撞名的 ID，保证编辑器下拉框里列出来的写法真的能用。
+        IDS.put("minus", Op.SUB);
+        IDS.put("减法", Op.SUB);
         IDS.put("mul", Op.MUL);
         IDS.put("div", Op.DIV);
         IDS.put("mod", Op.MOD);
@@ -203,7 +208,8 @@ public class MathPlugin implements SlotPlugin {
     public static java.util.List<PluginInfo> catalog() {
         java.util.List<PluginInfo> out = new java.util.ArrayList<>();
         out.add(new PluginInfo("add", "运算", "加", "@plugin(add) | @var(a) | @var(b) | @var(和)", "二元加法：把动作之后的输入相加，结果写到最后一位"));
-        out.add(new PluginInfo("sub", "运算", "减", "@plugin(sub) | @var(a) | @var(b) | @var(差)", "二元减法：a 减 b"));
+        out.add(new PluginInfo("减法", "运算", "减,minus", "@plugin(减法) | @var(a) | @var(b) | @var(差)",
+                "二元减法：a 减 b（短名 @plugin(sub) 已被文本插件的「截取」占用，所以减法用 减法/minus）"));
         out.add(new PluginInfo("mul", "运算", "乘", "@plugin(mul) | @var(a) | @var(b) | @var(积)", "二元乘法：把输入相乘"));
         out.add(new PluginInfo("div", "运算", "除", "@plugin(div) | @var(a) | @var(b) | @var(商)", "二元除法：除数为 0 时返回 0（不报错）"));
         out.add(new PluginInfo("mod", "运算", "取余", "@plugin(mod) | @var(a) | @var(b) | @var(余)", "取余：a mod b"));

@@ -136,10 +136,15 @@ javac -encoding UTF-8 -cp target\classes -d plugins\classes plugins\examples\Var
 也可以不注册，直接写全限定类名：`slot = 点击 | @plugin(com.example.VarPluginTemplate) | @var(a)`。
 
 ## 自带插件（随编辑器/读取器发行，直接可用）
-`add` `sub` `mul` `div` `mod` `pow` `min` `max`（二元）、
+`add`、`减法`（别名 `minus`）、`mul` `div` `mod` `pow` `min` `max`（二元）——
 `abs` `round` `floor` `ceil` `neg`（一元）、`set` `inc` `dec`（赋值类）。
 实现见主工程源码 `com.studio.plugin.builtin.MathPlugin`。
 除零返回 0、非法输入按 0 计，**绝不抛异常中断剧情**。
+
+> ⚠ 减法为什么叫 `减法` 而不是 `sub`：`sub` 这个短名被**文本插件**的「截取」也注册了
+> （`TextPlugin`），而自带插件表是“后注册者生效”，所以 `@plugin(sub)` 实际执行的是文本截取。
+> 为了不让下拉框里列出来的写法被顶掉，数学减法改登记为 `@plugin(减法)` / `@plugin(minus)`。
+> 现在「插件目录自检」（`BuiltinCatalog.selfCheck()`）会检查主 ID 撞名，撞了就会在探针里失败。
 
 逻辑与比较：`and` `or` `xor` `not` `gt` `lt` `ge` `le` `eq` `ne`
 （实现见 `com.studio.plugin.builtin.LogicPlugin`；结果写 `true`/`false`，配合 bool 变量用）。
@@ -198,6 +203,17 @@ slot = 存档目录 | @plugin(reveal) | saves/slot1.txt  # 在资源管理器里
 > 列表里的名字/说明/用法都是**真加载一次插件后从它自己身上取的**，不会和代码脱节；
 > 只实现了 `GamePlugin` 的事件插件（如 `minesweeper`/`2048`/`breakout`…）不能用在 `@plugin` 槽里，
 > 所以**不会**出现在这个列表里（它们要用节点/场景的 `event` 属性），编辑器会在日志里说明原因。
+
+> **选中之前可以先打字筛选**：输入框里打 `full`、`全屏`、`截图`、`截` 之类都能立刻把列表缩小
+> （匹配范围是 ID / 中文别名 / 分组 / 说明），七十多个插件里找 `fullscreen` 不用再滚动半天。
+
+这个列表还有两道**自动保证**，避免“某个插件在下拉框里找不到”或“列出来了其实不能用”：
+
+1. **兜底**：`BuiltinCatalog.all()` 会拿运行时的自带插件登记表（`PluginRuntime.builtinIds()`）对账，
+   凡是运行时注册了、而手写清单里漏登记的 ID，自动补一条兜底项进列表（界面照常能看到、能选）；
+2. **自检**：`BuiltinCatalog.selfCheck()` 会把“漏登记”“目录里有但运行时认不出”“两个插件撞同一个主 ID”
+   都报出来，探针 `PluginPickerProbe` 断言它为空 —— 漏了/撞了就会当场失败。
+   （`fullscreen` 就曾经因为整族漏登记而在下拉框里找不到，`sub` 则曾经被文本插件顶掉，两处现在都有回归断言。）
 
 「帮助 → 使用帮助 → 插件」里的手册同样是**从代码自动生成**的
 （`com.studio.plugin.builtin.BuiltinCatalog`），所以永远不会和代码不一致。
