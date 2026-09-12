@@ -1388,13 +1388,28 @@ public class EditorPane extends BorderPane implements EditorHub {
         return new File(System.getProperty("user.dir"));
     }
 
-    /** 保存当前地图的 scenario.txt */
+    /** 保存当前地图的 scenario.txt（手写注释会被保住，见 {@link CommentPreserver}） */
     public boolean saveMap() {
         if (project == null) return false;
         try {
-            ScriptWriter.write(project.scenarioFile(), project);
+            File target = project.scenarioFile();
+            String fresh = ScriptWriter.serialize(project);
+            // 旧文件里手写的注释按“挂在哪个场景/节点/属性上”合并回来；合并结果还要重解析校验一次结构
+            CommentPreserver.Result merged = CommentPreserver.merge(target, fresh);
+            String text = fresh;
+            if (merged.kept() > 0 && CommentPreserver.sameStructure(project.rootDir(), fresh, merged.text())) {
+                text = merged.text();
+            } else if (merged.kept() > 0) {
+                Logs.warn("[注释保留] 合并结果结构不一致，本次按无注释版本保存（地图内容不受影响）");
+            }
+            java.nio.file.Path t = target.toPath();
+            java.nio.file.Path tmp = t.resolveSibling(target.getName() + ".tmp");
+            java.nio.file.Files.writeString(tmp, text, java.nio.charset.StandardCharsets.UTF_8);
+            java.nio.file.Files.move(tmp, t, java.nio.file.StandardCopyOption.REPLACE_EXISTING);
             markSaved();
-            notify("已保存 → " + project.scenarioFile().getAbsolutePath());
+            String extra = merged.kept() > 0 ? "（保留了 " + merged.kept() + " 处手写注释）" : "";
+            notify("已保存 → " + target.getAbsolutePath() + extra);
+            if (merged.lost() > 0) notify("有 " + merged.lost() + " 处注释没有落点：" + merged.notes().get(0));
             return true;
         } catch (IOException e) {
             Ui.error(stage, "保存失败", "写入 scenario.txt 失败: " + e.getMessage(), e);

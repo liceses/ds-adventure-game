@@ -476,12 +476,29 @@ final class SceneInspectorDialog {
         javafx.scene.control.ComboBox<com.studio.plugin.builtin.PluginInfo> pluginPicker =
                 PluginPickerField.create(hub, 280);
         Button pluginInsert = new Button("＋ 插入插件槽");
+        pluginInsert.setTooltip(new javafx.scene.control.Tooltip(
+                "把选中的插件按它自己的用法追加成一条场景槽（点一下列表里就多一行）"));
         pluginInsert.setOnAction(e -> {
-            com.studio.plugin.builtin.PluginInfo info = pluginPicker.getValue();
-            if (info == null && !pluginPicker.getItems().isEmpty()) info = pluginPicker.getItems().get(0);
-            if (info == null) return;
-            slotText.setText(com.studio.editor.NodeDialogs.templateOf(info));
-            hub.notify("已插入插件模板：" + info.id() + "（改完点「✔ 应用到选中槽」或「＋ 新增槽」）");
+            com.studio.plugin.builtin.PluginInfo info = NodeDialogs.pickedPlugin(pluginPicker);
+            if (info == null) {
+                Ui.warn(null, "还没选插件",
+                        "请先在上面的下拉框里选一个插件（可以直接打字筛选，例如 full / 全屏 / 截图），\n"
+                                + "再点「＋ 插入插件槽」。当前可用插件共 " + pluginPicker.getItems().size() + " 个。");
+                return;
+            }
+            String line = NodeDialogs.templateOf(info);
+            java.util.List<String> warnings = new ArrayList<>();
+            SlotDef def = SignalCodec.decodeSlot(line, warnings);
+            if (def == null) {
+                Ui.warn(null, "模板无法解析", String.join("\n", warnings));
+                return;
+            }
+            scene.slots().add(def);
+            slotRows.setAll(scene.slots());
+            slotTable.getSelectionModel().selectLast();
+            mark.run();
+            slotText.setText(line);   // 留在输入框里，方便接着改成自己的变量名
+            hub.notify("已插入插件槽：" + info.id() + " → " + def.getSignal() + " | " + def.getAction());
         });
         HBox pluginBar = new HBox(8, new Label("自带插件："), pluginPicker, pluginInsert);
         pluginBar.setAlignment(Pos.CENTER_LEFT);

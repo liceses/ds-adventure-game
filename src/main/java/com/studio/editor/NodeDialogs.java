@@ -538,12 +538,30 @@ final class NodeDialogs {
                 PluginPickerField.create(hub, 300);
         Button pluginInsert = new Button("＋ 插入插件槽");
         pluginInsert.getStyleClass().add("tool-button");
+        pluginInsert.setTooltip(new Tooltip("把选中的插件按它自己的用法追加成一条槽（和旁边「＋插件槽」那些模板按钮一样，点一下列表里就多一行）"));
         pluginInsert.setOnAction(e -> {
-            com.studio.plugin.builtin.PluginInfo info = pluginPicker.getValue();
-            if (info == null && !pluginPicker.getItems().isEmpty()) info = pluginPicker.getItems().get(0);
-            if (info == null) return;
-            slotLine.setText(templateOf(info));
-            slotTable.getSelectionModel().clearSelection();
+            com.studio.plugin.builtin.PluginInfo info = pickedPlugin(pluginPicker);
+            if (info == null) {
+                // 以前这里是静默 return —— 用户点下去“什么都没发生”，看着就是按钮无效
+                Ui.warn(dialog.getOwner(), "还没选插件",
+                        "请先在上面的下拉框里选一个插件（可以直接打字筛选，例如 full / 全屏 / 截图），\n"
+                                + "再点「＋ 插入插件槽」。当前可用插件共 " + pluginPicker.getItems().size() + " 个。");
+                return;
+            }
+            String line = templateOf(info);
+            List<String> warns = new ArrayList<>();
+            SlotDef d = SignalCodec.decodeSlot(line, warns);
+            if (d == null) {
+                Ui.warn(dialog.getOwner(), "模板无法解析", String.join("\n", warns));
+                return;
+            }
+            node.slots().add(d);
+            slotRows.setAll(node.slots());
+            slotTable.getSelectionModel().selectLast();
+            slotSync.run();
+            refresh.run();
+            slotLine.setText(line);   // 同时留在输入框里，方便接着把 @var(...) 改成自己的变量名
+            hub.notify("已插入插件槽：" + info.id() + " → " + d.getSignal() + " | " + d.getAction());
         });
         javafx.scene.layout.HBox pluginRow = new javafx.scene.layout.HBox(6, pluginPicker, pluginInsert);
 
@@ -699,6 +717,22 @@ final class NodeDialogs {
     static String templateOf(com.studio.plugin.builtin.PluginInfo info) {
         if (info == null) return "点击 | @plugin(add) | @var(a) | @var(b) | @var(和)";
         return info.slotTemplate();
+    }
+
+    /**
+     * 插件下拉框里“用户到底选了哪个”。
+     *
+     * <p>规则：① 有选中项就用选中项；② 没选中但筛选后只剩一项（用户打字筛出来的那个）就用它 ——
+     * 打 {@code full} 之后直接点「＋ 插入插件槽」也符合直觉；③ 其余情况返回 null，
+     * 由调用方给出提示，绝不静默什么都不做。</p>
+     */
+    static com.studio.plugin.builtin.PluginInfo pickedPlugin(
+            javafx.scene.control.ComboBox<com.studio.plugin.builtin.PluginInfo> picker) {
+        if (picker == null) return null;
+        com.studio.plugin.builtin.PluginInfo sel = picker.getValue();
+        if (sel != null) return sel;
+        List<com.studio.plugin.builtin.PluginInfo> items = picker.getItems();
+        return items != null && items.size() == 1 ? items.get(0) : null;
     }
 
     /** 模板按钮：把一行式槽追加到节点的槽列表，并刷新表格与计数 */

@@ -55,25 +55,35 @@ public final class PluginPickerField {
         if (tooltip != null && !tooltip.isBlank()) box.setTooltip(new Tooltip(tooltip));
         box.setPromptText("输入关键字筛选（ID / 别名 / 说明），或点开浏览");
 
-        // 输入即筛选：setItems 会重设编辑框文本，所以写完要写回（guard 防递归）
+        // 输入即筛选：改 items 会重设编辑框文本，所以写完要写回（guard 防自己触发自己）
+        //
+        // 注意：筛选要“延后一拍”再改 items。点弹层里的某一项时，JavaFX 先设置 value、再把该项的标签回填进编辑框，
+        // 回填会触发这个监听器；如果在事件派发过程中直接 setItems，弹层自己的 ListView 被整个换掉，
+        // 刚点中的选择会丢 —— 表现出来就是“点了列表项没反应、value 还是 null、按钮按下去什么都不插”。
+        // 所以先记下关键字，runLater 里再决定：编辑框文本正是选中项的标签 → 这是“选中回填”，不筛选；
+        // 文本已经又变了 → 交给最新那次；其余才按关键字筛。
         final boolean[] guard = {false};
         box.getEditor().textProperty().addListener((o, old, text) -> {
             if (guard[0]) return;
             String kw = text == null ? "" : text;
-            PluginInfo sel = box.getValue();
-            // “选中后回填”的文本不是搜索词（否则会把列表筛成仅剩这一项）
-            if (sel != null && label(sel).equals(kw)) return;
-            List<PluginInfo> filtered = filter(items, kw);
-            guard[0] = true;
-            try {
-                box.setItems(FXCollections.observableArrayList(filtered));
-                box.getEditor().setText(kw);
-                box.getSelectionModel().clearSelection();
-                box.setValue(null);
-                if (!filtered.isEmpty() && box.isFocused()) box.show();
-            } finally {
-                guard[0] = false;
-            }
+            javafx.application.Platform.runLater(() -> {
+                if (guard[0]) return;
+                PluginInfo sel = box.getValue();
+                String now = box.getEditor().getText() == null ? "" : box.getEditor().getText();
+                if (sel != null && (label(sel).equals(now) || label(sel).equals(kw))) return;
+                if (!now.equals(kw)) return;
+                List<PluginInfo> filtered = filter(items, kw);
+                guard[0] = true;
+                try {
+                    box.setItems(FXCollections.observableArrayList(filtered));
+                    box.getEditor().setText(kw);
+                    box.getSelectionModel().clearSelection();
+                    box.setValue(null);
+                    if (!filtered.isEmpty() && box.isFocused()) box.show();
+                } finally {
+                    guard[0] = false;
+                }
+            });
         });
         return box;
     }
