@@ -67,6 +67,12 @@ public class EditorPane extends BorderPane implements EditorHub {
     private final Stage stage;
     private final AppConfig config;
 
+    /** 拖放地图文件夹时的虚线描边样式（不改布局，只加一圈边框） */
+    private static final String DROP_STYLE =
+            "-fx-border-color: #ffd76a; -fx-border-width: 2; -fx-border-style: segments(6, 6) line-cap round;";
+    /** 是否正在拖放（用来只设置/清除一次样式） */
+    private boolean dropActive = false;
+
     // ---- 模型状态 ----
     private GameProject project;
     private GameScene currentScene;
@@ -118,6 +124,7 @@ public class EditorPane extends BorderPane implements EditorHub {
     // =====================================================================
 
     public EditorPane(Stage stage, AppConfig config) {
+        installFolderDrop();   // 支持把地图文件夹直接拖进窗口打开
         this.stage = stage;
         this.config = config == null ? AppConfig.loadDefault() : config;
 
@@ -195,17 +202,15 @@ public class EditorPane extends BorderPane implements EditorHub {
     private MenuBar buildMenuBar() {
         // ---------- 文件 ----------
         Menu fileMenu = new Menu("文件(F)");
-        MenuItem open = item("打开地图文件夹…", e -> openMapDialog());
+        // 以前这里有五六个“打开某某演示地图”，菜单越堆越长。现在统一成「打开地图…」列表窗口：
+        // 扫描编辑器默认地图文件夹，把每张图的场景/节点数、修改时间列出来，双击即开；
+        // 新建地图与生成演示地图也都收进了那个窗口。
+        MenuItem open = item("📂 打开地图…（默认文件夹里的地图列表）", e -> MapBrowserDialog.show(this));
         open.setAccelerator(KeyCombination.keyCombination("Ctrl+O"));
+        MenuItem openOther = item("📁 打开其它文件夹…（系统选择框）", e -> openMapFromChooser());
 
         MenuItem fresh = item("新建地图…", e -> createMapDialog(false));
         MenuItem demo = item("新建示例地图（含插件演示）…", e -> createMapDialog(true));
-        MenuItem branch = item("打开分支剧情示例（含 2048）…", e -> openBranchDemoMap());
-        MenuItem saveRoom = item("打开存档演示地图（3 槽存档台）…", e -> openSaveRoomDemoMap());
-        MenuItem signalLab = item("打开信号演示地图（信号/槽+逻辑层）…", e -> openSignalLabMap());
-        MenuItem varDemo = item("打开存档变量演示地图（变量/表达式/插件）…", e -> openVarDemoMap());
-        MenuItem logicDemo = item("打开逻辑门演示地图（双开关控制三盏灯）…", e -> openLogicGateDemoMap());
-        MenuItem breakout = item("打开打砖块演示地图（breakout 插件）…", e -> openBreakoutDemoMap());
 
         MenuItem save = item("保存地图 (Ctrl+S)", e -> saveMap());
         save.setAccelerator(KeyCombination.keyCombination("Ctrl+S"));
@@ -214,7 +219,7 @@ public class EditorPane extends BorderPane implements EditorHub {
         MenuItem del = item("删除当前地图…", e -> deleteMap());
 
         MenuItem exit = item("退出", e -> requestExit());
-        fileMenu.getItems().addAll(open, fresh, demo, branch, saveRoom, signalLab, varDemo, logicDemo, breakout,
+        fileMenu.getItems().addAll(open, openOther, new SeparatorMenuItem(), fresh, demo,
                 new SeparatorMenuItem(), save, export, del, new SeparatorMenuItem(), exit);
 
         // ---------- 编辑 ----------
@@ -236,8 +241,26 @@ public class EditorPane extends BorderPane implements EditorHub {
         redoItem = item("重做 (Ctrl+Y)", e -> redo());
         redoItem.setAccelerator(KeyCombination.keyCombination("Ctrl+Y"));
         updateUndoState();
+        MenuItem presetFromNode = item("⭐ 把选中节点添加为个性化节点…", e -> {
+            NodePresetStore.Preset made = EditorActions.addSelectedNodeAsPreset(this);
+            if (made != null) refreshInspector();
+        });
+        MenuItem presetFromTpl = item("⭐ 把当前「新增节点模板」存为个性化节点…", e -> {
+            NodePresetStore.Preset made = EditorActions.addTemplateAsPreset(this);
+            if (made != null) refreshInspector();
+        });
+        MenuItem presetList = item("⭐ 个性化节点列表…（应用到新建节点）", e -> NodePresetDialog.show(this, stage));
         editMenu.getItems().addAll(undoItem, redoItem, new SeparatorMenuItem(),
-                editNode, dupNode, delNode, new SeparatorMenuItem(), layerUp, layerDown);
+                editNode, dupNode, delNode, new SeparatorMenuItem(), layerUp, layerDown,
+                new SeparatorMenuItem(), presetFromNode, presetFromTpl, presetList,
+                new SeparatorMenuItem(),
+                item("🗂 外部编辑（复制当前地图到临时目录并打开）…", e -> externalEditStart()),
+                item("📥 导入外部更改（覆盖原地图）…", e -> externalEditImport()),
+                item("📂 打开外部编辑目录…", e -> {
+            File session = ExternalEdit.sessionDir(config);
+            if (session == null) notify("还没有外部编辑目录（先点「🗂 外部编辑」）");
+            else ExternalEdit.openInExplorer(session);
+        }));
 
         // ---------- 场景 ----------
         Menu sceneMenu = new Menu("场景(S)");
@@ -259,12 +282,13 @@ public class EditorPane extends BorderPane implements EditorHub {
         zo.setAccelerator(KeyCombination.keyCombination("Ctrl+-"));
         MenuItem zf = item("适应窗口", e -> canvas.fitZoom());
         zf.setAccelerator(KeyCombination.keyCombination("Ctrl+0"));
+        MenuItem zp = item("↔ 复位视窗（右键拖动可平移）", e -> canvas.resetPan());
         gridItem.setSelected(true);
         gridItem.setOnAction(e -> canvas.setGridVisible(gridItem.isSelected()));
         CheckMenuItem toolboxItem = new CheckMenuItem("显示工具箱");
         toolboxItem.setSelected(canvas.isToolboxVisible());
         toolboxItem.setOnAction(e -> canvas.setToolboxVisible(toolboxItem.isSelected()));
-        viewMenu.getItems().addAll(zi, zo, zf, new SeparatorMenuItem(), gridItem, toolboxItem);
+        viewMenu.getItems().addAll(zi, zo, zf, zp, new SeparatorMenuItem(), gridItem, toolboxItem);
 
         // ---------- 运行 ----------
         Menu runMenu = new Menu("运行(R)");
@@ -908,6 +932,275 @@ public class EditorPane extends BorderPane implements EditorHub {
         openMap(dir);
     }
 
+    // =====================================================================
+    // 供「打开地图」列表窗口使用的小接口
+    // =====================================================================
+
+    /** 对话框宿主窗口 */
+    public Stage stageForDialog() { return stage; }
+
+    /** 当前打开的地图目录（未打开返回 null） */
+    public File currentMapDir() { return project == null ? null : project.rootDir(); }
+
+    /**
+     * 编辑器默认地图文件夹：{@code config.ini} 的 {@code editor.maps.dir}，
+     * 相对路径按运行目录解析，默认 {@code maps/}。不存在会自动建。
+     */
+    public File mapsRoot() {
+        String configured = config.get("editor.maps.dir");
+        File dir = configured == null || configured.isBlank() ? null : new File(configured);
+        if (dir == null) dir = new File(System.getProperty("user.dir"), "maps");
+        else if (!dir.isAbsolute()) dir = new File(System.getProperty("user.dir"), configured);
+        if (!dir.isDirectory()) dir.mkdirs();
+        return dir;
+    }
+
+    /** 走系统选择框打开任意文件夹里的地图（列表窗口里的「打开其它文件夹…」） */
+    public void openMapFromChooser() { openMapDialog(); }
+
+    // =====================================================================
+    // 把地图文件夹直接拖进编辑器窗口就能打开
+    // =====================================================================
+
+    /** 安装拖放：接受“含 scenario.txt 的文件夹”，也接受 scenario.txt（或任意地图文件）本身 */
+    private void installFolderDrop() {
+        setOnDragOver(e -> {
+            File map = mapFromDragboard(e.getDragboard());
+            if (map == null) {
+                e.acceptTransferModes(javafx.scene.input.TransferMode.NONE);
+                clearDropHint();
+                return;
+            }
+            e.acceptTransferModes(javafx.scene.input.TransferMode.COPY);
+            if (!dropActive) {
+                dropActive = true;
+                setStyle(DROP_STYLE);
+                notify("📂 松手即打开地图：" + map.getName() + "（" + map.getAbsolutePath() + "）");
+            }
+            e.consume();
+        });
+        setOnDragExited(e -> clearDropHint());
+        setOnDragDropped(e -> {
+            File map = mapFromDragboard(e.getDragboard());
+            clearDropHint();
+            if (map == null) {
+                // 常见情况：拖进来的是“装了很多地图的上层目录” —— 告诉用户去列表窗口挑
+                int many = 0;
+                List<File> files = e.getDragboard() == null ? null : e.getDragboard().getFiles();
+                if (files != null) {
+                    for (File f : files) {
+                        File dir = f.isDirectory() ? f : f.getParentFile();
+                        if (dir != null) many = Math.max(many, mapSubdirs(dir).size());
+                    }
+                }
+                if (many > 1) {
+                    notify("这个文件夹里有 " + many + " 张地图，请用「📂 打开地图…」列表挑一张（现在打开的列表窗口里选）");
+                    MapBrowserDialog.show(this);
+                } else {
+                    notify("拖进来的不是地图文件夹（文件夹里需要有 scenario.txt）");
+                }
+                e.setDropCompleted(false);
+                return;
+            }
+            notify("已打开拖入的地图：" + map.getAbsolutePath());
+            openMap(map);
+            e.setDropCompleted(true);
+            e.consume();
+        });
+    }
+
+    /** 拖放时给整个编辑区加一圈虚线描边（不改布局，松手/离开自动去掉） */
+    private void clearDropHint() {
+        if (!dropActive) return;
+        dropActive = false;
+        setStyle("");
+    }
+
+    /**
+     * 从拖放数据里解析出地图文件夹：
+     * <ul>
+     *   <li>拖进来一个文件夹且里面有 scenario.txt → 用它；</li>
+     *   <li>文件夹里只有一层子文件夹含 scenario.txt（拖了 maps 这类上层目录）→ 用那个子文件夹；</li>
+     *   <li>直接拖 scenario.txt（或任何文件）→ 用它所在目录。</li>
+     * </ul>
+     * 都不满足返回 null。
+     */
+    public static File mapFromDragboard(javafx.scene.input.Dragboard db) {
+        if (db == null || !db.hasFiles()) return null;
+        return mapFromFiles(db.getFiles());
+    }
+
+    /** 拖放解析的实际逻辑（单独拆出来，便于探针直接测） */
+    public static File mapFromFiles(List<File> files) {
+        if (files == null || files.isEmpty()) return null;
+        for (File f : files) {
+            if (f == null) continue;
+            File dir = f.isDirectory() ? f : f.getParentFile();
+            if (dir == null) continue;
+            if (new File(dir, "scenario.txt").isFile()) return dir;
+            // 拖进来的是上层目录（例如整个 maps/）：里面只有一个地图时直接用；
+            // 有多个时不猜 —— 交给调用方提示用户去列表窗口里挑
+            List<File> candidates = mapSubdirs(dir);
+            if (candidates.size() == 1) return candidates.get(0);
+        }
+        return null;
+    }
+
+    /** 某个目录下所有“含 scenario.txt”的直接子目录 */
+    public static List<File> mapSubdirs(File dir) {
+        List<File> out = new ArrayList<>();
+        if (dir == null || !dir.isDirectory()) return out;
+        File[] subs = dir.listFiles(File::isDirectory);
+        if (subs != null) {
+            for (File sub : subs) {
+                if (new File(sub, "scenario.txt").isFile()) out.add(sub);
+            }
+        }
+        return out;
+    }
+
+    /** 生成并打开“打砖块”示例地图（场景事件与按钮事件两种触发方式） */
+    private void openBreakoutDemoMap() {
+        try {
+            File dir = new File(System.getProperty("user.dir"),
+                    com.studio.util.BreakoutMapFactory.DEFAULT_FOLDER);
+            if (!new File(dir, "scenario.txt").isFile()) {
+                com.studio.util.BreakoutMapFactory.createMap(dir);
+                notify("已生成打砖块演示地图: " + dir.getAbsolutePath());
+            }
+            openMap(dir);
+        } catch (IOException e) {
+            Ui.error(stage, "生成示例失败", e.getMessage(), e);
+        }
+    }
+
+    /** 新建地图（demoFlow=true 时生成含插件演示的示例地图） */
+
+    /** 按缩写生成并打开演示地图（列表窗口里的「生成演示地图」菜单） */
+    public void generateDemoMap(String key) {
+        if (key == null) return;
+        switch (key) {
+            case "branch" -> openBranchDemoMap();
+            case "signallab" -> openSignalLabMap();
+            case "logicgate" -> openLogicGateDemoMap();
+            case "vardemo" -> openVarDemoMap();
+            case "saveroom" -> openSaveRoomDemoMap();
+            case "breakout" -> openBreakoutDemoMap();
+            default -> notify("未知的演示地图：" + key);
+        }
+    }
+
+    // =====================================================================
+    // 外部编辑：复制到临时目录 → 用别的工具改 → 导回（覆盖原地图）
+    // =====================================================================
+
+    /** 「🗂 外部编辑」：开始一次外部编辑（已有未导入的副本时先问怎么办） */
+    private void externalEditStart() {
+        File source = currentMapDir();
+        if (source == null || !source.isDirectory()) {
+            Ui.warn(stage, "无法外部编辑", "请先打开或新建一张地图。");
+            return;
+        }
+        File session = ExternalEdit.sessionDir(config);
+        File sessionSource = ExternalEdit.sourceOf(session);
+        if (session != null && sessionSource != null && sessionSource.equals(source)) {
+            int changed = ExternalEdit.countChangedFiles(source, session);
+            if (changed > 0) {
+                ExternalEdit.Next next = ExternalEdit.askNext(stage, source, session, changed);
+                if (next == ExternalEdit.Next.IMPORT) {
+                    importExternalChanges(source, session);
+                } else if (next == ExternalEdit.Next.RESTART) {
+                    startExternalSession(source);
+                }
+                return;
+            }
+            // 有副本但没改过：直接打开，省得再复制一份
+            notify("工作副本没有变化，直接打开：" + session.getName());
+            ExternalEdit.openInExplorer(session);
+            askImportAfterEdit(source, session, 0);
+            return;
+        }
+        startExternalSession(source);
+    }
+
+    /** 复制一份并打开目录，然后问“改完要不要导入” */
+    private void startExternalSession(File source) {
+        try {
+            File session = ExternalEdit.beginSession(source, config);
+            ExternalEdit.openInExplorer(session);
+            notify("已复制到外部编辑目录：" + session.getAbsolutePath());
+            askImportAfterEdit(source, session, 0);
+        } catch (IOException e) {
+            Ui.error(stage, "外部编辑失败", e.getMessage(), e);
+        }
+    }
+
+    /** 提示“编辑完成后是否导入更改”（点【现在导入】立刻导，否则等改完再点菜单项） */
+    private void askImportAfterEdit(File source, File session, int changed) {
+        boolean now = Ui.confirm(stage, "外部编辑",
+                "已把当前地图复制到：\n" + session.getAbsolutePath(),
+                "已在资源管理器中打开该目录，你可以在那里直接改 scenario.txt 等文件。\n"
+                        + "改完回到编辑器点「📥 导入外部更改」即可覆盖原地图（导入前会自动备份）。\n\n"
+                        + "现在就导入吗？（还没改就点「取消」，之后随时可以从菜单导入）");
+        if (now) importExternalChanges(source, session);
+    }
+
+    /** 「📥 导入外部更改」：确认后覆盖原地图并重新加载 */
+    private void externalEditImport() {
+        File source = currentMapDir();
+        File session = ExternalEdit.sessionDir(config);
+        if (session == null) {
+            Ui.info(stage, "还没有外部编辑目录",
+                    "先点「🗂 外部编辑（复制当前地图到临时目录并打开）」，改完再回来导入。");
+            return;
+        }
+        File sessionSource = ExternalEdit.sourceOf(session);
+        if (source == null || sessionSource == null) {
+            Ui.warn(stage, "无法导入", "工作副本没有记录来源地图：" + session.getAbsolutePath());
+            return;
+        }
+        if (!sessionSource.equals(source)) {
+            boolean go = Ui.confirm(stage, "来源不一致",
+                    "这份工作副本来自：" + sessionSource.getAbsolutePath(),
+                    "当前打开的是：" + source.getAbsolutePath() + "\n\n要切换到来源地图再导入吗？");
+            if (!go) return;
+            source = sessionSource;
+        }
+        importExternalChanges(source, session);
+    }
+
+    private void importExternalChanges(File source, File session) {
+        List<String> changed = ExternalEdit.changedFiles(source, session);
+        if (changed.isEmpty()) {
+            Ui.info(stage, "没有检测到更改",
+                    "工作副本与原地图内容完全一致，无需导入。\n\n副本目录：" + session.getAbsolutePath());
+            return;
+        }
+        StringBuilder list = new StringBuilder();
+        int shown = 0;
+        for (String c : changed) {
+            list.append("\n  · ").append(c);
+            if (++shown >= 12) {
+                list.append("\n  …（共 ").append(changed.size()).append(" 个文件）");
+                break;
+            }
+        }
+        boolean ok = Ui.confirm(stage, "导入外部更改",
+                "检测到 " + changed.size() + " 个文件有改动：" + list,
+                "导入会用工作副本覆盖原地图：\n" + source.getAbsolutePath()
+                        + "\n\n（原地图会先自动备份到副本目录的「" + ExternalEdit.BACKUP + "」，导入后编辑器会重新加载地图）\n\n确定导入吗？");
+        if (!ok) return;
+        try {
+            File backup = ExternalEdit.importChanges(source, session);
+            ExternalEdit.endSession(config);
+            openMap(source);     // 重新加载，画布与树都刷新
+            notify("已导入 " + changed.size() + " 个文件的更改"
+                    + (backup == null ? "" : "（原地图已备份到 " + backup.getName() + "）"));
+        } catch (IOException e) {
+            Ui.error(stage, "导入失败", e.getMessage(), e);
+        }
+    }
+
     /** 生成并打开“分支剧情 + 2048”示例地图（含剧情分支与多结局） */
     private void openBranchDemoMap() {
         try {
@@ -982,29 +1275,14 @@ public class EditorPane extends BorderPane implements EditorHub {
         }
     }
 
-    /** 生成并打开“打砖块”示例地图（场景事件与按钮事件两种触发方式） */
-    private void openBreakoutDemoMap() {
-        try {
-            File dir = new File(System.getProperty("user.dir"),
-                    com.studio.util.BreakoutMapFactory.DEFAULT_FOLDER);
-            if (!new File(dir, "scenario.txt").isFile()) {
-                com.studio.util.BreakoutMapFactory.createMap(dir);
-                notify("已生成打砖块演示地图: " + dir.getAbsolutePath());
-            }
-            openMap(dir);
-        } catch (IOException e) {
-            Ui.error(stage, "生成示例失败", e.getMessage(), e);
-        }
-    }
-
-    /** 新建地图（demoFlow=true 时生成含插件演示的示例地图） */
-    private void createMapDialog(boolean demoFlow) {
+    /** 新建地图（demoFlow=true 时生成含插件演示的示例地图）。列表窗口的「新建地图」也会调用 */
+    void createMapDialog(boolean demoFlow) {
         if (!confirmSaveChanges()) return;
         File parent = Ui.chooseDirectory(stage, "选择新地图的存放位置", currentParentDir());
         if (parent == null) return;
         Optional<String> name = Ui.askText(stage, "新建地图",
                 demoFlow ? "将生成“含扫雷插件演示”的示例地图" : "将生成标准 AVG 初始界面模板",
-                "地图文件夹名称（地图名）：", "新地图_" + System.currentTimeMillis() % 100000);
+                "地图文件夹名称（地图名）：", "map_" + System.currentTimeMillis() % 100000);
         if (name.isEmpty() || name.get().isBlank()) return;
         File dir = new File(parent, name.get().trim());
         try {

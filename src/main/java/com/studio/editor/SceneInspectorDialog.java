@@ -472,14 +472,39 @@ final class SceneInspectorDialog {
         HBox slotBar = new HBox(8, slotAdd, slotApply, slotDel);
         slotBar.setAlignment(Pos.CENTER_LEFT);
 
+        // 插件选择器：场景槽也能一键插入自带插件模板（列表来自插件目录，加了插件自动出现）
+        javafx.scene.control.ComboBox<com.studio.plugin.builtin.PluginInfo> pluginPicker =
+                new javafx.scene.control.ComboBox<>();
+        pluginPicker.getItems().setAll(com.studio.plugin.builtin.BuiltinCatalog.all());
+        pluginPicker.setPrefWidth(280);
+        pluginPicker.setPromptText("选择自带插件…");
+        pluginPicker.setConverter(new javafx.util.StringConverter<com.studio.plugin.builtin.PluginInfo>() {
+            @Override public String toString(com.studio.plugin.builtin.PluginInfo info) {
+                return info == null ? "" : (info.group() + " · " + info.id());
+            }
+            @Override public com.studio.plugin.builtin.PluginInfo fromString(String s) { return null; }
+        });
+        Button pluginInsert = new Button("＋ 插入插件槽");
+        pluginInsert.setOnAction(e -> {
+            com.studio.plugin.builtin.PluginInfo info = pluginPicker.getValue();
+            if (info == null && !pluginPicker.getItems().isEmpty()) info = pluginPicker.getItems().get(0);
+            if (info == null) return;
+            slotText.setText(com.studio.editor.NodeDialogs.templateOf(info));
+            hub.notify("已插入插件模板：" + info.id() + "（改完点「✔ 应用到选中槽」或「＋ 新增槽」）");
+        });
+        HBox pluginBar = new HBox(8, new Label("自带插件："), pluginPicker, pluginInsert);
+        pluginBar.setAlignment(Pos.CENTER_LEFT);
+
         Label tip = new Label("提示：这些是**场景级**信号与槽（写在 [场景名] 段里），"
                 + "节点自己的信号/槽在「节点」页双击进入节点属性窗口里改。"
-                + "槽按信号名全场景订阅：同一场景里同名信号的所有槽都会一起触发。");
+                + "槽按信号名全场景订阅：同一场景里同名信号的所有槽都会一起触发。"
+                + "另外「场景进入」/「场景离开」是引擎自动发的信号：直接写 slot = 场景进入 | … 即可自动执行，"
+                + "不需要在信号表里声明。");
         tip.getStyleClass().add("hint-text");
         tip.setWrapText(true);
 
         VBox sigBox = new VBox(6, new Label("场景信号（键盘全局监听器按名称分发）"), sigTable, sigText, sigBar);
-        VBox slotBox = new VBox(6, new Label("场景槽（订阅信号后由引擎执行）"), slotTable, slotText, slotBar);
+        VBox slotBox = new VBox(6, new Label("场景槽（订阅信号后由引擎执行）"), slotTable, slotText, slotBar, pluginBar);
         VBox box = new VBox(12, sigBox, slotBox, tip);
         box.setPadding(new Insets(12));
         VBox.setVgrow(sigTable, Priority.ALWAYS);

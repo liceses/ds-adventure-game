@@ -199,6 +199,28 @@ public class MathPlugin implements SlotPlugin {
     /** 供编辑器展示：某参数是否是变量引用 */
     public static boolean isVarArg(String arg) { return Expr.isVarRef(arg); }
 
+    /** 编辑器插件目录（选择器 / 手册自动生成用） */
+    public static java.util.List<PluginInfo> catalog() {
+        java.util.List<PluginInfo> out = new java.util.ArrayList<>();
+        out.add(new PluginInfo("add", "运算", "加", "@plugin(add) | @var(a) | @var(b) | @var(和)", "二元加法：把动作之后的输入相加，结果写到最后一位"));
+        out.add(new PluginInfo("sub", "运算", "减", "@plugin(sub) | @var(a) | @var(b) | @var(差)", "二元减法：a 减 b"));
+        out.add(new PluginInfo("mul", "运算", "乘", "@plugin(mul) | @var(a) | @var(b) | @var(积)", "二元乘法：把输入相乘"));
+        out.add(new PluginInfo("div", "运算", "除", "@plugin(div) | @var(a) | @var(b) | @var(商)", "二元除法：除数为 0 时返回 0（不报错）"));
+        out.add(new PluginInfo("mod", "运算", "取余", "@plugin(mod) | @var(a) | @var(b) | @var(余)", "取余：a mod b"));
+        out.add(new PluginInfo("pow", "运算", "幂", "@plugin(pow) | @var(a) | @var(b) | @var(幂)", "幂运算：a 的 b 次方"));
+        out.add(new PluginInfo("min", "运算", "最小", "@plugin(min) | @var(a) | @var(b) | @var(最小)", "取输入的较小值（常用来做上限）"));
+        out.add(new PluginInfo("max", "运算", "最大", "@plugin(max) | @var(a) | @var(b) | @var(最大)", "取输入的较大值（常用来做下限）"));
+        out.add(new PluginInfo("abs", "运算", "绝对值", "@plugin(abs) | @var(a) | @var(绝对值)", "绝对值"));
+        out.add(new PluginInfo("round", "运算", "四舍五入", "@plugin(round) | @var(a) | @var(结果)", "四舍五入取整"));
+        out.add(new PluginInfo("floor", "运算", "向下取整", "@plugin(floor) | @var(a) | @var(结果)", "向下取整"));
+        out.add(new PluginInfo("ceil", "运算", "向上取整", "@plugin(ceil) | @var(a) | @var(结果)", "向上取整"));
+        out.add(new PluginInfo("neg", "运算", "取负", "@plugin(neg) | @var(a) | @var(结果)", "取相反数"));
+        out.add(new PluginInfo("set", "运算", "赋值", "@plugin(set) | 值 | @var(目标变量)", "把第一个参数复制到输出位（重置/赋常量常用）"));
+        out.add(new PluginInfo("inc", "运算", "加一", "@plugin(inc) | @var(a) | @var(a)", "自增 1（点一次加一）"));
+        out.add(new PluginInfo("dec", "运算", "减一", "@plugin(dec) | @var(a) | @var(a)", "自减 1"));
+        return out;
+    }
+
     @Override
     public String toString() { return "MathPlugin(" + id + ")"; }
 }

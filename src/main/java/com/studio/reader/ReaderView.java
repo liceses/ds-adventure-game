@@ -27,7 +27,11 @@ import com.studio.util.AppConfig;
 import com.studio.util.Logs;
 import javafx.animation.FadeTransition;
 import javafx.animation.KeyFrame;
+import javafx.animation.RotateTransition;
+import javafx.animation.ScaleTransition;
+import javafx.animation.SequentialTransition;
 import javafx.animation.Timeline;
+import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -42,6 +46,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputControl;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.image.WritableImage;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -151,6 +156,9 @@ public class ReaderView extends BorderPane implements SavePortal, FlowHost {
     /** 当前运行中的事件插件：返回剧情 / 被替换 / 关闭播放器时都要回调它的 onDetach */
     private GamePlugin activePlugin;
     private String activePluginId = "";
+    /** 场景自动信号防重入（「场景进入」每次进入只发一次；槽里再跳场景时不重发） */
+    private boolean emittingSceneSignal = false;
+    private boolean enteredSceneSignals = false;
     private boolean suppressSceneEvent;  // 从插件返回时避免重复触发场景事件
 
     // ---- 存档 ----
@@ -363,8 +371,13 @@ public class ReaderView extends BorderPane implements SavePortal, FlowHost {
         }
         // 记录“渲染前所在场景”——场景级插件触发时，返回按钮应回到这里
         String cameFrom = this.sceneName;
+        // 离开旧场景：先发「场景离开」信号（此时旧场景的节点还在，槽仍能改它们）
+        if (cameFrom != null && !cameFrom.isBlank() && !cameFrom.equals(name)) {
+            emitSceneSignal("场景离开", cameFrom);
+        }
         this.sceneName = name;
         this.scene = target;
+        this.enteredSceneSignals = false;   // 本次进入还没发过「场景进入」
 
         board.getChildren().clear();
         nodeViews.clear();
@@ -410,6 +423,48 @@ public class ReaderView extends BorderPane implements SavePortal, FlowHost {
             runPlugin(id, "场景事件 [" + sceneName + "]");
         }
         suppressSceneEvent = false;
+
+        // 进入新场景：发「场景进入」信号（节点已经建好，槽可以立刻改它们的属性）
+        emitSceneSignal("场景进入", name);
+    }
+
+    /**
+     * 发送引擎自动信号（目前是「场景进入」/「场景离开」）。
+     *
+     * <p>地图里不用声明 {@code signal = ...}，直接在场景头写
+     * {@code slot = 场景进入 | …} 就能在进入这一场景时自动跑一段逻辑 ——
+     * 这是“条件内容 / 自动演出 / 自动存档”最常用的挂载点。</p>
+     *
+     * <p>防重入：槽里如果再 {@code goto} 别的场景，会递归走到这里，
+     * 这种情况下不再重复发出自动信号（避免无限循环），只记一条日志。</p>
+     *
+     * @param signal 信号名（「场景进入」或「场景离开」）
+     * @param scene  对应的场景名（作为参数 {@code scene} 传给槽，可用 {@code @param(scene)} 取）
+     */
+    private void emitSceneSignal(String signal, String scene) {
+        if (signalBus == null || scene == null || scene.isBlank()) return;
+        if ("场景进入".equals(signal)) {
+            if (enteredSceneSignals) {
+                Logs.info("[Flow] 场景信号防重入：跳过「场景进入」（" + scene + "）");
+                return;
+            }
+            enteredSceneSignals = true;
+        }
+        if (emittingSceneSignal) {
+            Logs.info("[Flow] 场景信号防重入：跳过「" + signal + "」（" + scene + "）");
+            return;
+        }
+        emittingSceneSignal = true;
+        try {
+            LinkedHashMap<String, Object> p = new LinkedHashMap<>();
+            p.put("scene", scene);
+            signalBus.emitFromScene(signal, p);
+            Logs.info("[Flow] 场景信号「" + signal + "」→ " + scene);
+        } catch (RuntimeException e) {
+            Logs.warn("[Flow] 场景信号「" + signal + "」执行出错：" + e.getMessage());
+        } finally {
+            emittingSceneSignal = false;
+        }
     }
 
     /** 场景音乐：播放场景中 MUSIC 类型节点的音频（循环） */
@@ -1445,7 +1500,7 @@ public class ReaderView extends BorderPane implements SavePortal, FlowHost {
     public void setProperty(String nodeId, String prop, String value) {
         StoryNode n = node(nodeId);
         if (n == null) {
-            Logs.warn("[Flow] setProperty 找不到节点: " + nodeId);
+            presetProperty(nodeId, prop, value);
             return;
         }
         // 节点上配置了默认过渡（如 transition = scale/opacity:300ms）时，自动走动画分支
@@ -1471,12 +1526,48 @@ public class ReaderView extends BorderPane implements SavePortal, FlowHost {
         Logs.info("[Flow] 节点 " + nodeId + "." + prop + " ← " + value);
     }
 
+    /**
+     * 目标节点不在当前场景时的 {@code set} 处理：<b>给别的场景“预设属性”</b>。
+     *
+     * <p>典型用法（条件分支常用）：在选项那一幕就把后面某一幕的节点可见性/文本设好，
+     * 等那一幕渲染时 {@code applyStoredOverrides()} 会把它重放出来 —— 这样就不需要在
+     * 「进入场景」时再跑一次逻辑。只要这个节点 id 确实是本工程里的节点，就记成属性覆盖；
+     * 完全不存在的 id 才告警，避免脚本静默失效。</p>
+     *
+     * <p>视频控制类属性（videoloop/videovolume/videopause）需要活的播放器，非当前场景无法生效，
+     * 因此只记日志不记录覆盖。</p>
+     */
+    private void presetProperty(String nodeId, String prop, String value) {
+        String p = prop == null ? "" : prop;
+        if ("videoloop".equals(p) || "videovolume".equals(p) || "videopause".equals(p)) {
+            Logs.warn("[Flow] 视频控制属性只能作用于当前场景的节点: " + nodeId + "." + p);
+            return;
+        }
+        if (!isKnownNode(nodeId)) {
+            Logs.warn("[Flow] setProperty 找不到节点: " + nodeId);
+            return;
+        }
+        flowVars.recordProp(nodeId, p, value);
+        Logs.info("[Flow] 预设 " + nodeId + "." + p + " ← " + value + "（该节点在别的场景，渲染时生效）");
+    }
+
+    /** 这个 id 是否是本工程里真实存在的节点（任意场景） */
+    private boolean isKnownNode(String nodeId) {
+        if (nodeId == null || nodeId.isBlank() || project == null) return false;
+        for (GameScene s : project.scenes().values()) {
+            for (StoryNode n : s.nodes()) {
+                if (nodeId.equals(n.getId())) return true;
+            }
+        }
+        return false;
+    }
+
     /** 带过渡动画地设置属性：transitionSpec 形如 {@code scale/opacity:300ms} */
     @Override
     public void setPropertyAnimated(String nodeId, String prop, String value, String transitionSpec) {
         StoryNode n = node(nodeId);
         if (n == null) {
-            Logs.warn("[Flow] setPropertyAnimated 找不到节点: " + nodeId);
+            presetProperty(nodeId, prop, value);   // 别的场景的节点：动画没法跑，但覆盖照样记
             return;
         }
         Node view = nodeViews.get(nodeId);
@@ -1659,6 +1750,215 @@ public class ReaderView extends BorderPane implements SavePortal, FlowHost {
     @Override
     public boolean isUiThread() {
         return Platform.isFxApplicationThread();
+    }
+
+    /**
+     * 请求退出游戏（自带插件 {@code @plugin(quit)} 的落地实现）。
+     * <p>先做一次统一收尾（停媒体/停插件/存钩子），再关闭播放器窗口；
+     * 若播放器是唯一窗口，JavaFX 会随之结束进程；编辑器里的预览窗口只关掉预览本身。</p>
+     */
+    @Override
+    public boolean requestQuit() {
+        Logs.info("[Player] 收到退出游戏请求（@plugin(quit)）");
+        runOnUiThread(() -> {
+            try {
+                shutdown();
+            } catch (RuntimeException e) {
+                Logs.warn("[Player] 退出前清理出错：" + e.getMessage());
+            }
+            if (stage != null) stage.close();
+        });
+        return true;
+    }
+
+    /**
+     * 播放特效预设（自带插件 {@code @plugin(fx)} 用）。
+     * <p>规格串形如 {@code shake:8:400}（预设名:参数:参数…）。支持的预设：
+     * {@code shake} 抖屏、{@code flash} 闪白、{@code pulse} 心跳缩放、
+     * {@code fadein}/{@code fadeout} 淡入淡出、{@code slidein}/{@code slideout} 滑入滑出、
+     * {@code zoom} 缩放、{@code rotate} 旋转、{@code bounce} 弹跳。
+     * 返回 false 表示这个预设宿主没实现，插件会自己退化成改属性。</p>
+     */
+    @Override
+    public boolean animate(String nodeId, String spec) {
+        if (spec == null || spec.isBlank()) return false;
+        String[] parts = spec.split(":");
+        String preset = parts[0].trim().toLowerCase(java.util.Locale.ROOT);
+        String p1 = parts.length > 1 ? parts[1].trim() : "";
+        String p2 = parts.length > 2 ? parts[2].trim() : "";
+        double d1 = parseNum(p1, 0);
+        double d2 = parseNum(p2, 400);
+        Node view = nodeViews.get(nodeId);
+        // flash 打在整块画布上（闪白是“屏幕级”的效果，不依赖具体节点）
+        if ("flash".equals(preset) || "闪白".equals(preset)) {
+            double dur = d1 > 0 ? d1 * 1000 : (d2 > 0 ? d2 : 220);
+            runOnUiThread(() -> flashBoard(dur));
+            return true;
+        }
+        if (view == null) return false;   // 目标不在当前场景 → 交给插件退化处理
+        switch (preset) {
+            case "shake", "抖屏", "震动" -> {
+                double power = d1 > 0 ? d1 : 8;
+                double dur = d2 > 0 ? d2 : 400;
+                runOnUiThread(() -> {
+                    TranslateTransition t1 = new TranslateTransition(Duration.millis(dur / 4), view);
+                    t1.setByX(power);
+                    TranslateTransition t2 = new TranslateTransition(Duration.millis(dur / 4), view);
+                    t2.setByX(-2 * power);
+                    TranslateTransition t3 = new TranslateTransition(Duration.millis(dur / 4), view);
+                    t3.setByX(2 * power);
+                    TranslateTransition t4 = new TranslateTransition(Duration.millis(dur / 4), view);
+                    t4.setByX(-power);
+                    // 四段位移之和为 0，结束时自动回到原位
+                    new SequentialTransition(t1, t2, t3, t4).play();
+                });
+                return true;
+            }
+            case "pulse", "心跳", "缩放" -> {
+                double scale = d1 > 0 ? (d1 > 2 ? d1 / 100.0 : d1) : 1.08;
+                double dur = d2 > 0 ? d2 : 260;
+                runOnUiThread(() -> {
+                    ScaleTransition s1 = new ScaleTransition(Duration.millis(dur), view);
+                    s1.setToX(scale);
+                    s1.setToY(scale);
+                    ScaleTransition s2 = new ScaleTransition(Duration.millis(dur), view);
+                    s2.setToX(1);
+                    s2.setToY(1);
+                    new SequentialTransition(s1, s2).play();
+                });
+                return true;
+            }
+            case "fadein", "淡入" -> {
+                double dur = d2 > 0 ? d2 : (d1 > 0 ? d1 * 1000 : 500);
+                runOnUiThread(() -> {
+                    view.setVisible(true);
+                    view.setOpacity(0);
+                    FadeTransition ft = new FadeTransition(Duration.millis(dur), view);
+                    ft.setToValue(1);
+                    ft.play();
+                });
+                return true;
+            }
+            case "fadeout", "淡出" -> {
+                double dur = d2 > 0 ? d2 : (d1 > 0 ? d1 * 1000 : 500);
+                runOnUiThread(() -> {
+                    FadeTransition ft = new FadeTransition(Duration.millis(dur), view);
+                    ft.setToValue(0);
+                    ft.setOnFinished(e -> view.setVisible(false));
+                    ft.play();
+                });
+                return true;
+            }
+            case "slidein", "滑入", "slideout", "滑出" -> {
+                boolean in = preset.startsWith("slidein") || "滑入".equals(preset);
+                double dur = d2 > 0 ? d2 : 420;
+                double dist = in ? 120 : -120;
+                String dir = p1.isEmpty() ? "left" : p1;
+                runOnUiThread(() -> {
+                    if (in) view.setVisible(true);
+                    TranslateTransition tt = new TranslateTransition(Duration.millis(dur), view);
+                    switch (dir) {
+                        case "right", "右" -> { tt.setFromX(-dist); tt.setToX(0); }
+                        case "up", "上" -> { tt.setFromY(dist); tt.setToY(0); }
+                        case "down", "下" -> { tt.setFromY(-dist); tt.setToY(0); }
+                        default -> { tt.setFromX(dist); tt.setToX(0); }
+                    }
+                    if (in) tt.setFromX(tt.getFromX());
+                    tt.play();
+                });
+                return true;
+            }
+            case "zoom", "放大" -> {
+                double to = d1 > 0 ? (d1 > 3 ? d1 / 100.0 : d1) : 1.25;
+                double dur = d2 > 0 ? d2 : 300;
+                runOnUiThread(() -> {
+                    ScaleTransition st = new ScaleTransition(Duration.millis(dur), view);
+                    st.setToX(to);
+                    st.setToY(to);
+                    st.play();
+                });
+                return true;
+            }
+            case "rotate", "旋转" -> {
+                double deg = d1 != 0 ? d1 : 12;
+                double dur = d2 > 0 ? d2 : 400;
+                runOnUiThread(() -> {
+                    RotateTransition rt = new RotateTransition(Duration.millis(dur), view);
+                    rt.setToAngle(deg);
+                    rt.play();
+                });
+                return true;
+            }
+            case "bounce", "弹跳" -> {
+                double power = d1 > 0 ? d1 : 18;
+                double dur = d2 > 0 ? d2 : 420;
+                runOnUiThread(() -> {
+                    TranslateTransition up = new TranslateTransition(Duration.millis(dur / 2), view);
+                    up.setByY(-power);
+                    TranslateTransition down = new TranslateTransition(Duration.millis(dur / 2), view);
+                    down.setByY(power);
+                    new SequentialTransition(up, down).play();
+                });
+                return true;
+            }
+            default -> {
+                return false;
+            }
+        }
+    }
+
+    /** 画面闪白（在画布之上盖一层白，快速淡出） */
+    private void flashBoard(double millis) {
+        javafx.scene.shape.Rectangle flash = new javafx.scene.shape.Rectangle(CW, CH);
+        flash.setFill(javafx.scene.paint.Color.WHITE);
+        flash.setOpacity(0.85);
+        flash.setMouseTransparent(true);
+        mainStack.getChildren().add(flash);
+        FadeTransition ft = new FadeTransition(Duration.millis(Math.max(60, millis)), flash);
+        ft.setToValue(0);
+        ft.setOnFinished(e -> mainStack.getChildren().remove(flash));
+        ft.play();
+    }
+
+    /**
+     * 把当前画面截图保存成 PNG（自带插件 {@code @plugin(screenshot)} 用）。
+     * <p>截的是播放器整体视图（含对话框/提示条），不依赖 javafx.swing：逐像素写盘。</p>
+     */
+    @Override
+    public boolean snapshot(File out) {
+        if (out == null) return false;
+        try {
+            WritableImage img = snapshot(null, null);
+            return com.studio.util.Snapshots.save(img, out);
+        } catch (RuntimeException e) {
+            Logs.warn("[Player] 截图失败：" + e.getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * 切换全屏（自带插件 {@code @plugin(fullscreen)} 用）。
+     *
+     * @param want TRUE 进全屏、FALSE 退全屏、null 表示切换
+     */
+    @Override
+    public boolean toggleFullscreen(Boolean want) {
+        if (stage == null) return false;
+        runOnUiThread(() -> {
+            boolean target = want == null ? !stage.isFullScreen() : want;
+            stage.setFullScreen(target);
+            Logs.info("[Player] 全屏 → " + target);
+        });
+        return true;
+    }
+
+    private static double parseNum(String s, double def) {
+        if (s == null || s.isBlank()) return def;
+        try {
+            return Double.parseDouble(s.trim());
+        } catch (NumberFormatException e) {
+            return def;
+        }
     }
 
     /** 插件可能在后台线程调用渲染接口：这里统一切回 JavaFX 线程 */

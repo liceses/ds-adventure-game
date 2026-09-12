@@ -227,6 +227,22 @@ public class LogicPlugin implements SlotPlugin {
 
     private static String bool(boolean b) { return b ? "true" : "false"; }
 
+    /** 编辑器插件目录（选择器 / 手册自动生成用） */
+    public static java.util.List<PluginInfo> catalog() {
+        java.util.List<PluginInfo> out = new java.util.ArrayList<>();
+        out.add(new PluginInfo("and", "逻辑", "与,逻辑乘", "@plugin(and) | @var(灯1) | @var(灯2) | @var(都亮)", "逻辑与：所有输入都为真 → true"));
+        out.add(new PluginInfo("or", "逻辑", "或,逻辑加", "@plugin(or) | @var(a) | @var(b) | @var(任一)", "逻辑或：任一输入为真 → true"));
+        out.add(new PluginInfo("xor", "逻辑", "异或", "@plugin(xor) | @var(a) | @var(b) | @var(不同)", "逻辑异或：真值个数为奇数 → true"));
+        out.add(new PluginInfo("not", "逻辑", "非,取反", "@plugin(not) | @var(a) | @var(a)", "逻辑非：点一下翻转（开关常用）"));
+        out.add(new PluginInfo("gt", "逻辑", "大于", "@plugin(gt) | @var(a) | @int(1) | @var(结果)", "大小比较 a > b"));
+        out.add(new PluginInfo("lt", "逻辑", "小于", "@plugin(lt) | @var(a) | @int(1) | @var(结果)", "大小比较 a < b"));
+        out.add(new PluginInfo("ge", "逻辑", "大于等于", "@plugin(ge) | @var(a) | @int(1) | @var(结果)", "大小比较 a ≥ b"));
+        out.add(new PluginInfo("le", "逻辑", "小于等于", "@plugin(le) | @var(a) | @int(1) | @var(结果)", "大小比较 a ≤ b"));
+        out.add(new PluginInfo("eq", "逻辑", "相等", "@plugin(eq) | @var(a) | @var(b) | @var(结果)", "相等比较（数字按数值比，否则按文本比）"));
+        out.add(new PluginInfo("ne", "逻辑", "不等", "@plugin(ne) | @var(a) | @var(b) | @var(结果)", "不等比较"));
+        return out;
+    }
+
     @Override
     public String toString() { return "LogicPlugin(" + id + ")"; }
 }

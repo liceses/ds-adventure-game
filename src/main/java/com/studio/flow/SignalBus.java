@@ -314,7 +314,7 @@ public class SignalBus {
         String[] values = new String[raw.length];
         for (int i = 0; i < raw.length; i++) values[i] = Expr.resolve(raw[i], scope);
 
-        String[] out = plugins().execute(id, new FlowContext(host), event, values);
+        String[] out = plugins().execute(id, new FlowContext(host), event, values, raw);
         if (out == null) return;
         int n = Math.min(raw.length, out.length);
         int last = raw.length - 1;

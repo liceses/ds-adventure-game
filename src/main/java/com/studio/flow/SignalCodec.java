@@ -68,14 +68,25 @@ public final class SignalCodec {
 
     public static String encode(SlotDef s) {
         StringBuilder sb = new StringBuilder();
-        sb.append(esc(s.getSignal())).append(" | ").append(esc(s.getAction())).append(" | ")
-          .append(esc(s.getTarget())).append(" | ").append(esc(s.getArg()));
+        sb.append(esc(s.getSignal())).append(" | ").append(esc(s.getAction()));
         if (s.isPlugin()) {
-            // 插件槽：动作之后是可变个数的参数（第 5、6… 段），逐个写出
-            for (String a : s.extraArgs()) {
-                sb.append(" | ").append(esc(a));
+            // 插件槽：动作之后是可变个数的参数（第 3、4、5… 段）。
+            // 注意只写到最后一个“非空参数”为止：像 @plugin(quit) 这种无参插件如果写成
+            // “@plugin(quit) |  |”，再次解析会被判成“插件槽没有参数”而告警（往返不干净）。
+            java.util.ArrayList<String> all = new java.util.ArrayList<>();
+            all.add(s.getTarget() == null ? "" : s.getTarget());
+            all.add(s.getArg() == null ? "" : s.getArg());
+            all.addAll(s.extraArgs());
+            int end = all.size();
+            while (end > 0 && all.get(end - 1).isBlank()) end--;
+            for (int i = 0; i < end; i++) {
+                sb.append(" | ").append(esc(all.get(i)));
             }
+            String params = encodeParams(s.params());
+            if (!params.isEmpty()) sb.append(" | ").append(params);
+            return sb.toString();
         }
+        sb.append(" | ").append(esc(s.getTarget())).append(" | ").append(esc(s.getArg()));
         String params = encodeParams(s.params());
         if (!params.isEmpty()) sb.append(" | ").append(params); // 第 5 段起的 k=v 附加参数
         return sb.toString();

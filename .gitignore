@@ -6,7 +6,8 @@ target/
 .vscode/
 .DS_Store
 # 运行时生成的演示地图
-maps/
+maps/*
+!maps/prologue_404/
 # 外部工程师编译进插件目录的产物
 plugins/classes/
 plugins/*.jar

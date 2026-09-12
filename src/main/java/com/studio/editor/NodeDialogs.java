@@ -516,23 +516,63 @@ final class NodeDialogs {
         tplPlugin.setTooltip(new Tooltip("调用自带插件。可用插件 ID：\n"
                 + "算术 add / sub / mul / div / mod / pow / min / max / abs / round / floor / ceil / neg / set / inc / dec\n"
                 + "逻辑 and / or / xor / not；比较 gt / lt / ge / le / eq / ne\n"
+                + "音频 audio；视频 video（切换某节点的视频）\n"
+                + "系统 quit 退出游戏 / open 打开文件 / pick 选择文件 / reveal 打开所在目录\n"
                 + "示例含义：把 num1 + 1.05 的结果写回 num2"));
+        Button tplSystem = slotTemplate("＋系统槽", "退出游戏 | @plugin(quit)", node, slotRows, slotSync, refresh);
+        tplSystem.setTooltip(new Tooltip("系统操作插件（自带，无需注册）：\n"
+                + "· @plugin(quit)                    退出游戏（关闭播放器窗口）\n"
+                + "· @plugin(open) | 文档/攻略.txt      用系统默认程序打开文件（路径相对地图文件夹）\n"
+                + "· @plugin(open)                    不给路径 → 先弹文件选择框再打开\n"
+                + "· @plugin(pick) | png;jpg | @var(选中立绘)   选文件，把路径写进存档变量\n"
+                + "· @plugin(reveal) | saves/slot1.txt 在资源管理器里打开所在目录"));
         Button tplExpr = slotTemplate("＋表达式槽", "点击 | set | @self | text | value=@var(变量名)",
                 node, slotRows, slotSync, refresh);
         tplExpr.setTooltip(new Tooltip("表达式赋值：@var(变量名) 取存档变量值；"
                 + "也可写 @int(@var(分数))、@double(1.05)、@str(@var(名字)) 或普通字面量"));
+
+        // 插件选择器：列表来自 BuiltinCatalog（以后再加自带插件，这里自动出现，不用改界面）
+        javafx.scene.control.ComboBox<com.studio.plugin.builtin.PluginInfo> pluginPicker =
+                new javafx.scene.control.ComboBox<>();
+        pluginPicker.getItems().setAll(com.studio.plugin.builtin.BuiltinCatalog.all());
+        pluginPicker.setPrefWidth(300);
+        pluginPicker.setPromptText("选择自带插件（可搜索）");
+        pluginPicker.setConverter(new javafx.util.StringConverter<com.studio.plugin.builtin.PluginInfo>() {
+            @Override public String toString(com.studio.plugin.builtin.PluginInfo info) {
+                return info == null ? "" : (info.group() + " · " + info.id());
+            }
+            @Override public com.studio.plugin.builtin.PluginInfo fromString(String s) { return null; }
+        });
+        pluginPicker.setTooltip(new Tooltip("共 " + pluginPicker.getItems().size()
+                + " 个自带插件；选中后点右边按钮，会把一行可用的槽写进下面的输入框"));
+        Button pluginInsert = new Button("＋ 插入插件槽");
+        pluginInsert.getStyleClass().add("tool-button");
+        pluginInsert.setOnAction(e -> {
+            com.studio.plugin.builtin.PluginInfo info = pluginPicker.getValue();
+            if (info == null && !pluginPicker.getItems().isEmpty()) info = pluginPicker.getItems().get(0);
+            if (info == null) return;
+            slotLine.setText(templateOf(info));
+            slotTable.getSelectionModel().clearSelection();
+        });
+        javafx.scene.layout.HBox pluginRow = new javafx.scene.layout.HBox(6, pluginPicker, pluginInsert);
+
         FlowPane slotTpl = new FlowPane(6, 4, slotAdd, slotApply, slotDel, tplSet, tplEmit, tplToggle,
-                tplTransition, tplCall, tplPlugin, tplExpr, slotCount);
+                tplTransition, tplCall, tplPlugin, tplSystem, tplExpr, slotCount);
         slotTpl.setAlignment(Pos.CENTER_LEFT);
         Label slotNote = new Label("槽按“信号名”全场景订阅：同一场景里同名信号的所有槽都会一起触发。"
                 + "选中一行会把它的写法载入下面的输入框，改完点「✔ 应用到选中」。");
         slotNote.setWrapText(true);
         slotNote.getStyleClass().add("hint-text");
-        Label pluginNote = new Label("可用插件 ID：算术 add/sub/mul/div/mod/pow/min/max/abs/round/floor/ceil/neg/set/inc/dec；"
-                + "逻辑 and/or/xor/not；比较 gt/lt/ge/le/eq/ne");
+        Label pluginNote = new Label("可用插件 ID："
+                + com.studio.plugin.builtin.BuiltinCatalog.ids().size() + " 个自带插件 —— "
+                + "运算 add/sub/…、逻辑 and/or/…、文本 concat/sub/…、格式 num/money/bar、"
+                + "流程 select/after/every、随机 rand、交互 confirm/input、演出 cast/bg/fx、"
+                + "音频 audio、视频 video、存档 slots/copyslot/…、数据 json、列表 list、"
+                + "系统 quit/open/clipboard/fullscreen、网络 http/llm、时间 clock、调试 debug/trace。"
+                + "用上面的下拉框选一个即可插入模板；完整说明见「帮助 → 使用帮助 → 插件」。");
         pluginNote.setWrapText(true);
         pluginNote.getStyleClass().add("hint-text");
-        addRow(grid, 20, "槽 (slot)", new VBox(4, slotTable, slotLine, slotTpl, slotNote, pluginNote),
+        addRow(grid, 20, "槽 (slot)", new VBox(4, slotTable, slotLine, slotTpl, pluginRow, slotNote, pluginNote),
                 "动作：set改属性 / toggle显隐 / emit发信号 / goto跳场景 / save / load / call逻辑 / log；"
                         + "目标可写 @self；@plugin(插件ID) 调用自带插件");
 
@@ -661,6 +701,17 @@ final class NodeDialogs {
             refresh.run();
         });
         return b;
+    }
+
+    /**
+     * 由插件目录项生成一行可直接用的槽模板：{@code 点击 | @plugin(id) | 参数…}。
+     *
+     * <p>参数照抄目录里的 {@code usage()}；地图工程师只要把 {@code @var(…)} 换成自己的变量名，
+     * 再点「✔ 应用到选中槽」即可。以后新增自带插件时，这里不用改 —— 模板由插件目录自动带出来。</p>
+     */
+    static String templateOf(com.studio.plugin.builtin.PluginInfo info) {
+        if (info == null) return "点击 | @plugin(add) | @var(a) | @var(b) | @var(和)";
+        return info.slotTemplate();
     }
 
     /** 模板按钮：把一行式槽追加到节点的槽列表，并刷新表格与计数 */
