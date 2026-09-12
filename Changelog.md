@@ -1,4 +1,20 @@
 # 更新日志 (Changelog)
+## [v1.7] 合并 PR #3 / #4，并将 PR #5 改造为贪吃蛇插件
+
+### Added
+- 合并 PR #4：记忆翻牌插件 `com.studio.plugin.demo.memory`（事件 ID `memory`，演示地图 `docs/demo-maps/memory/`）
+- 合并 PR #3：打砖块插件 `com.studio.plugin.demo.breakout`（事件 ID `breakout`，编辑器菜单可生成演示地图）
+- 基于 PR #5 完成贪吃蛇插件化：`com.studio.plugin.demo.snake`（`SnakeConfig` / `SnakeGame` 纯规则 / `SnakePlugin`），事件 ID `snake`，演示地图 `docs/demo-maps/snake/`
+- 新增单元测试 `SnakeGameTest`（13 项）；合并后测试总数 43（4 + 12 + 14 + 13）
+
+### Changed
+- PR #5 原始实现（`com.example.snake` + 独立 `Application` 入口 + `pom.xml` 的 `snake` profile）改造为内置插件：删除独立入口与 profile，注册进 `plugins/plugins.ini`
+- 贪吃蛇对齐需求 F4：10×10 格、初始长度 3、累计 97 豆通关、速度 = 初速 + 0.01 × 已玩秒数、允许 180° 反向（反向致蛇头与身体重叠判失败）
+- 关闭超纲玩法：限时（默认 0 = 不限时，避免与 97 豆通关冲突）、障碍（默认 0 个，配置项保留）
+
+### Fixed
+- `plugins/plugins.ini` 合并冲突：`breakout` 与 `memory` 两行共存
+
 ## [v1.6] 同步编辑器（Studio）v0.5：节点体系 · 存档变量 · 信号槽 · 插件 · 易用性
 
 ### Added

@@ -151,7 +151,7 @@ mvnw.cmd -q exec:java "-Dexec.mainClass=com.studio.parser.ParserSelfTest"
 | F1 剧情引擎 | 脚本解析、文本逐字显示、节点跳转、无效跳转不崩溃 | **部分具备** | `ScriptParser`/`ScriptWriter` + `ReaderView`（打字机、富文本、场景跳转、宽容模式告警） | TODO-05 · IT-2 |
 | F2 选项分支 | 多选项跳转；玩家长时间不决策时执行第三种隐藏默认选项 | **待实现** | 现有 `button` 节点 `action=target` 可做基础跳转；**超时默认选项机制未实现** | TODO-06 · IT-2 |
 | F3 特殊演出调度 | 节点触发小游戏、结束后结果回传、按结果三分支调度（普通叙事 / 强制重试 / 关键结局） | **部分具备** | `GamePlugin` + 嵌入层 + 场景级 `event`（可切入并返回剧情）；**结果回传与三分支路由未实现** | TODO-07 / TODO-04 / TODO-01 · IT-2 |
-| F4 贪吃蛇 | 10×10、吃豆 97 通关、速度每秒 +0.01、允许 180° 反向 | **待实现** | 需按 `GamePlugin` 实现（接口设计见详细设计说明书 `SnakeGame`） | TODO-09 · IT-3 |
+| F4 贪吃蛇 | 10×10、吃豆 97 通关、速度每秒 +0.01、允许 180° 反向 | **已具备** | `com.studio.plugin.demo.snake`（`SnakeConfig` / `SnakeGame` 纯规则 / `SnakePlugin` 嵌入视图）；演示地图 `docs/demo-maps/snake/` | TODO-09 · 已完成（IT-3） |
 | F5 飞机大战 | 左摇杆移动 / 右按钮射击、击落 20 架、3 条命、护盾 3 秒 | **待实现** | 无 | TODO-10 · IT-4 |
 | F16 主菜单 | 开始 / 继续 / 回忆收藏馆 / 设置 / 退出（覆盖确认、无存档置灰） | **待实现** | 现有 Player 启动即进地图，无五项主菜单 | TODO-02 / TODO-03 · IT-5 |
 
@@ -162,7 +162,9 @@ mvnw.cmd -q exec:java "-Dexec.mainClass=com.studio.parser.ParserSelfTest"
 | 2048 小游戏 | P1 | **已具备（demo）** | `com.studio.plugin.demo.Game2048Plugin` |
 | 扫雷小游戏 | P1 | **已具备（demo）** | `com.studio.plugin.demo.MinesweeperPlugin` |
 | 存档系统 | P1 | **部分具备** | `saves/` 三槽存档 + `SavePortal` + `FlowVariables`；「进入小游戏前自动存档」「跨周目全局记录」待补 | 
-| 打砖块 / 记忆翻牌 / 连连看 / 推箱子 / 五子棋 | P1 | 待实现 | 玩法说明见 `docs/ds-adventrue/*.md` |
+| 打砖块小游戏 | P1 | **已具备（demo）** | `com.studio.plugin.demo.breakout`；编辑器菜单可生成演示地图 |
+| 记忆翻牌小游戏 | P1 | **已具备（demo）** | `com.studio.plugin.demo.memory`；演示地图 `docs/demo-maps/memory/` |
+| 连连看 / 推箱子 / 五子棋 | P1 | 待实现 | 玩法说明见 `docs/ds-adventrue/*.md` |
 | 回忆收藏馆 / 结局收集 | P1 | 待实现 | — |
 | 音频（BGM / 音效 / 静音） | P2 | 部分具备 | 已依赖 `javafx-media`；`music` 节点支持循环播放 |
 | 设置界面 / CG 收集 | P2 | 待实现 | — |
@@ -175,12 +177,12 @@ mvnw.cmd -q exec:java "-Dexec.mainClass=com.studio.parser.ParserSelfTest"
 
 | 小游戏 | 优先级 | 实现状态 |
 |---|---|---|
-| 贪吃蛇 | **P0** | 待实现（IT-3） |
+| 贪吃蛇 | **P0** | **已具备**（事件 ID `snake`，演示地图 `docs/demo-maps/snake/`） |
 | 飞机大战 | **P0** | 待实现（IT-4） |
-| 2048 | P1 | 已具备（demo 插件） |
-| 扫雷 | P1 | 已具备（demo 插件） |
-| 打砖块 | P1 | 待实现 |
-| 记忆翻牌 | P1 | 待实现 |
+| 2048 | P1 | 已具备（demo 插件，事件 ID `2048`） |
+| 扫雷 | P1 | 已具备（demo 插件，事件 ID `minesweeper`） |
+| 打砖块 | P1 | **已具备**（事件 ID `breakout`，编辑器菜单可生成演示地图） |
+| 记忆翻牌 | P1 | **已具备**（事件 ID `memory`，演示地图 `docs/demo-maps/memory/`） |
 | 连连看 | P1 | 待实现 |
 | 推箱子 | P1 | 待实现 |
 | 五子棋 | P1 | 待实现 |
@@ -389,7 +391,8 @@ public class MyLogic implements com.studio.flow.LogicHandler {
 
 - 项目脚手架：Maven 工程与 Maven Wrapper、包结构、游戏循环与输入抽象骨架
 - 构建配置：`pom.xml`（编译目标、依赖、插件）与依赖精简
-- 单元测试：`ScriptParserTest`（4 项用例）
+- 单元测试：`ScriptParserTest`（4 项）、`SnakeGameTest`（13 项，贪吃蛇规则与 F4 数值）
+- 协作与集成：PR #3 / #4 的审查、`plugins.ini` 冲突解决与合并；PR #5（贪吃蛇）的插件化改造（抽取纯规则引擎、接入 `GamePlugin`、补测试与演示地图）
 - 文档：README、需求规格说明书与详细设计说明书的整理与修订（含 `[待实现]` 进度标记补注）
 
 **由组员实现（非 AI 生成）**
@@ -404,7 +407,7 @@ public class MyLogic implements com.studio.flow.LogicHandler {
 | JDK 与编译目标 | 编译目标 17（`<release>17</release>`），本机 JDK 21 编译通过 |
 | JavaFX 版本 | 17.0.20（LTS 17），与编译目标兼容；四个模块版本统一 |
 | 依赖精简 | 仅 openjfx 四模块 + JUnit 5，无多余依赖 |
-| 构建与测试 | `mvnw.cmd clean compile` 通过；`mvnw.cmd test` 4 项用例全通过 |
+| 构建与测试 | `mvnw.cmd clean compile` 通过；`mvnw.cmd test` **43 项**用例全通过（4 + 12 + 14 + 13） |
 | 版本错配修正 | 原 PR 的 JDK 21 / JavaFX 21.0.5 已下调至 17 / 17.0.20；Java 21 专有 API（`Math.clamp`、`SequencedCollection.getFirst()`）已降级为 17 可用写法 |
 | 误删恢复 | 恢复 `mvnw`、`docs/ds-adventrue` 玩法文档、`assets/`，并恢复 `.gitignore` 中的 `docs/私人/` 忽略规则 |
 
@@ -431,6 +434,7 @@ public class MyLogic implements com.studio.flow.LogicHandler {
 | v1.0 | 2026-09-07 | 初版：项目简介、技术栈版本表、运行方式、目录结构、AI 使用与核对说明 |
 | v1.1 | 2026-09-10 | 技术栈对齐：编译目标 17、JavaFX 17.0.20、回归 JUnit 与 Maven Wrapper |
 | v1.2 | 2026-09-11 | **重写为全项目说明**：补项目定位与成员、技术栈版本表、运行命令（mvnw）、完整目录结构、需求实现对照（P0/P1）、小游戏池与优先级、包职责与检查项分层映射、协作与 Git 规范、AI 使用与核对说明、FAQ 与修订记录；修正原 README 仅覆盖 Studio/Player 子模块、版本自相矛盾、章节编号重复等问题 |
+| v1.3 | 2026-09-12 | 合并 PR #3 / #4，把 PR #5 改造为贪吃蛇插件；小游戏池与需求对照状态更新（贪吃蛇 / 打砖块 / 记忆翻牌 已具备）；移除成员真实姓名 |
 
 更细的变更记录见 [`Changelog.md`](Changelog.md)。
 
