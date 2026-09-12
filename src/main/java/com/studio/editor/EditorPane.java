@@ -299,11 +299,7 @@ public class EditorPane extends BorderPane implements EditorHub {
         // ---------- 帮助 ----------
         Menu helpMenu = new Menu("帮助(H)");
         helpMenu.getItems().addAll(
-                item("关于…", e -> Ui.info(stage, "关于 剧情编辑器",
-                        "剧情编辑器 Studio / 播放器 Player v1.0\n"
-                        + "JDK 21 + JavaFX 21 · 纯 Java 无 FXML\n\n"
-                        + "地图 = 文件夹(scenario.txt + resources/)，\n"
-                        + "支持 [option]/[场景]/{节点} 双向读写与插件化事件。")),
+                item("关于…", e -> Ui.info(stage, "关于 剧情编辑器 / 播放器", aboutText())),
                 item("📖 使用帮助（脚本 / 样式 / 信号槽 / 快捷键）…", e -> HelpDialogs.show(stage)),
                 item("脚本语法速查…", e -> Ui.info(stage, "scenario.txt 语法速查",
                         syntaxHelp())));
@@ -930,6 +926,82 @@ public class EditorPane extends BorderPane implements EditorHub {
         File dir = Ui.chooseDirectory(stage, "选择地图文件夹（内含 scenario.txt）", initial);
         if (dir == null) return;
         openMap(dir);
+    }
+
+    @Override
+    public java.util.List<com.studio.plugin.builtin.PluginInfo> pluginCatalog() {
+        return pluginCatalogDetailed().items();
+    }
+
+    @Override
+    public PluginCatalog.Catalog pluginCatalogDetailed() {
+        File projectDir = new File(System.getProperty("user.dir"));
+        return PluginCatalog.load(projectDir, currentMapDir());
+    }
+
+    // =====================================================================
+    // 关于
+    // =====================================================================
+
+    /**
+     * 「帮助 → 关于」的内容：<b>每次打开都按当前环境重新生成</b>，
+     * 所以不会出现“说明里写的版本/功能早就过时”的情况。
+     */
+    private String aboutText() {
+        File mapsRoot = mapsRoot();
+        PluginCatalog.Catalog cat = pluginCatalogDetailed();
+        int builtin = com.studio.plugin.builtin.BuiltinCatalog.all().size();
+        int external = Math.max(0, cat.items().size() - builtin);
+        File session = ExternalEdit.sessionDir(config);
+        File map = currentMapDir();
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("剧情编辑器 Studio × 剧情播放器 Player\n");
+        sb.append("纯 Java + JavaFX（无 FXML、无第三方 UI 库）\n\n");
+
+        sb.append("运行环境：").append(runtimeInfo()).append('\n');
+        sb.append("工程根目录：").append(System.getProperty("user.dir")).append('\n');
+        sb.append("默认地图文件夹：").append(mapsRoot.getAbsolutePath())
+                .append("（").append(MapBrowserDialog.countMaps(mapsRoot)).append(" 张地图）\n");
+        sb.append("当前地图：").append(map == null ? "（未打开）" : map.getAbsolutePath()).append('\n');
+        sb.append("个性化节点模板：").append(NodePresetStore.file().getName())
+                .append("（").append(NodePresetStore.load().size()).append(" 条）\n");
+        sb.append("外部编辑目录：").append(ExternalEdit.rootDir().getName())
+                .append(session == null ? "（当前没有进行中的工作副本）" : "（进行中：" + session.getName() + "）").append('\n');
+        sb.append('\n');
+
+        sb.append("插件：可用 ").append(cat.items().size()).append(" 个（自带 ").append(builtin)
+                .append(" + 外部 ").append(external).append("）\n");
+        if (!cat.problems().isEmpty()) {
+            sb.append("　　　注意：有 ").append(cat.problems().size())
+                    .append(" 个注册项不能用于 @plugin 槽（事件插件请用节点的 event 属性）\n");
+        }
+        sb.append("　　　插入方式：节点属性窗口 → 槽 → 「自带插件」下拉框 → ＋ 插入插件槽\n");
+        sb.append('\n');
+
+        sb.append("地图格式：[option] / [场景名] / { 节点属性 }，双向读写；\n");
+        sb.append("地图 = 文件夹（scenario.txt + resources/ + saves/）；\n");
+        sb.append("支持：存档变量与表达式、信号/槽、@plugin 插件、场景进入/离开自动信号、\n");
+        sb.append("　　　插件事件嵌入主舞台、导出独立文件夹、撤销/重做（80 步）。\n\n");
+
+        sb.append("想知道怎么用：帮助 → 📖 使用帮助（脚本语法 / 内联样式 / 信号·槽·插件 / 快捷键）。\n");
+        sb.append("更新记录见工程根目录的 Changelog.md。");
+        return sb.toString();
+    }
+
+    /** JVM 与 JavaFX 版本（拿不到就写“未知”，不要瞎猜） */
+    private static String runtimeInfo() {
+        String java = System.getProperty("java.version", "?");
+        String vendor = System.getProperty("java.vendor", "");
+        String fx = "未知";
+        try {
+            Package p = javafx.stage.Stage.class.getPackage();
+            String v = p == null ? null : p.getImplementationVersion();
+            if (v != null && !v.isBlank()) fx = v;
+        } catch (RuntimeException ignored) {
+            // 保持“未知”
+        }
+        return "JDK " + java + (vendor.isBlank() ? "" : "（" + vendor + "）") + " · JavaFX " + fx;
     }
 
     // =====================================================================

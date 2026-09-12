@@ -531,12 +531,14 @@ final class NodeDialogs {
         tplExpr.setTooltip(new Tooltip("表达式赋值：@var(变量名) 取存档变量值；"
                 + "也可写 @int(@var(分数))、@double(1.05)、@str(@var(名字)) 或普通字面量"));
 
-        // 插件选择器：列表来自 BuiltinCatalog（以后再加自带插件，这里自动出现，不用改界面）
+        // 插件选择器：列表来自「插件总目录」—— 自带内置插件 + 外部插件（注册表登记的、classes/jar 里已编译的）
+        PluginCatalog.Catalog pluginCat = hub.pluginCatalogDetailed();
         javafx.scene.control.ComboBox<com.studio.plugin.builtin.PluginInfo> pluginPicker =
                 new javafx.scene.control.ComboBox<>();
-        pluginPicker.getItems().setAll(com.studio.plugin.builtin.BuiltinCatalog.all());
+        pluginPicker.getItems().setAll(pluginCat.items());
         pluginPicker.setPrefWidth(300);
-        pluginPicker.setPromptText("选择自带插件（可搜索）");
+        pluginPicker.setPromptText("选择插件（自带 + 外部，可输入搜索）");
+        pluginPicker.setEditable(true);
         pluginPicker.setConverter(new javafx.util.StringConverter<com.studio.plugin.builtin.PluginInfo>() {
             @Override public String toString(com.studio.plugin.builtin.PluginInfo info) {
                 return info == null ? "" : (info.group() + " · " + info.id());
@@ -544,7 +546,13 @@ final class NodeDialogs {
             @Override public com.studio.plugin.builtin.PluginInfo fromString(String s) { return null; }
         });
         pluginPicker.setTooltip(new Tooltip("共 " + pluginPicker.getItems().size()
-                + " 个自带插件；选中后点右边按钮，会把一行可用的槽写进下面的输入框"));
+                + " 个可用插件（自带 " + com.studio.plugin.builtin.BuiltinCatalog.all().size()
+                + " + 外部 " + Math.max(0, pluginPicker.getItems().size()
+                - com.studio.plugin.builtin.BuiltinCatalog.all().size()) + "）\n"
+                + "外部插件来自 plugins/varplugins.ini、plugins/plugins.ini 以及 plugins/classes、plugins/*.jar\n"
+                + "选中后点右边按钮，会把一行可用的槽写进下面的输入框"
+                + (pluginCat.problems().isEmpty() ? "" : "\n（有 " + pluginCat.problems().size()
+                + " 个注册项不能用于槽，详见「使用帮助」或控制台日志）")));
         Button pluginInsert = new Button("＋ 插入插件槽");
         pluginInsert.getStyleClass().add("tool-button");
         pluginInsert.setOnAction(e -> {
@@ -563,12 +571,8 @@ final class NodeDialogs {
                 + "选中一行会把它的写法载入下面的输入框，改完点「✔ 应用到选中」。");
         slotNote.setWrapText(true);
         slotNote.getStyleClass().add("hint-text");
-        Label pluginNote = new Label("可用插件 ID："
-                + com.studio.plugin.builtin.BuiltinCatalog.ids().size() + " 个自带插件 —— "
-                + "运算 add/sub/…、逻辑 and/or/…、文本 concat/sub/…、格式 num/money/bar、"
-                + "流程 select/after/every、随机 rand、交互 confirm/input、演出 cast/bg/fx、"
-                + "音频 audio、视频 video、存档 slots/copyslot/…、数据 json、列表 list、"
-                + "系统 quit/open/clipboard/fullscreen、网络 http/llm、时间 clock、调试 debug/trace。"
+        Label pluginNote = new Label("可用插件：" + com.studio.plugin.builtin.BuiltinCatalog.ids().size()
+                + " 个自带 ID（含中文别名）+ 外部插件（已注册的与 plugins/classes、plugins/*.jar 里编译好的）。"
                 + "用上面的下拉框选一个即可插入模板；完整说明见「帮助 → 使用帮助 → 插件」。");
         pluginNote.setWrapText(true);
         pluginNote.getStyleClass().add("hint-text");

@@ -29,7 +29,6 @@ savevar = 灯8亮 | bool | false
 savevar = 灯9亮 | bool | false
 
 [序01_灯会]
-signal = F | key | F | press
 
 {
 type = text

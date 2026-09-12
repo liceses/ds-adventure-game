@@ -472,12 +472,13 @@ final class SceneInspectorDialog {
         HBox slotBar = new HBox(8, slotAdd, slotApply, slotDel);
         slotBar.setAlignment(Pos.CENTER_LEFT);
 
-        // 插件选择器：场景槽也能一键插入自带插件模板（列表来自插件目录，加了插件自动出现）
+        // 插件选择器：自带 + 外部（注册表登记 / classes / jar 里编译好的），场景槽也能一键插入
         javafx.scene.control.ComboBox<com.studio.plugin.builtin.PluginInfo> pluginPicker =
                 new javafx.scene.control.ComboBox<>();
-        pluginPicker.getItems().setAll(com.studio.plugin.builtin.BuiltinCatalog.all());
+        pluginPicker.getItems().setAll(hub.pluginCatalog());
         pluginPicker.setPrefWidth(280);
-        pluginPicker.setPromptText("选择自带插件…");
+        pluginPicker.setPromptText("选择插件（自带 + 外部）");
+        pluginPicker.setEditable(true);
         pluginPicker.setConverter(new javafx.util.StringConverter<com.studio.plugin.builtin.PluginInfo>() {
             @Override public String toString(com.studio.plugin.builtin.PluginInfo info) {
                 return info == null ? "" : (info.group() + " · " + info.id());

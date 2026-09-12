@@ -58,6 +58,16 @@ public interface EditorHub {
     /** 在画布逻辑坐标处添加一个默认节点（工具箱拖放、右键菜单调用） */
     void createNodeAt(String typeCode, double x, double y);
 
+    // ---------- 插件目录（插入插件槽的下拉框用） ----------
+    /**
+     * 当前可用的<b>全部</b>插件：自带内置插件 + 外部插件（注册表里登记的 + plugins/classes、jar 里已编译的）。
+     * 由 EditorPane 实现（要知道工程根与当前地图目录）。
+     */
+    java.util.List<com.studio.plugin.builtin.PluginInfo> pluginCatalog();
+
+    /** 拉取一次完整目录（含被排除的注册项及原因），供提示“为什么某个插件没出现在列表里” */
+    PluginCatalog.Catalog pluginCatalogDetailed();
+
     // ---------- 左侧层级树的快捷动作 ----------
     void createSceneViaTree();
     void renameSceneViaTree(GameScene scene);
