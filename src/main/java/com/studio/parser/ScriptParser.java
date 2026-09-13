@@ -267,12 +267,11 @@ public final class ScriptParser {
         if (def != null) scene.slots().add(def);
     }
 
-    /** 手工脚本省略 width/height 时回填类型默认尺寸（music 除外） */    private static void applyTypeDefaults(StoryNode node) {
+    /** 手工脚本省略 width/height 时回填类型默认尺寸 */
+    private static void applyTypeDefaults(StoryNode node) {
         if (node == null) return;
-        if (node.getType() != com.studio.model.NodeType.MUSIC) {
-            if (node.getWidth() <= 0) node.setWidth(node.getType().defaultWidth());
-            if (node.getHeight() <= 0) node.setHeight(node.getType().defaultHeight());
-        }
+        if (node.getWidth() <= 0) node.setWidth(node.getType().defaultWidth());
+        if (node.getHeight() <= 0) node.setHeight(node.getType().defaultHeight());
     }
 
     private static void deliverHeredoc(String content, String key, int owner,
@@ -296,6 +295,19 @@ public final class ScriptParser {
         String canonical = StoryNode.KEY_ALIAS.getOrDefault(key, key);
         try {
             node.setScriptProperty(canonical, value);
+            // 已废弃写法的迁移提示（值照样保留在 extras 里，不会丢内容）
+            if ("type".equals(canonical) && !com.studio.model.NodeType.isKnown(value)) {
+                String v = value == null ? "" : value.trim();
+                if (v.equalsIgnoreCase("music") || v.equals("音乐")) {
+                    warnings.add("第 " + lineNo + " 行: 节点类型 music 已废弃（音频改用 @plugin(audio)），"
+                            + "这里已按文本节点读入");
+                } else {
+                    warnings.add("第 " + lineNo + " 行: 未知节点类型 " + v + "，已按文本节点读入");
+                }
+            } else if ("audio".equals(canonical)) {
+                warnings.add("第 " + lineNo + " 行: 节点的 audio 属性已废弃（不再播放），"
+                        + "音频请用槽 @plugin(audio) | play/loop | 路径 | bgm；该行会原样保留在脚本里");
+            }
         } catch (RuntimeException e) {
             warnings.add("第 " + lineNo + " 行: 属性 " + key + " 赋值失败: " + e.getMessage());
         }

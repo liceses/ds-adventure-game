@@ -171,15 +171,29 @@ final class NodeDialogs {
         addRow(grid, 7, "视频 (video)", new VBox(4, new HBox(6, videoField, videoPick), videoHint),
                 "视频相对地图根目录（如 resources/video/opening.mp4）；自动复制进地图 resources/video");
 
-        // 音频
-        TextField audioField = new TextField(node.getAudio());
-        audioField.textProperty().addListener((o, a, b) -> { node.setAudio(b); refresh.run(); });
-        Button audioPick = new Button("…选择音频");
-        audioPick.setOnAction(e -> {
-            String rel = AssetImport.pickAndImport(dialog.getOwner(), project, node, true);
-            if (rel != null) audioField.setText(rel);
+        // 系统提示（toast）：停留时长 + 一键摆到右上角
+        TextField durationField = new TextField(StoryNode.trimDouble(node.durationSeconds()));
+        durationField.setPrefWidth(90);
+        durationField.textProperty().addListener((o, a, b) -> {
+            node.setDuration(StoryNode.parseDoubleSafe(b, 0));
+            refresh.run();
         });
-        addRow(grid, 8, "音频 (audio)", new HBox(6, audioField, audioPick), "音乐轨/音效文件");
+        Button toCorner = new Button("⤒ 移到右上角");
+        toCorner.getStyleClass().add("tool-button");
+        toCorner.setTooltip(new Tooltip("系统提示一般就放屏幕右上角；这里一键摆好（画布逻辑尺寸 1280×720）"));
+        toCorner.setOnAction(e -> {
+            node.setX(com.studio.model.NodeType.toastX(node.getWidth()));
+            node.setY(StoryNode.TOAST_MARGIN);
+            refresh.run();
+            hub.nodeChanged(node);
+        });
+        Label toastHint = new Label("系统提示（🔔）自带默认样式：深色圆角条 + 白字 + 投影，不需要素材；"
+                + "显示后停留这么多秒自动淡出。用槽 set | 节点id | visible | value=true 就能随时弹一次"
+                + "（也可以改 text 再弹，例如“存档中…”→“已保存”）。");
+        toastHint.setWrapText(true);
+        toastHint.getStyleClass().add("hint-text");
+        addRow(grid, 8, "提示时长 (duration)", new VBox(4, new HBox(6, durationField, toCorner), toastHint),
+                "系统提示节点专用：秒数，默认 " + StoryNode.trimDouble(StoryNode.DEFAULT_TOAST_SECONDS) + " 秒");
 
         // 文字（可多段：独立一行的 --- 分隔，播放时点击对话自动切到下一段）
         TextArea textArea = new TextArea(node.getText());
@@ -514,9 +528,9 @@ final class NodeDialogs {
         Button tplPlugin = slotTemplate("＋插件槽", "点击 | @plugin(add) | @var(num1) | @double(1.05) | @var(num2)",
                 node, slotRows, slotSync, refresh);
         tplPlugin.setTooltip(new Tooltip("调用自带插件。可用插件 ID：\n"
-                + "算术 add / sub / mul / div / mod / pow / min / max / abs / round / floor / ceil / neg / set / inc / dec\n"
+                + "算术 add / 减法（或 minus）/ mul / div / mod / pow / min / max / abs / round / floor / ceil / neg / set / inc / dec\n"
                 + "逻辑 and / or / xor / not；比较 gt / lt / ge / le / eq / ne\n"
-                + "音频 audio；视频 video（切换某节点的视频）\n"
+                + "音频 audio（bgm/se 通道）；视频 video（切换某节点的视频）\n"
                 + "系统 quit 退出游戏 / open 打开文件 / pick 选择文件 / reveal 打开所在目录\n"
                 + "示例含义：把 num1 + 1.05 的结果写回 num2"));
         Button tplSystem = slotTemplate("＋系统槽", "退出游戏 | @plugin(quit)", node, slotRows, slotSync, refresh);
@@ -644,7 +658,7 @@ final class NodeDialogs {
         node.setId(snapshot.getId());
         node.setX(snapshot.getX()); node.setY(snapshot.getY());
         node.setWidth(snapshot.getWidth()); node.setHeight(snapshot.getHeight());
-        node.setPath(snapshot.getPath()); node.setAudio(snapshot.getAudio());
+        node.setPath(snapshot.getPath());
         node.setVideo(snapshot.getVideo());   // 视频也要还原，否则【取消】后会残留
         node.setText(snapshot.getText()); node.setStyle(snapshot.getStyle());
         node.setEvent(snapshot.getEvent()); node.setAction(snapshot.getAction());
@@ -657,6 +671,7 @@ final class NodeDialogs {
         node.setIndex(snapshot.getIndex());
         node.setMultiline(snapshot.isMultiline());
         node.setBind(snapshot.getBind());
+        node.setDuration(snapshot.getDuration());
         node.signals().clear();
         node.signals().addAll(snapshot.signals());
         node.slots().clear();
@@ -728,6 +743,7 @@ final class NodeDialogs {
      */
     static com.studio.plugin.builtin.PluginInfo pickedPlugin(
             javafx.scene.control.ComboBox<com.studio.plugin.builtin.PluginInfo> picker) {
+
         if (picker == null) return null;
         com.studio.plugin.builtin.PluginInfo sel = picker.getValue();
         if (sel != null) return sel;

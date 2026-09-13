@@ -18,8 +18,8 @@ public class StoryNode {
     /** 规范键：写文件时输出的固定顺序 */
     public static final String[] SCRIPT_ORDER = {
             "type", "id", "index", "x", "y", "width", "height",
-            "path", "video", "audio", "text", "multiline", "bind", "style", "event", "action", "target",
-            "visible", "fontSize", "align", "opacity"
+            "path", "video", "text", "multiline", "bind", "style", "event", "action", "target",
+            "visible", "fontSize", "align", "opacity", "duration"
     };
 
     /** 中文/英文别名 → 规范键（解析器容错用） */
@@ -33,9 +33,12 @@ public class StoryNode {
         KEY_ALIAS.put("width", "width");  KEY_ALIAS.put("宽度", "width");  KEY_ALIAS.put("宽", "width");
         KEY_ALIAS.put("height", "height");KEY_ALIAS.put("高度", "height"); KEY_ALIAS.put("高", "height");
         KEY_ALIAS.put("path", "path");    KEY_ALIAS.put("图片", "path");   KEY_ALIAS.put("立绘路径", "path"); KEY_ALIAS.put("路径", "path");
-        KEY_ALIAS.put("audio", "audio");  KEY_ALIAS.put("音频", "audio");  KEY_ALIAS.put("音乐", "audio");  KEY_ALIAS.put("音效", "audio");
-        // 视频素材：设了就由读取器用视频播放器渲染该节点（可当“会动的背景图”用）
+        // 说明：节点的 audio 属性（音效/BGM）已废弃 —— 音频统一走 @plugin(audio) 通道；
+        // 旧地图里残留的 audio 键会被 parser 放进 extras 原样保留（不会再被播放），并在加载时提示迁移。
         KEY_ALIAS.put("video", "video"); KEY_ALIAS.put("视频", "video"); KEY_ALIAS.put("影片", "video");
+        // 系统提示（toast）专用：停留几秒后自动淡出
+        KEY_ALIAS.put("duration", "duration"); KEY_ALIAS.put("时长", "duration");
+        KEY_ALIAS.put("停留", "duration"); KEY_ALIAS.put("停留时间", "duration"); KEY_ALIAS.put("显示时长", "duration");
         KEY_ALIAS.put("text", "text");    KEY_ALIAS.put("文本", "text");   KEY_ALIAS.put("文字", "text");   KEY_ALIAS.put("内容", "text");
         KEY_ALIAS.put("style", "style");  KEY_ALIAS.put("样式", "style");  KEY_ALIAS.put("内联样式", "style");
         KEY_ALIAS.put("event", "event");  KEY_ALIAS.put("事件", "event");
@@ -74,7 +77,6 @@ public class StoryNode {
     private double x, y, width, height;
     private String path = "";    // 图片/立绘相对路径（相对地图根目录）
     private String video = "";   // 视频相对路径（设了就代替图片渲染该节点，可循环播放）
-    private String audio = "";   // 音效/背景音乐路径
     private String text = "";    // 显示文字（支持富文本标记）
     private String style = "";   // 内联 CSS 样式（JavaFX -fx-* 属性）
     private String event = "";   // 该节点触发时运行的插件 ID
@@ -95,6 +97,15 @@ public class StoryNode {
 
     /** 文本框专用：绑定的存档变量名（输入内容实时写入该变量，留空表示不绑定） */
     private String bind = "";
+
+    /** 系统提示（TOAST）专用：停留秒数；<=0 表示用默认值 {@link #DEFAULT_TOAST_SECONDS} */
+    private double duration = 0;
+
+    /** 系统提示的默认停留秒数 */
+    public static final double DEFAULT_TOAST_SECONDS = 2.2;
+
+    /** 系统提示离屏幕边的默认边距（逻辑像素） */
+    public static final double TOAST_MARGIN = 24.0;
 
     /** 本节点可发出的信号（鼠标点击/释放、按键等） */
     private final java.util.ArrayList<SignalDef> signals = new java.util.ArrayList<>();
@@ -122,7 +133,7 @@ public class StoryNode {
     public StoryNode copy() {
         StoryNode c = new StoryNode();
         c.type = type; c.id = id; c.x = x; c.y = y; c.width = width; c.height = height;
-        c.path = path; c.video = video; c.audio = audio; c.text = text; c.style = style; c.event = event;
+        c.path = path; c.video = video; c.text = text; c.style = style; c.event = event;
         c.action = action; c.target = target; c.visible = visible;
         c.fontSize = fontSize; c.align = align; c.opacity = opacity;
         c.typewriter = typewriter;
@@ -130,6 +141,7 @@ public class StoryNode {
         c.index = index;
         c.multiline = multiline;
         c.bind = bind;
+        c.duration = duration;
         for (SignalDef s : signals) c.signals.add(s.copy());
         for (SlotDef s : slots) c.slots.add(s.copy());
         c.extras.putAll(extras);
@@ -165,11 +177,18 @@ public class StoryNode {
 
     public void setVideo(String video) { this.video = video == null ? "" : video.trim(); }
 
-    public String getAudio() { return audio; }
-    public void setAudio(String audio) { this.audio = audio == null ? "" : audio; }
-
     public String getText() { return text; }
     public void setText(String text) { this.text = text == null ? "" : text; }
+
+    /**
+     * 系统提示（TOAST）停留秒数；<=0 表示用默认值 {@link #DEFAULT_TOAST_SECONDS}。
+     * <p>其它类型不读这个属性，但照样落盘（改类型时设置不会丢）。</p>
+     */
+    public double getDuration() { return duration; }
+    public void setDuration(double duration) { this.duration = duration; }
+
+    /** 实际使用的停留秒数（没写就用默认） */
+    public double durationSeconds() { return duration > 0 ? duration : DEFAULT_TOAST_SECONDS; }
 
     public String getStyle() { return style; }
     public void setStyle(String style) { this.style = style == null ? "" : style; }
@@ -236,11 +255,11 @@ public class StoryNode {
 
     // ---------------- 便捷查询 ----------------
 
-    /** 是否为纯音频轨（不占画面） */
-    public boolean isMusicOnly() { return type == NodeType.MUSIC; }
+    /** 是否是系统提示（toast）节点 */
+    public boolean isToast() { return type == NodeType.TOAST; }
 
-    /** 是否拥有需要画面的控件 */
-    public boolean needsVisual() { return type != NodeType.MUSIC; }
+    /** 是否播放通用的“入场动画”（系统提示有自己的淡入-停留-淡出节奏，不参与） */
+    public boolean wantsEntranceAnimation() { return type != NodeType.TOAST; }
 
     /** 按规范键设置属性（解析器使用，遇未知键存入 extras） */
     public void setScriptProperty(String canonicalKey, String value) {
@@ -253,7 +272,7 @@ public class StoryNode {
             case "height"   -> setHeight(parseDoubleSafe(value, defaultByType2()));
             case "path"     -> setPath(value);
             case "video"    -> setVideo(value);
-            case "audio"    -> setAudio(value);
+            case "duration" -> setDuration(parseDoubleSafe(value, 0));
             case "text"     -> setText(value);
             case "style"    -> setStyle(value);
             case "event"    -> setEvent(value);
@@ -285,7 +304,7 @@ public class StoryNode {
         if (height > 0 && height != type.defaultHeight()) m.put("height", trimDouble(height));
         if (!path.isEmpty()) m.put("path", path);
         if (!video.isEmpty()) m.put("video", video);
-        if (!audio.isEmpty()) m.put("audio", audio);
+        if (duration > 0) m.put("duration", trimDouble(duration));
         if (!text.isEmpty()) m.put("text", text);
         if (multiline) m.put("multiline", "true");
         if (!bind.isEmpty()) m.put("bind", bind);

@@ -474,17 +474,21 @@ final class EditorPanels {
             HBox.setHgrow(path, Priority.ALWAYS);
             body.getChildren().add(row("图片 path", pathRow));
 
-            TextField audio = new TextField(node.getAudio());
-            bind(audio, v -> { node.setAudio(v); refreshView.run(); });
-            Button pickA = new Button("…");
-            pickA.setOnAction(e -> {
-                String rel = AssetImport.pickAndImport(getScene().getWindow(),
-                        hub.project(), node, true);
-                if (rel != null) audio.setText(rel);
+            // 系统提示（toast）：自带默认样式的小提示条，这里改停留秒数 + 一键摆右上角
+            TextField duration = new TextField(StoryNode.trimDouble(node.durationSeconds()));
+            duration.setPrefWidth(70);
+            duration.setTooltip(new Tooltip("系统提示节点：显示后停留几秒自动淡出（默认 "
+                    + StoryNode.trimDouble(StoryNode.DEFAULT_TOAST_SECONDS) + " 秒）"));
+            bind(duration, v -> { node.setDuration(StoryNode.parseDoubleSafe(v, 0)); refreshView.run(); });
+            Button toCorner = new Button("⤒ 右上角");
+            toCorner.setTooltip(new Tooltip("把系统提示摆到画面右上角（逻辑尺寸 1280×720）"));
+            toCorner.setOnAction(e -> {
+                node.setX(com.studio.model.NodeType.toastX(node.getWidth()));
+                node.setY(StoryNode.TOAST_MARGIN);
+                refreshView.run();
             });
-            HBox audioRow = new HBox(6, audio, pickA);
-            HBox.setHgrow(audio, Priority.ALWAYS);
-            body.getChildren().add(row("音频 audio", audioRow));
+            HBox toastRow = new HBox(6, duration, toCorner);
+            body.getChildren().add(row("提示时长(秒)", toastRow));
 
             // 视频 video：非空时读取器用视频播放器渲染该节点（背景节点＝会动的背景图），空则用图片
             TextField video = new TextField(node.getVideo());

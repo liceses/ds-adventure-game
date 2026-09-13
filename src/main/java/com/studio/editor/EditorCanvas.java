@@ -625,7 +625,7 @@ public class EditorCanvas extends StackPane {
         title.getStyleClass().add("palette-title");
         palette.getChildren().add(title);
         for (NodeType t : new NodeType[]{NodeType.TEXT, NodeType.CHARACTER, NodeType.BUTTON,
-                NodeType.BACKGROUND, NodeType.NAME, NodeType.DIALOG, NodeType.MUSIC,NodeType.TEXTBOX}) {
+                NodeType.BACKGROUND, NodeType.NAME, NodeType.DIALOG, NodeType.TOAST, NodeType.TEXTBOX}) {
             palette.getChildren().add(makePaletteItem(t));
         }
     }

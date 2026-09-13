@@ -446,12 +446,13 @@ public class EditorPane extends BorderPane implements EditorHub {
                 }
 
                 节点属性速查：
-                type: bg背景|char立绘|text文本|textbox文本框|name人物名|dialog对话|button按钮|music音乐
+                type: bg背景|char立绘|text文本|textbox文本框|name人物名|dialog对话|button按钮|toast系统提示
                 x / y / width / height / index(层级，0=最底层)
-                path(图片) / audio(音频) / text(富文本)
-                multiline(文本框多行) / bind(文本框绑定的存档变量)
+                path(图片) / video(视频) / text(富文本)
+                duration(系统提示停留秒数) / multiline(文本框多行) / bind(文本框绑定的存档变量)
                 style(内联CSS) / event(插件) / action(按钮动作) / target(跳转场景)
                 visible / fontSize / align / opacity
+                （节点的 audio 属性与 music 节点类型已废弃：音频统一用 @plugin(audio)）
                 """;
     }
 
@@ -700,7 +701,7 @@ public class EditorPane extends BorderPane implements EditorHub {
         addNode(node);
     }
 
-    /** 参考 {@link NodeType#createDefault} 的默认文本（图片/音乐类节点没有默认文字） */
+    /** 参考 {@link NodeType#createDefault} 的默认文本（图片类节点没有默认文字） */
     private static String defaultTextOf(NodeType t) {
         switch (t) {
             case TEXT: return "双击或右键编辑文字…";

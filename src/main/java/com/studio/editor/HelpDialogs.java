@@ -106,7 +106,7 @@ final class HelpDialogs {
                 bind = 玩家名                   ← 文本框专用：输入内容实时写入该存档变量
                 path  = resources/images/bg.png    ← 图片/立绘素材（相对地图文件夹）
                 video = resources/video/opening.mp4 ← 视频素材：设了就代替图片渲染该节点（可当“会动的背景图”）
-                audio = resources/sounds/bgm.wav   ← 【已废弃】进场景自动循环播放；建议改用 @plugin(audio)
+                duration = 2.2                 ← 系统提示(toast)专用：停留几秒后自动淡出
                 action = target                ← 按钮动作：target 跳场景 / save / load / event
                 target = 结算
                 signal = 点击 | mouse | click
@@ -121,12 +121,34 @@ final class HelpDialogs {
                 name    人物名字牌
                 dialog  对话（支持 --- 分段 + 打字机）
                 button  按钮（可绑动作 / 事件 / 信号槽）
-                music   音乐轨（只播音频，不占画面）
+                toast   系统提示（🔔 屏幕角上的小提示条，自带默认样式，显示 duration 秒后自动淡出）
+
+                ============ 系统提示节点（toast）怎么用 ============
+                它就是一条“自带样式”的小提示，最常用于右上角提示“存档中… / 已保存 / 获得道具”。
+                默认自带样式：深色圆角底 + 淡蓝描边 + 投影 + 白字，不需要任何美术素材；
+                节点 style 里写的内联样式会叠在默认样式之后（想改配色直接写 -fx-background-color）。
+                拖一个「🔔 系统提示节点」到画布 = 已经放在右上角（也可用属性窗口里的「⤒ 移到右上角」）。
+                写法示例：
+                {
+                type = toast
+                id = 提示
+                x = 936
+                y = 24
+                text = 存档中…
+                duration = 1.6          ← 显示 1.6 秒后自动淡出（不写默认 2.2 秒）
+                visible = false         ← 想“需要时才弹”就设 false（进场景不显示）
+                }
+                随时弹一次（改文字再弹也行，等于一条新提示）：
+                slot = 存档      | set | 提示 | text    | value=存档中…
+                slot = 存档      | set | 提示 | visible | value=true
+                说明：提示淡出后脚本里的 visible 值不变，所以下次 set visible=true 会再弹一次；
+                想让某个提示进场景就显示，visible 留空（默认 true）即可。
 
                 ============ 中文别名也能直接写 ============
-                类型 / 名称 / 层级 / 坐标x / 坐标y / 宽度 / 高度 / 图片 / 音频 / 文字 / 内容 /
+                类型 / 名称 / 层级 / 坐标x / 坐标y / 宽度 / 高度 / 图片 / 文字 / 内容 / 时长 / 停留 /
                 样式 / 事件 / 动作 / 目标 / 可见 / 字号 / 对齐 / 透明度 / 逐字 / 过渡 /
                 信号 / 槽 / 多行 / 绑定变量 … 都会被解析器自动归一化。
+                （注意：节点的 audio 属性与 music 节点类型已废弃 —— 音频统一用 @plugin(audio)）
 
                 富文本标记（text 里可用）：<b>粗</b> <i>斜</i> <u>下划线</u>
                 <color:#ffd76a>彩色</color> <size:22>字号</size> <br> 换行

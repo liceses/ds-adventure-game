@@ -213,9 +213,11 @@ public final class BranchMapFactory {
     }
 
     private static void addMusic(GameScene s) {
-        StoryNode m = new StoryNode(NodeType.MUSIC, 0, 0, 0, 0);
-        m.setAudio("resources/audio/theme.wav");
-        s.addNode(m);
+        // 音频统一走 @plugin(audio)：进场景自动循环播放 BGM（以前的 MUSIC 节点 + audio 属性已废弃）
+        com.studio.flow.SlotDef bgm = new com.studio.flow.SlotDef(
+                "场景进入", "@plugin(audio)", "loop", "resources/audio/theme.wav");
+        bgm.extraArgs().add("bgm");
+        s.slots().add(bgm);
     }
 
     /** 解析校验：生成后立刻按读取器同款解析器读回并报告场景数 */

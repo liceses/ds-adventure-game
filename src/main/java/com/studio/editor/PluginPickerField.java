@@ -45,7 +45,14 @@ public final class PluginPickerField {
         box.setPrefWidth(width);
         box.setConverter(new StringConverter<PluginInfo>() {
             @Override public String toString(PluginInfo info) { return label(info); }
-            @Override public PluginInfo fromString(String s) { return null; }
+            /**
+             * 可编辑下拉框按回车时，JavaFX 用这个方法把输入框里的字“翻译”成选中项。
+             * <b>以前这里直接 {@code return null}</b> —— 于是“打字 + 回车”会把 value 清成 null、
+             * 连输入框里的字也一起清掉；接着点「＋ 插入插件槽」就提示“还没选插件”，
+             * 用户看到的就是“这个下拉框/按钮没用”。现在按 ID / 中文别名 / 完整标签认一遍，
+             * 认不出就按筛选结果兜底唯一匹配。
+             */
+            @Override public PluginInfo fromString(String s) { return resolve(items, s); }
         });
         box.setEditable(true);
         // 建好之后立刻清空选择：免得“第一项被自动选中”的文本被当成搜索词（会把列表筛成一项）
@@ -54,6 +61,18 @@ public final class PluginPickerField {
         box.getEditor().setText("");
         if (tooltip != null && !tooltip.isBlank()) box.setTooltip(new Tooltip(tooltip));
         box.setPromptText("输入关键字筛选（ID / 别名 / 说明），或点开浏览");
+
+        // 回车：认得出就选中它（打 full 按回车 = 选中 fullscreen）；认不出就保留用户打的字，不清空输入框
+        box.getEditor().setOnAction(e -> {
+            String typed = box.getEditor().getText();
+            PluginInfo hit = resolve(items, typed);
+            if (hit != null) {
+                box.setValue(hit);
+                box.getSelectionModel().select(hit);
+            } else {
+                box.getEditor().setText(typed);
+            }
+        });
 
         // 输入即筛选：改 items 会重设编辑框文本，所以写完要写回（guard 防自己触发自己）
         //
@@ -111,6 +130,32 @@ public final class PluginPickerField {
         if (info == null) return "";
         String alias = info.aliases() == null || info.aliases().isBlank() ? "" : "（" + info.aliases() + "）";
         return info.group() + " · " + info.id() + alias;
+    }
+
+    /**
+     * 把用户在输入框里打的字认成一个插件（回车 / 提交时用）。
+     *
+     * <p>匹配顺序：① ID 完全一致（不分大小写）→ ② 中文别名完全一致 → ③ 下拉里显示的整段标签一致 →
+     * ④ 按关键字筛选后只剩一个就用它。都认不出返回 null（调用方保留用户输入，不清空）。</p>
+     */
+    public static PluginInfo resolve(List<PluginInfo> all, String text) {
+        if (all == null || text == null) return null;
+        String t = text.trim();
+        if (t.isEmpty()) return null;
+        for (PluginInfo i : all) {
+            if (t.equalsIgnoreCase(i.id())) return i;
+        }
+        for (PluginInfo i : all) {
+            if (i.aliases() == null) continue;
+            for (String a : i.aliases().split("[,，]")) {
+                if (t.equalsIgnoreCase(a.trim())) return i;
+            }
+        }
+        for (PluginInfo i : all) {
+            if (t.equals(label(i))) return i;
+        }
+        List<PluginInfo> hit = filter(all, t);
+        return hit.size() == 1 ? hit.get(0) : null;
     }
 
     /** 按关键字筛选（空关键字返回全部） */

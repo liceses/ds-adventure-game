@@ -66,8 +66,7 @@ public final class MapAssets {
         int made = 0;
         for (GameScene scene : project.scenes().values()) {
             for (StoryNode n : scene.nodes()) {
-                if (n.getType() != NodeType.MUSIC && !n.getPath().isBlank()
-                        && looksLikeImage(n.getPath())) {
+                if (!n.getPath().isBlank() && looksLikeImage(n.getPath())) {
                     try {
                         File f = resolveUnderResources(targetResources, n.getPath());
                         if (f != null && !f.exists()) {

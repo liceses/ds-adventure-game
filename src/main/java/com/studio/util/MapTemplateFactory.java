@@ -170,10 +170,11 @@ public final class MapTemplateFactory {
         tip.setStyle("-fx-font-size: 22px; -fx-text-fill: #fff2d0;");
         s.addNode(tip);
 
-        // 背景音乐轨（隐藏节点）
-        StoryNode music = n(NodeType.MUSIC, 0, 0, 0, 0);
-        music.setAudio("resources/audio/theme.wav");
-        s.addNode(music);
+        // 背景音乐：以前是 MUSIC 节点 + audio 属性，现在统一写一条「场景进入」槽走音频插件
+        com.studio.flow.SlotDef bgm = new com.studio.flow.SlotDef(
+                "场景进入", "@plugin(audio)", "loop", "resources/audio/theme.wav");
+        bgm.extraArgs().add("bgm");
+        s.slots().add(bgm);
     }
 
     private static StoryNode n(NodeType t, double x, double y, double w, double h) {

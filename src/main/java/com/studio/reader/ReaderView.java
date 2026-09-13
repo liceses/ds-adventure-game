@@ -77,9 +77,9 @@ import java.util.regex.Pattern;
  * <ol>
  *   <li>加载地图 {@code scenario.txt}（复用 {@link ScriptParser}），按逻辑分辨率
  *       1280x720 布局，随舞台自适应等比缩放（信箱式）；</li>
- *   <li>按节点类型渲染：背景图 / 立绘(保持比例) / 名字牌 / 富文本对话 / 按钮；
- *       支持 伪类 hover/pressed 动画 与 打字机逐字显示；</li>
- *   <li>自动播放场景音乐（MUSIC 节点或带 audio 的资源），音量取自 [option]；</li>
+ *   <li>按节点类型渲染：背景图 / 立绘(保持比例) / 名字牌 / 富文本对话 / 按钮 /
+ *       <b>系统提示条(toast)</b>；支持 伪类 hover/pressed 动画 与 打字机逐字显示；</li>
+ *   <li>音频统一走 {@code @plugin(audio)}（bgm/se 通道），音量取自 [option]；</li>
  *   <li>遇到场景级 / 节点级 {@code event} 属性时，经 {@link PluginLoader} 动态加载
  *       外部插件，并把插件 Parent “嵌入”主舞台中央（见 pluginLayer），
  *       上方提供统一的【返回】标题栏 —— 浏览器标签页式无缝跳转。</li>
@@ -144,11 +144,12 @@ public class ReaderView extends BorderPane implements SavePortal, FlowHost {
     }
 
     // ---- 音频 ----
-    private MediaPlayer music;
-    /** 音频通道（bgm / se / 自定义）：插件与旧的 audio 属性共用同一套通道 */
+    /** 音频通道（bgm / se / 自定义）：统一由 @plugin(audio) 驱动 */
     private final java.util.LinkedHashMap<String, MediaPlayer> audioChannels = new java.util.LinkedHashMap<>();
     /** 每个节点当前挂着的视频播放器（节点视图重建时要 dispose，避免泄漏） */
     private final java.util.LinkedHashMap<String, MediaPlayer> videoPlayers = new java.util.LinkedHashMap<>();
+    /** 系统提示（toast）节点正在跑的“淡入-停留-淡出”动画：换场景/重绘时要先停掉 */
+    private final java.util.LinkedHashMap<String, Timeline> toastTimers = new java.util.LinkedHashMap<>();
 
     // ---- 插件 ----
     private String previousScene;        // 进入插件前正在展示的场景（插件【返回】的目标）
@@ -315,7 +316,7 @@ public class ReaderView extends BorderPane implements SavePortal, FlowHost {
     /** 关闭播放器：释放计时器/媒体/插件等一切后台资源 */
     private void shutdown() {
         clearDialogs();
-        stopMusic();
+        cancelAllToasts();
         // 事件插件（GamePlugin）：以前这里漏了 onDetach，插件停不掉自己的线程/计时器
         detachActivePlugin("关闭播放器");
         // 槽插件（SlotPlugin）：统一回调 onDetach 并清空实例
@@ -381,6 +382,7 @@ public class ReaderView extends BorderPane implements SavePortal, FlowHost {
 
         board.getChildren().clear();
         nodeViews.clear();
+        cancelAllToasts();
         disposeAllVideos();
         FxAssets.clearCache();
 
@@ -403,8 +405,12 @@ public class ReaderView extends BorderPane implements SavePortal, FlowHost {
             if (!node.getId().isBlank()) nodeViews.put(node.getId(), view);
             installMouseSignals(view, node);
             applyViewProps(view, node);
-            if (animate && node.needsVisual()) {
+            if (animate && node.wantsEntranceAnimation()) {
                 FxAnim.entrance(view, 60 + index * 70, 380);
+            }
+            if (node.isToast()) {
+                // 系统提示：显示一会儿自己淡出（槽里 set visible=true 可以再弹一次）
+                playToast(node, view);
             }
             index++;
         }
@@ -467,32 +473,26 @@ public class ReaderView extends BorderPane implements SavePortal, FlowHost {
         }
     }
 
-    /** 场景音乐：播放场景中 MUSIC 类型节点的音频（循环） */
+    /**
+     * 场景音频：以前这里会找 MUSIC 节点/节点 audio 属性来自动播 BGM。
+     * <p>现在音频统一走 {@code @plugin(audio)}，这张地图想放 BGM 就在场景头写：</p>
+     * <pre>
+     * slot = 场景进入 | @plugin(audio) | loop | resources/audio/theme.wav | bgm
+     * </pre>
+     * <p>老地图残留的 {@code audio} / {@code type = music} 会在解析时给出迁移提示，
+     * 但不再自动播放（属性会被原样保留在脚本里，不会丢内容）。</p>
+     */
     private void playSceneMusic(GameScene s) {
-        String path = null;
+        if (s == null) return;
         for (StoryNode n : s.nodes()) {
-            if (n.getType() == NodeType.MUSIC && !n.getAudio().isBlank()) {
-                path = n.getAudio();
+            if (n.extras().containsKey("audio")) {
+                Logs.warn("[Flow] 节点「" + n.getId() + "」的 audio 属性已废弃（不再播放）："
+                        + "请改用槽 @plugin(audio) | loop | 路径 | bgm");
+            }
+            if (n.extras().containsKey("type") || n.extras().containsKey("类型")) {
+                Logs.warn("[Flow] 节点「" + n.getId() + "」用了已废弃的节点类型，请改用 toast 等现有类型");
             }
         }
-        playMusic(path);
-    }
-
-    /**
-     * 旧写法：节点的 {@code audio} 属性自动作为场景 BGM 循环播放。
-     * <p>已改为走统一音频通道（与 {@code @plugin(audio)} 共用实现），
-     * 方便日后废除这个属性：只要不再调用这里即可。</p>
-     */
-    private void playMusic(String relPath) {
-        if (relPath == null || relPath.isBlank()) {
-            stopAudioChannel("bgm");
-            return;
-        }
-        playAudioChannel("bgm", relPath, true, clamp(masterVolume() * 0.9, 0, 1));
-    }
-
-    private void stopMusic() {
-        stopAudioChannel("bgm");
     }
 
     // =====================================================================
@@ -517,8 +517,89 @@ public class ReaderView extends BorderPane implements SavePortal, FlowHost {
             case TEXT -> buildRichLabel(node, w, h, fs, DEFAULT_TEXT_COLOR);
             case TEXTBOX -> buildTextBox(node, w, h, fs);
             case BUTTON -> buildButton(node);
-            case MUSIC -> null;
+            case TOAST -> buildToast(node, w, h);
         };
+    }
+
+    /**
+     * 系统提示条（toast）：带<b>自带默认样式</b>的小圆角条，放在屏幕角上（默认右上角）。
+     *
+     * <p>样式：深色半透明底 + 淡蓝描边 + 圆角 + 投影 + 白字，不依赖任何美术素材；
+     * 工程师在节点 style 里写的内联样式会叠加在默认样式之后（可覆盖颜色/边框等）。
+     * 显示节奏由 {@link #playToast(StoryNode, Node)} 负责：淡入 → 停留 duration 秒 → 淡出。</p>
+     */
+    private Node buildToast(StoryNode node, double w, double h) {
+        Label label = new Label(node.getText() == null || node.getText().isBlank() ? "提示" : node.getText());
+        label.setWrapText(true);
+        label.setMaxWidth(Math.max(40, w - 28));
+        label.setTextFill(javafx.scene.paint.Color.WHITE);
+        label.setStyle("-fx-font-size: " + (node.getFontSize() > 0 ? StoryNode.trimDouble(node.getFontSize()) : "18") + "px;"
+                + "-fx-text-alignment: " + ("center".equalsIgnoreCase(node.getAlign()) ? "center" : "left") + ";");
+        StackPane box = new StackPane(label);
+        box.setAlignment(alignmentOf(node.getAlign()));
+        box.setStyle("-fx-background-color: rgba(14,18,32,0.88);"
+                + "-fx-background-radius: 12;"
+                + "-fx-border-color: rgba(120,170,255,0.45); -fx-border-radius: 12; -fx-border-width: 1;"
+                + "-fx-padding: 9 18 9 18;"
+                + "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.55), 14, 0.2, 0, 4);"
+                + (node.getStyle() == null ? "" : node.getStyle()));
+        StackPane holder = new StackPane(box);
+        holder.setPrefSize(Math.max(2, w), Math.max(2, h));
+        holder.setMinSize(Math.max(2, w), Math.max(2, h));
+        holder.setMaxSize(Math.max(2, w), Math.max(2, h));
+        holder.setAlignment(Pos.CENTER);
+        return holder;
+    }
+
+    private static Pos alignmentOf(String align) {
+        if (align == null) return Pos.CENTER_LEFT;
+        return switch (align.toLowerCase(java.util.Locale.ROOT)) {
+            case "center" -> Pos.CENTER;
+            case "right" -> Pos.CENTER_RIGHT;
+            default -> Pos.CENTER_LEFT;
+        };
+    }
+
+    /**
+     * 弹一次系统提示：淡入 180ms → 停留 {@code duration} 秒 → 淡出 300ms 后隐藏。
+     *
+     * <p>节点在脚本里 {@code visible = false} 时保持隐藏；槽里
+     * {@code set | 提示节点id | visible | value=true} 会重新弹一次（同一个提示连续弹也正常，
+     * 会先把上一次的动画停掉再来一遍）。{@code visible = false} 则立刻收起。</p>
+     */
+    private void playToast(StoryNode node, Node view) {
+        if (view == null) return;
+        String key = node.getId().isBlank() ? ("@" + System.identityHashCode(view)) : node.getId();
+        Timeline old = toastTimers.remove(key);
+        if (old != null) old.stop();
+
+        if (!node.isVisible()) {
+            view.setVisible(false);
+            view.setOpacity(0);
+            return;
+        }
+        double hold = Math.max(0.2, node.durationSeconds()) * 1000.0;
+        view.setVisible(true);
+        view.setOpacity(0);
+        Timeline t = new Timeline(
+                new KeyFrame(Duration.ZERO, e -> view.setOpacity(0)),
+                new KeyFrame(Duration.millis(180), e -> view.setOpacity(1)),
+                new KeyFrame(Duration.millis(180 + hold), e -> view.setOpacity(1)),
+                new KeyFrame(Duration.millis(180 + hold + 300), e -> {
+                    view.setOpacity(0);
+                    view.setVisible(false);          // 只是视图收起；脚本里的 visible 值不动，方便再次弹出
+                    toastTimers.remove(key);
+                }));
+        toastTimers.put(key, t);
+        t.play();
+    }
+
+    /** 停掉所有系统提示动画（换场景 / 关闭播放器时） */
+    private void cancelAllToasts() {
+        for (Timeline t : toastTimers.values()) {
+            if (t != null) t.stop();
+        }
+        toastTimers.clear();
     }
 
     /**
@@ -1366,8 +1447,8 @@ public class ReaderView extends BorderPane implements SavePortal, FlowHost {
             case "style" -> n.setStyle(value);
             case "text" -> n.setText(value);
             case "path" -> n.setPath(value);
-            case "audio" -> n.setAudio(value);
             case "video" -> n.setVideo(value);
+            case "duration" -> n.setDuration(StoryNode.parseDoubleSafe(value, 0));
             case "visible" -> n.setVisible(StoryNode.parseBoolSafe(value, true));
             case "opacity" -> n.setOpacity(StoryNode.parseDoubleSafe(value, 1.0));
             case "x" -> n.setX(StoryNode.parseDoubleSafe(value, n.getX()));
@@ -1403,6 +1484,8 @@ public class ReaderView extends BorderPane implements SavePortal, FlowHost {
         applyViewProps(fresh, node);
         board.getChildren().set(idx, fresh);
         nodeViews.put(node.getId(), fresh);
+        // 系统提示：文案/样式/可见性变了都要按新的内容重新弹一次（换文字就是“弹一条新提示”）
+        if (node.isToast()) playToast(node, fresh);
     }
 
     // ---------- FlowHost 实现 ----------
@@ -1427,8 +1510,8 @@ public class ReaderView extends BorderPane implements SavePortal, FlowHost {
             case "style" -> n.getStyle();
             case "text" -> n.getText();
             case "path" -> n.getPath();
-            case "audio" -> n.getAudio();
             case "video" -> n.getVideo();
+            case "duration" -> StoryNode.trimDouble(n.durationSeconds());
             case "videoloop" -> videoProp(nodeId, "videoloop", "true");
             case "videovolume" -> videoProp(nodeId, "videovolume", String.valueOf(masterVolume()));
             case "videopause" -> videoProp(nodeId, "videopause", "false");
