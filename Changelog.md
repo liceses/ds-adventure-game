@@ -1,4 +1,26 @@
 # 更新日志 (Changelog)
+## [v1.9] 系统提示节点（toast）：音乐节点改造 + 移除废弃的 audio 属性
+
+### Added
+- 新增**系统提示节点** `type = toast`（中文 `系统提示` / `提示`）：屏幕角上的小提示条，常用于右上角提示「存档中… / 已保存 / 获得道具」
+  - **自带默认样式**：深色半透明圆角底 + 淡蓝描边 + 投影 + 白字，不需要任何美术素材；节点 `style` 里的内联样式叠加在默认样式之后
+  - 显示节奏：淡入 180ms → 停留 `duration` 秒 → 淡出 300ms 后收起；`duration` 不写 = 默认 2.2 秒
+  - 只收视图、不改脚本里的 `visible` 值，所以 `slot = 存档 | set | 提示 | visible | value=true` 可以反复弹（先 `set … | text` 就是一条新提示）
+  - 拖出来即摆在逻辑画面（1280×720）右上角；属性窗口有「提示时长(秒)」与「⤒ 移到右上角」
+- `StoryNode` 新增 `duration` 属性（中文别名 时长 / 停留 / 停留时间 / 显示时长）
+- 编辑器：工具箱与右键「添加节点」出现「🔔 系统提示节点」，画布预览按阅读器的样子绘制（右上角带 `⏱ 2.2s` 角标）；帮助 → 语法速查补了完整用法与示例
+
+### Changed
+- 原 `MUSIC`（音乐节点）类型由 `TOAST` 取代；音频统一走 `@plugin(audio)`（多通道 bgm/se，支持 loop/play/stop/pause/resume/volume/stopall）
+- 新建地图模板与三个演示地图工厂（模板 / 分支 / 打砖块）改用 `slot = 场景进入 | @plugin(audio) | loop | resources/audio/theme.wav | bgm` 放 BGM
+
+### Removed
+- 节点 `audio` 属性（模型 / 序列化 / 编辑器字段 / 属性读写全部移除）
+- `MUSIC` 节点类型（`type = music`）
+
+### Fixed
+- 老地图兼容：`type = music` / `audio = …` 不再播放，但**内容不丢** —— `audio` 键收进 `extras` 原样写回，解析时按行给出迁移提示（编辑器日志与解析警告里可见）
+
 ## [v1.8] 合并 PR #6（内置插件全家桶 + 场景自动信号 + 序章地图）
 
 ### Added
