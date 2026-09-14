@@ -120,5 +120,11 @@
         <fx.mainClass>com.studio.launcher.PlayerApp</fx.mainClass>
       </properties>
     </profile>
+    <profile>
+      <id>minesweeper</id>
+      <properties>
+        <fx.mainClass>com.example.minesweeper.Main</fx.mainClass>
+      </properties>
+    </profile>
   </profiles>
 </project>
