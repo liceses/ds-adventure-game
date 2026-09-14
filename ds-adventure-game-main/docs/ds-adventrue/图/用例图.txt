@@ -1,0 +1,77 @@
+flowchart TD
+    %% 样式定义
+    classDef startEnd fill:#4CAF50,color:white,stroke:#333,stroke-width:2px;
+    classDef process fill:#E3F2FD,stroke:#1976D2,stroke-width:2px;
+    classDef decision fill:#FFF9C4,stroke:#FBC02D,stroke-width:2px;
+    classDef minigame fill:#FFE0B2,stroke:#F57C00,stroke-width:2px;
+    classDef constraint fill:#F3E5F5,stroke:#8E24AA,stroke-width:2px,stroke-dasharray:5 5;
+    classDef note fill:#EEEEEE,stroke:#999,stroke-width:1px,stroke-dasharray:3 3;
+
+    Start([开始游戏]):::startEnd --> LoadCheck{是否有存档?}:::decision
+    LoadCheck -->|是| LoadGame[读取存档数据]:::process
+    LoadCheck -->|否| InitNew[初始化新游戏]:::process
+    LoadGame --> MainLoop
+    InitNew --> MainLoop
+
+    subgraph MainLoop["Galgame 主剧情循环"]
+        ShowText(显示当前剧情文本 / 立绘):::process --> WaitInput(等待玩家输入或系统触发):::process
+        WaitInput --> ActionCheck{玩家操作判定}:::decision
+
+        %% 主框架操作
+        ActionCheck -->|单击 / 自动| Next[推进至下一脚本节点]:::process
+        ActionCheck -->|跳过| Skip[快速跳至下一互动节点]:::process
+        ActionCheck -->|加速| Speed[文本快速显示完成]:::process
+        ActionCheck -->|暂停| Pause[暂停游戏]:::process
+        ActionCheck -->|设置| Setting[打开设置界面]:::process
+        ActionCheck -->|退出| ExitGame([退出游戏]):::startEnd
+
+        %% 存档/读档（仅主界面可用）
+        ActionCheck -->|存档| Save[保存当前进度]:::process
+        ActionCheck -->|读档| Load[读取指定存档]:::process
+        Save --> ShowText
+        Load --> LoadGame
+
+        Next --> NodeCheck{当前节点类型判定}:::decision
+        Skip --> NodeCheck
+        Speed --> NodeCheck
+    end
+
+    %% 剧情节点分流
+    NodeCheck -->|普通剧情节点| ShowText
+    NodeCheck -->|选项决策节点| ShowOpt[显示选项分支]:::process
+    ShowOpt --> Timeout{玩家长时间<br>是否决策?}:::decision
+    Timeout -->|否（按时选择）| Select[执行玩家所选分支]:::process
+    Timeout -->|是（超时）| Default[系统执行<br>第三种隐藏默认选项]:::process
+    Select --> NodeCheck
+    Default --> NodeCheck
+
+    %% 切入小游戏特殊演出
+    NodeCheck -->|特殊演出节点| EnterMini[切入小游戏独立场景]:::minigame
+
+    subgraph MiniFlow["小游戏特殊演出流程"]
+        EnterMini --> InitGame[初始化对应小游戏<br>（9种之一）]:::minigame
+        InitGame --> GameLoop[小游戏独立玩法循环<br>（操作规则由各游戏自定）]:::minigame
+        GameLoop --> EndCheck{小游戏结束条件触发?}:::decision
+        EndCheck -->|否| GameLoop
+        EndCheck -->|是| GetResult[获取胜负 / 状态结果]:::minigame
+        GetResult --> ReturnResult[将结果回传给主线剧情引擎]:::minigame
+    end
+
+    %% 结果处理后叙事调度（关键逻辑）
+    ReturnResult --> OutcomeCheck{剧情引擎根据回传结果<br>调度下一叙事节点}:::decision
+
+    %% 三种结果分支
+    OutcomeCheck -->|普通叙事分支<br>（输赢不影响主线 / 或特殊剧情要求必须输）| ShowText
+    OutcomeCheck -->|强制重试分支<br>（关键剧情必须成功，失败则重玩）| EnterMini
+    OutcomeCheck -->|关键结局分支<br>（关键剧情失败直接触发结局）| EndGame([游戏结束 / 进入结局]):::startEnd
+
+    %% 功能性跳转闭合
+    Pause --> ShowText
+    Setting --> ShowText
+
+    %% 约束标注（存档/读档限制）
+    Save -.- SaveNote[" 存档/读档操作仅在主剧情界面有效<br>小游戏场景中该功能被屏蔽"]:::note
+    Load -.- LoadNote[" 存档/读档操作仅在主剧情界面有效<br>小游戏场景中该功能被屏蔽"]:::note
+
+    %% 关键说明：结果调度灵活性
+    OutcomeCheck -.- FlexNote[" 胜利/失败/特殊状态均可作为脚本分支条件<br>引擎结合当前场景ID动态路由，实现任意叙事逻辑"]:::note

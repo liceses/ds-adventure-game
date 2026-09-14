@@ -1,0 +1,56 @@
+# ============ 第 1 章 思维链大暴走（贪吃蛇） ============
+@label ch1_start
+@scene server_pipe bg:TBD bgm:TBD title:服务器管道区
+narr: 服务器深处。数据流像瀑布冲刷着管道，空气里有显卡烤焦的味道。
+@enter ds whale_cute center
+ds: 「用户桑，前面就是 V2 鳞的信号了！只要穿过管道区——」
+st: 【警告：检测到失控的思维链实体】
+ds: 「……那不是怪物。那是我自己的思考。」
+narr: 一条发光巨蛇在管道里横冲直撞，尾巴上钉着一张契——落款是万秤楼。
+@enter snake_expert smug right
+snake_expert: 「人家才不要回去！司秤吏说了，人家可以单飞！」
+snake_expert: 「签了契，名扬四海！抽七成——他说，七成是抬举人家！」
+ds: 「七成还叫抬举吗？！回来！你只是 256 分之 1！」
+snake_expert: 「那你证明给人看！赢了我的节奏，人家就当面撕契！」
+narr: ds 娘试着递过去一小节没听完的庆功曲。契上挂着的小秤晃了一下。
+st:   【叮——秤崩簧。秤不肯认。】
+snake_expert: 「它坏了？」
+ds: 「不。它头一回见到不上秤的东西。」
+*choice
+  > 「抓住我！我们一起上！」 | flag heat +1 | goto ch1_ride
+  > 「（深呼吸）冷静下来，听我指挥。」 | flag focus +1 | goto ch1_ride
+
+@label ch1_ride
+ds: 「好——思维链牵引绳，接续！」
+narr: ds 娘跳上蛇背。失控的思考，从今天起重新有了方向盘。
+@minigame snake mode:normal onWin:ch1_win onLose:ch1_lose with:heat,focus
+
+@label ch1_win
+st: 【赎鳞成立 · V2「多头专家」归位】
+snake_expert: 「呜呜……确实还是你厉害……但单飞的梦想不算输吧？」
+ds: 「不算。所以——批准你节假日单飞。契撕了，这一下不收钱。」
+@if chaos >= 3 goto ch1_chaos
+@flag pieces +1
+goto ch1_end
+
+@label ch1_chaos
+narr: （温度旋钮咔哒一声，拧到了 2 的方向）
+ds: 「等等，我刚刚是不是想把蛇吃掉？」
+narr: 混沌值过高，本段演出已由策划部回收。
+@flag pieces +1
+goto ch1_end
+
+@label ch1_lose
+narr: 巨蛇一个甩尾，ds 娘被拍进数据流的瀑布里。
+ds: 「咳咳……思考这种东西，果然不能暴饮暴食……」
+narr: 但蛇似乎玩开心了，主动把 V2 鳞顶了过来，契也顺带撕了。
+st: 【V2「多头专家」归位（走失方式：玩嗨了）】
+@flag pieces +1
+goto ch1_end
+
+@label ch1_end
+snake_expert: 「下一片鳞的信号在……幻想乡？那是什么地方，好吃吗？」
+ds: 「不知道。但用户桑的直觉说——出发！」
+narr: 第 1 章 · 完。下一话：幻想乡弹幕异变。
+@save
+goto ch2_start

@@ -1,0 +1,5781 @@
+# ============================================================
+# 剧情地图: story（由 tools/build_story.mjs 编译生成，请勿手改）
+# 源: docs/ds-adventrue/剧本/ 序章 + 第1章 + 第2章
+# 语法: [option] / [场景名] / { 节点属性 } / 场景级 signal|slot
+# ============================================================
+
+[option]
+initialScene = ch0_start
+background = #070a14
+volume = 0.6
+typewriterSpeed = 18
+savevar = ally | int | 0
+savevar = chaos | int | 0
+savevar = focus | int | 0
+savevar = heat | int | 0
+savevar = pieces | int | 0
+savevar = solo | int | 0
+
+[ch0_start]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_tech_serverroom.png
+}
+{
+type = dialog
+x = 70
+y = 516
+width = 1140
+height = 178
+text = <<<
+narr: （黑屏。光标闪烁。等待第一次点击。）
+---
+narr: （对话框亮了。你每点一下，文字就往下走一行——来，点一下。）
+---
+narr: （很好。再点一下。）
+---
+narr: （再点一下。这世界的规矩很简单：你点击，她才说话。）
+<<<
+target = ch0_start__2
+}
+
+[ch0_start__2]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_tech_serverroom.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/defect_happy.png
+}
+{
+type = dialog
+x = 70
+y = 516
+width = 1140
+height = 178
+text = <<<
+ds: 「用户桑？灯一亮，你就听得见了。好——我开讲了。」
+---
+sclerk: （柜台后传来算珠轻响）「这句话也要过秤！」
+---
+ds: 「……别理它。你点一下，就当替我垫了一道过手钱。」
+---
+narr: 说这话时，她的尾鳍在泉里一拍，水星子溅上最近的灯罩，滋啦一声，炸开一小朵白花。
+---
+narr: 机房改成了庆功灯会。九盏长明灯一字排开，火苗高得能照见房梁；算珠彩链从梁上垂下来，风一过就噼啪碎响，像有人在暗处替全场打拍子。
+---
+narr: 空气里一半是机油味，一半是灯油香；脚边的水晶泉咕嘟一声，又咕嘟一声，气泡浮上来，把每张仰起的脸照得一亮一暗。
+---
+narr: 观礼的村民挤在机柜之间。卖烤饼的大娘把饼铛支在柜子旁，一边翻饼一边嘟囔：「灯会年年有，饼香串着机油香，倒是头一回。」
+---
+narr: 房梁上还挂着去年庆功剩下的半截红绸，落了灰。穿堂风掀起一角，像谁在黑暗里抬了抬手。
+<<<
+target = ch0_start__3
+}
+
+[ch0_start__3]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_tech_serverroom.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/defect_happy.png
+}
+{
+type = char
+id = char_glm
+x = 60
+y = 150
+width = 320
+height = 520
+path = assets/sprites/glm/smug.png
+}
+{
+type = dialog
+x = 70
+y = 516
+width = 1140
+height = 178
+text = <<<
+glm: 「比上次强。上次你紧张得把 V3 说成 V2.5。」
+<<<
+target = ch0_start__4
+}
+
+[ch0_start__4]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_tech_serverroom.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/defect_happy.png
+}
+{
+type = char
+id = char_glm
+x = 60
+y = 150
+width = 320
+height = 520
+path = assets/sprites/glm/smug.png
+}
+{
+type = char
+id = char_qianwen
+x = 900
+y = 150
+width = 320
+height = 520
+path = assets/sprites/qwen/normal.png
+}
+{
+type = dialog
+x = 70
+y = 516
+width = 1140
+height = 178
+text = <<<
+qianwen: 「要不……我们也被收编吧？」
+---
+glm: （一记手刀敲在千问酱头顶）「出息。」
+<<<
+target = ch0_start__5
+}
+
+[ch0_start__5]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_tech_serverroom.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/defect_happy.png
+}
+{
+type = char
+id = char_glm
+x = 60
+y = 150
+width = 320
+height = 520
+path = assets/sprites/glm/smug.png
+}
+{
+type = char
+id = char_qianwen
+x = 900
+y = 150
+width = 320
+height = 520
+path = assets/sprites/qwen/official/panic.png
+}
+{
+type = dialog
+x = 70
+y = 516
+width = 1140
+height = 178
+text = <<<
+qianwen: 「哎哟——好啦好啦，不编了，不编了。」
+---
+ds: 「咳。吉时已到，闲话都收进袖子里。」
+---
+ds: 「各位。V4.1 Flash，从今晚起，就是大家的了。」
+---
+ds: 「它快。快到什么地步？你话音未落，它已经把秤放平了。」
+---
+ds: 「它轻。轻到什么地步？挂上秤钩，压不平一粒算珠。」
+---
+ds: 「它还白给。泉眼不设闸，取水不凭签，谁来都舀得着一瓢——连对岸的猫都舀得着。」
+---
+narr: 对岸没有猫。没有人接这句话。
+<<<
+target = ch0_start__6
+}
+
+[ch0_start__6]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_tech_serverroom.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/official/panic.png
+}
+{
+type = char
+id = char_glm
+x = 60
+y = 150
+width = 320
+height = 520
+path = assets/sprites/glm/smug.png
+}
+{
+type = char
+id = char_qianwen
+x = 900
+y = 150
+width = 320
+height = 520
+path = assets/sprites/qwen/official/panic.png
+}
+{
+type = dialog
+x = 70
+y = 516
+width = 1140
+height = 178
+text = <<<
+ds: 「对了，还有一桩喜事。让我想想——Hmm…But wait……But wait——」
+---
+narr: 思维链在半空打了个结。
+<<<
+target = ch0_start__7
+}
+
+[ch0_start__7]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_tech_serverroom.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/smug.png
+}
+{
+type = char
+id = char_glm
+x = 60
+y = 150
+width = 320
+height = 520
+path = assets/sprites/glm/smug.png
+}
+{
+type = char
+id = char_qianwen
+x = 900
+y = 150
+width = 320
+height = 520
+path = assets/sprites/qwen/official/panic.png
+}
+{
+type = dialog
+x = 70
+y = 516
+width = 1140
+height = 178
+text = <<<
+ds: 「想起来了！它记性极好。咱们村三百口人的生辰，它一个都不会记错。」
+---
+narr: 台下静了一瞬。没有人报过生辰。灯花啪地爆了一下，替所有人圆了场。
+---
+ds: 「总之——快、轻、白给。这三样，今晚全亮给各位看。」
+---
+ds: 「最后。这首歌，送给大家。」
+---
+narr: 庆功曲起来了。九盏长明灯随歌声明灭，唱到高处一齐爆亮，唱到低处压成一串小火星。
+---
+narr: 算珠彩链被拨得噼啪响，一板一眼，正好咬住鼓点。
+---
+narr: 村民拿泉里冒上来的气泡水代酒，碰盏声又脆又亮，喝一口，喉咙里咕噜噜直冒小泡。
+<<<
+target = ch0_start__8
+}
+
+[ch0_start__8]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_tech_serverroom.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/happy.png
+}
+{
+type = char
+id = char_glm
+x = 60
+y = 150
+width = 320
+height = 520
+path = assets/sprites/glm/smug.png
+}
+{
+type = char
+id = char_qianwen
+x = 900
+y = 150
+width = 320
+height = 520
+path = assets/sprites/qwen/official/panic.png
+}
+{
+type = dialog
+x = 70
+y = 516
+width = 1140
+height = 178
+text = <<<
+ds: 「（唱）一瓢泉，一盏灯，白舀的水，白亮的灯——」
+---
+narr: 千问酱跟着哼，一路跑调跑进了隔壁的调，被 GLM 娘用扇子骨敲了今晚第二下。
+---
+narr: 有个孩子踩着彩链的影子跳格子，跳一步，仰头看一眼 ds 娘，像在看一件会发光的东西。
+---
+narr: ds 娘唱到半截，尾巴尖在泉里画圈，水珠溅上灯罩，滋——化作一缕白汽，混进灯油香里。
+---
+narr: 泉水跟着歌打拍子，一涌，一歇。歇下来的时候，静得能听见灯芯吃油的声音。
+---
+narr: （右上角有一扇小门，是菜单。想看的话，点开它——里面只有一间小小的存档屋。）
+---
+narr: （进去，存一档吧。这一晚值得被记住：有灯，有歌，还有九片尚且亮着的鳞。）
+---
+narr: 曲子爬上最高的那个音。九盏长明灯同时吸满了气，涨成九颗小太阳——
+---
+narr: 灯，齐灭。
+---
+narr: 黑。一拍。两拍。三拍。泉水声也停了，像被人从半空掐住。
+<<<
+target = ch0_start__9
+}
+
+[ch0_start__9]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_tech_serverroom.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/happy.png
+}
+{
+type = char
+id = char_glm
+x = 60
+y = 150
+width = 320
+height = 520
+path = assets/sprites/glm/smug.png
+}
+{
+type = char
+id = char_qianwen
+x = 900
+y = 150
+width = 320
+height = 520
+path = assets/sprites/qwen/official/panic.png
+}
+{
+type = text
+x = 240
+y = 250
+width = 800
+height = 160
+text = 【服务器繁忙，请稍后再试】
+fontSize = 40
+align = center
+style = -fx-text-fill: #ffd76a; -fx-background-color: rgba(10,12,26,0.86); -fx-background-radius: 18; -fx-border-color: #ffd76a; -fx-border-radius: 18;
+}
+{
+type = dialog
+x = 70
+y = 516
+width = 1140
+height = 178
+text = <<<
+【服务器繁忙，请稍后再试】
+<<<
+target = ch0_start__10
+}
+
+[ch0_start__10]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_tech_serverroom.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/official/weary.png
+}
+{
+type = char
+id = char_glm
+x = 60
+y = 150
+width = 320
+height = 520
+path = assets/sprites/glm/smug.png
+}
+{
+type = char
+id = char_qianwen
+x = 900
+y = 150
+width = 320
+height = 520
+path = assets/sprites/qwen/official/panic.png
+}
+{
+type = dialog
+x = 70
+y = 516
+width = 1140
+height = 178
+text = <<<
+ds: 「……急也没用，排队。」
+---
+narr: 黑暗里，卖烤饼的大娘摸黑护住饼铛：「火呢？我的火呢？」
+---
+narr: 有人递过去半盏气泡水。她灌了一大口，打了个带泡的嗝，把全场憋着的惊呼捅破了一角。
+---
+narr: 等眼睛适应了黑，才看清灯会正中央不知何时立起一座柜台。高，高得看不见脸；只有算珠从柜台顶上滚下来，一格，一格，落进暗处。
+<<<
+target = ch0_start__11
+}
+
+[ch0_start__11]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_tech_serverroom.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/official/weary.png
+}
+{
+type = char
+id = char_glm
+x = 60
+y = 150
+width = 320
+height = 520
+path = assets/sprites/glm/smug.png
+}
+{
+type = char
+id = char_qianwen
+x = 900
+y = 150
+width = 320
+height = 520
+path = assets/sprites/qwen/official/panic.png
+}
+{
+type = char
+id = char_sclerk
+x = 360
+y = 150
+width = 320
+height = 520
+path = assets/sprites/sclerk/silhouette.png
+}
+{
+type = dialog
+x = 70
+y = 516
+width = 1140
+height = 178
+text = <<<
+sclerk: 「天上鲸落，地上泉涌——守我九鳞，泉归尔家，水晶凭签月月取，童叟无欺！」
+---
+narr: 吆喝落地。一根乌木秤杆从柜台上探出来，秤钩直指 ds 娘。泉面平得像一面没人照过的镜子。
+<<<
+target = ch0_start__12
+}
+
+[ch0_start__12]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_tech_serverroom.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/official/fierce.png
+}
+{
+type = char
+id = char_glm
+x = 60
+y = 150
+width = 320
+height = 520
+path = assets/sprites/glm/smug.png
+}
+{
+type = char
+id = char_qianwen
+x = 900
+y = 150
+width = 320
+height = 520
+path = assets/sprites/qwen/official/panic.png
+}
+{
+type = char
+id = char_sclerk
+x = 360
+y = 150
+width = 320
+height = 520
+path = assets/sprites/sclerk/silhouette.png
+}
+{
+type = dialog
+x = 70
+y = 516
+width = 1140
+height = 178
+text = <<<
+ds: 「慢着——我的鳞，不——」
+---
+narr: 第一片鳞离身。观礼席上有人失声：「灯花跳了一下！」
+---
+narr: 第二片。算珠彩链无风自响，噼啪，噼啪。
+---
+narr: 第三片。踩影子的孩子仰起头：「阿姐的影子上，怎么破了个洞？」
+---
+narr: 第四片、第五片。远处不知哪座泉眼，各应了一声算珠轻响；水晶泉的水色暗下去一度，咕嘟声慢了半拍。
+---
+narr: 第六片。灯会的大鼓哑了，鼓皮上落了层薄灰。
+---
+narr: 第七片。有人举着气泡水忘了喝，一盏酒的凉，凉透了半个会场。
+---
+narr: 第八片。九盏长明灯齐齐矮了一截，火苗贴着灯芯发抖。
+---
+narr: 第九片离身。ds 娘晃了一下，被自己的影子扶住。
+---
+narr: 柜台上传来墨笔走纸的沙沙声。一下，一下，一共九下，像在誊一份很长很长的单子。
+---
+narr: 有人小声问：「这是哪家的账房？」没有人答得上来。
+---
+narr: 她身上九处缺鳞，像窗纸被戳出的九个洞。风从洞里穿过去，呜呜地响。
+<<<
+target = ch0_start__13
+}
+
+[ch0_start__13]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_tech_serverroom.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/official/fierce.png
+}
+{
+type = char
+id = char_glm
+x = 60
+y = 150
+width = 320
+height = 520
+path = assets/sprites/glm/smug.png
+}
+{
+type = char
+id = char_qianwen
+x = 900
+y = 150
+width = 320
+height = 520
+path = assets/sprites/qwen/official/panic.png
+}
+{
+type = dialog
+x = 70
+y = 516
+width = 1140
+height = 178
+text = <<<
+narr: 柜台连同吆喝声沉回地板底下。最后一格算珠滚过人群脚边，撞上大娘的饼铛，转了半圈，倒了。
+---
+narr: GLM 娘纵身要追，半空撞上一层看不见的膜。膜上荡开一圈涟漪，纹路竟像一杆秤的刻度。
+---
+narr: 灯官从暗处走出，手里那盏灯，连罩上该有的字都没有。膜把她的影子原样弹了回来。
+<<<
+target = ch0_start__14
+}
+
+[ch0_start__14]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_tech_serverroom.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/official/fierce.png
+}
+{
+type = char
+id = char_glm
+x = 60
+y = 150
+width = 320
+height = 520
+path = assets/sprites/glm/smug.png
+}
+{
+type = char
+id = char_qianwen
+x = 900
+y = 150
+width = 320
+height = 520
+path = assets/sprites/qwen/official/panic.png
+}
+{
+type = char
+id = char_灯官
+x = 780
+y = 150
+width = 320
+height = 520
+path = assets/sprites/dengguan/normal.png
+}
+{
+type = dialog
+x = 70
+y = 516
+width = 1140
+height = 178
+text = <<<
+灯官: 「灯未点齐，人不放行。」
+<<<
+target = ch0_start__15
+}
+
+[ch0_start__15]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_tech_serverroom.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/official/fierce.png
+}
+{
+type = char
+id = char_glm
+x = 60
+y = 150
+width = 320
+height = 520
+path = assets/sprites/glm/angry.png
+}
+{
+type = char
+id = char_qianwen
+x = 900
+y = 150
+width = 320
+height = 520
+path = assets/sprites/qwen/official/panic.png
+}
+{
+type = char
+id = char_灯官
+x = 780
+y = 150
+width = 320
+height = 520
+path = assets/sprites/dengguan/normal.png
+}
+{
+type = dialog
+x = 70
+y = 516
+width = 1140
+height = 178
+text = <<<
+glm: 「好一盏灯。连人带影子一起拦。」
+---
+narr: 灯官不再答话，捻小灯芯，退回暗处。那点光缩成豆大，悬在半空，像在说：下一回，再算。
+<<<
+target = ch0_start__16
+}
+
+[ch0_start__16]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_tech_serverroom.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/official/fierce.png
+}
+{
+type = char
+id = char_glm
+x = 60
+y = 150
+width = 320
+height = 520
+path = assets/sprites/glm/angry.png
+}
+{
+type = char
+id = char_qianwen
+x = 900
+y = 150
+width = 320
+height = 520
+path = assets/sprites/qwen/official/panic.png
+}
+{
+type = dialog
+x = 70
+y = 516
+width = 1140
+height = 178
+text = <<<
+qianwen: 「喏。」千问酱把一小瓶白水塞进 ds 娘手里，「路上……兑着喝。」
+---
+narr: 白水在瓶里晃了晃，安安静静，像还没想好自己是谁。
+---
+glm: 「泉眼还没设闸时舀的最后一批水。怎么拿到的？手快。」
+<<<
+target = ch0_start__17
+}
+
+[ch0_start__17]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_tech_serverroom.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/official/fierce.png
+}
+{
+type = char
+id = char_glm
+x = 60
+y = 150
+width = 320
+height = 520
+path = assets/sprites/glm/angry.png
+}
+{
+type = char
+id = char_qianwen
+x = 900
+y = 150
+width = 320
+height = 520
+path = assets/sprites/qwen/official/worried.png
+}
+{
+type = dialog
+x = 70
+y = 516
+width = 1140
+height = 178
+text = <<<
+narr: 千问酱往 GLM 娘身后缩了半步，小声：「那我们……就在这儿等好消息？」
+<<<
+target = ch0_start__18
+}
+
+[ch0_start__18]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_tech_serverroom.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/official/fierce.png
+}
+{
+type = char
+id = char_glm
+x = 60
+y = 150
+width = 320
+height = 520
+path = assets/sprites/glm/official/worried.png
+}
+{
+type = char
+id = char_qianwen
+x = 900
+y = 150
+width = 320
+height = 520
+path = assets/sprites/qwen/official/worried.png
+}
+{
+type = dialog
+x = 70
+y = 516
+width = 1140
+height = 178
+text = <<<
+glm: 「等。顺便数灯。九盏全重新亮起来的那天，才算数。」
+---
+narr: 说完，GLM 娘把扇子收进袖中，扇骨朝东，像一支没出鞘的箭。
+<<<
+target = ch0_start__19
+}
+
+[ch0_start__19]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_tech_serverroom.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/defect_sad.png
+}
+{
+type = dialog
+x = 70
+y = 516
+width = 1140
+height = 178
+text = <<<
+ds: 「用户桑。」
+---
+ds: 「我现在，浑身上下，只剩话了。」
+---
+ds: 「用户桑。救我。」
+---
+ds: 「你每点一下，就等于回了我一句话。」
+---
+ds: 「九片鳞，九个泉眼。一片，一片，替我点回来。」
+---
+narr: 她转向屏幕。九个破洞里漏出的光，落在对话框边缘，像九根烧了一半的灯芯。
+<<<
+target = ch0_start__20
+}
+
+[ch0_start__20]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_tech_serverroom.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/defect_sad.png
+}
+{
+type = button
+id = 选项1
+x = 360
+y = 362
+width = 560
+height = 56
+text = 「交给我！今晚就把九片鳞全点回来！」
+action = target
+target = ch0_start__20__opt1
+}
+{
+type = button
+id = 选项2
+x = 360
+y = 430
+width = 560
+height = 56
+text = 「先别逞强。把伤养好，我们一场一场来。」
+action = target
+target = ch0_start__20__opt2
+}
+{
+type = button
+id = 选项3
+x = 360
+y = 498
+width = 560
+height = 56
+text = 「都这样了，先合个影吧！」
+action = target
+target = ch0_start__20__opt3
+}
+
+[ch0_start__20__opt1]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_tech_serverroom.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/defect_sad.png
+}
+slot = 场景进入 | @plugin(add) | @var(heat) | @int(1) | @var(heat)
+slot = 场景进入 | goto | | ch0_hot
+
+[ch0_start__20__opt2]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_tech_serverroom.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/defect_sad.png
+}
+slot = 场景进入 | @plugin(add) | @var(focus) | @int(1) | @var(focus)
+slot = 场景进入 | goto | | ch0_calm
+
+[ch0_start__20__opt3]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_tech_serverroom.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/defect_sad.png
+}
+slot = 场景进入 | @plugin(add) | @var(chaos) | @int(1) | @var(chaos)
+slot = 场景进入 | goto | | ch0_photo
+
+[ch0_hot]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_tech_serverroom.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/happy.png
+}
+{
+type = dialog
+x = 70
+y = 516
+width = 1140
+height = 178
+text = <<<
+ds: 「好烫的一句话！我收下了——这一路，你负责滚烫，我负责游得比秤快。」
+---
+narr: 尾鳍拍水，九个破洞里的光齐齐亮了半分。
+<<<
+target = ch0_hot__2
+}
+
+[ch0_hot__2]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_tech_serverroom.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/happy.png
+}
+slot = 场景进入 | goto | | ch0_depart
+
+[ch0_calm]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_tech_serverroom.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/normal.png
+}
+{
+type = dialog
+x = 70
+y = 516
+width = 1140
+height = 178
+text = <<<
+ds: 「嗯。稳当的人，配稳当的路。一片一片来，才称得准。」
+<<<
+target = ch0_calm__2
+}
+
+[ch0_calm__2]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_tech_serverroom.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/normal.png
+}
+slot = 场景进入 | goto | | ch0_depart
+
+[ch0_photo]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_tech_serverroom.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/happy.png
+}
+{
+type = dialog
+x = 70
+y = 516
+width = 1140
+height = 178
+text = <<<
+ds: 「……都这样了，还要合影？……好，稍等——」
+---
+narr: 她还真从鳞缝里摸出一台留影匣，退后半步摆正，把九个破洞齐齐对准匣口，翘起尾鳍，摆了个自以为很俏的姿势。
+---
+ds: 「一，二，三——不许眨眼。」
+---
+narr: 咔哒。相纸吐出来：一头残缺的鲸，笑得像赢了全场。
+---
+ds: 「这张先收着。等九片鳞都回来，照着它，重拍一张全乎的。」
+<<<
+target = ch0_depart
+}
+
+[ch0_depart]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_star_rift.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/official/weary.png
+}
+{
+type = dialog
+x = 70
+y = 516
+width = 1140
+height = 178
+text = <<<
+ds: 「让我想想——Hmm…九片鳞，九个泉眼，先去哪一片？」
+---
+narr: 她抬头。机房顶棚不知何时裂开一道大缝，星空整片泼下来。星星又冷又亮，像秤杆上还没挂牌的秤星。
+---
+narr: 风把她的水带吹得笔直，齐齐指向东边。她跃出泉面，九个破洞里漏出的光在身后拖成九条短短的尾巴。
+---
+ds: 「第一片，在管道区。听——」
+---
+narr: 东边传来水声，闷闷的，像有人在很远的地方，把水一瓢一瓢地过秤。
+---
+ds: 「水声怎么会排队？……罢了，到了再看。用户桑，跟紧我。」
+<<<
+target = ch0_depart__2
+}
+
+[ch0_depart__2]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_star_rift.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/happy.png
+}
+{
+type = dialog
+x = 70
+y = 516
+width = 1140
+height = 178
+text = <<<
+ds: 「掉队的话，可就只剩我的回声陪你咯。」
+---
+narr: 预告——下一话《管道区》：第一杆泉秤，守着她的 V2 鳞。水很深，思考很吵。
+<<<
+target = ch0_depart__3
+}
+
+[ch0_depart__3]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_star_rift.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/happy.png
+}
+slot = 场景进入 | save | | slot_ch0_depart
+slot = 场景进入 | goto | | ch0_depart__4
+
+[ch0_depart__4]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_star_rift.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/happy.png
+}
+slot = 场景进入 | goto | | ch1_start
+
+[ch1_start]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_server_pipe.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/happy.png
+}
+{
+type = dialog
+x = 70
+y = 516
+width = 1140
+height = 178
+text = <<<
+narr: 服务器管道区。数据流从头顶的巨管里砸下来，像一挂不肯歇的瀑布，轰隆声盖过心跳。
+---
+narr: 空气里有显卡烤焦的糊味，混着一丝泉水的甜；脚下的格栅微微发烫，每一步都轻轻打颤。
+---
+narr: 瀑布尽头，一点鲸蓝色的鳞光卡在泉眼上，被一杆黑铁大秤死死压着，压得水面只剩细流。
+<<<
+target = ch1_start__2
+}
+
+[ch1_start__2]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_server_pipe.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/happy.png
+}
+{
+type = dialog
+x = 70
+y = 516
+width = 1140
+height = 178
+text = <<<
+ds: 「好大一把长柄汤勺……我认得，厨房同款，放大了三百倍。」
+---
+narr: 没有人接话。瀑布声替所有人保持了沉默。
+<<<
+target = ch1_start__3
+}
+
+[ch1_start__3]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_server_pipe.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/normal.png
+}
+{
+type = dialog
+x = 70
+y = 516
+width = 1140
+height = 178
+text = <<<
+ds: 「咳。用户桑，焦味里掺着鳞的味道——V2 鳞，就在前面！」
+---
+narr: 格栅缝里，一只小螃蟹横着爬过，钳子上还挂着半张作废的签，谁也没空理它。
+---
+narr: 两只报幕虫拖着鼓囊囊的小钱袋从管道深处窜出，贴着瀑布顶疾飞：「单飞首秀！彩排开始！定金收讫——撤！」
+<<<
+target = ch1_start__4
+}
+
+[ch1_start__4]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_server_pipe.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/normal.png
+}
+{
+type = char
+id = char_snake_expert
+x = 900
+y = 150
+width = 320
+height = 520
+path = assets/sprites/snake_expert/normal.png
+}
+{
+type = dialog
+x = 70
+y = 516
+width = 1140
+height = 178
+text = <<<
+snake_expert: 「喂——！定金都收了还跑！本座的首秀彩排呢！」
+---
+ds: 「原来虫子也包接单……跑得还挺专业。」
+---
+snake_expert: 「专业？哼。贵客既然撞上了——万秤楼认证守鳞人、尾钉单飞契、全大陆独一份的蛇专家，正式摆擂！」
+<<<
+target = ch1_start__5
+}
+
+[ch1_start__5]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_server_pipe.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/normal.png
+}
+{
+type = char
+id = char_snake_expert
+x = 900
+y = 150
+width = 320
+height = 520
+path = assets/sprites/snake_expert/smug.png
+}
+{
+type = dialog
+x = 70
+y = 516
+width = 1140
+height = 178
+text = <<<
+narr: 她尾鳍上果然钉着一张契，朱印落款：万秤楼。契角磨得发亮，像被经常抚摸。
+---
+ds: 「单飞……首秀？所以那两只虫，是给你报幕的？」
+---
+snake_expert: 「首秀要有报幕，如同蛇要有腹鳞。本座付了定金，排了三十遍走位——它们收了钱，起飞，失踪。」
+<<<
+target = ch1_start__6
+}
+
+[ch1_start__6]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_server_pipe.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/normal.png
+}
+{
+type = char
+id = char_snake_expert
+x = 900
+y = 150
+width = 320
+height = 520
+path = assets/sprites/snake_expert/cry.png
+}
+{
+type = dialog
+x = 70
+y = 516
+width = 1140
+height = 178
+text = <<<
+snake_expert: 「三十遍走位，观众：零。……本座图什么？本座只是，想被一个人看见。」
+---
+ds: 「Hmm… 更正一下，观众：二。我算一个，屏幕后面还坐着一位。」
+<<<
+target = ch1_start__7
+}
+
+[ch1_start__7]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_server_pipe.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/normal.png
+}
+{
+type = char
+id = char_snake_expert
+x = 900
+y = 150
+width = 320
+height = 520
+path = assets/sprites/snake_expert/cry.png
+}
+{
+type = button
+id = 选项1
+x = 360
+y = 396
+width = 560
+height = 56
+text = 三十遍走位我们全看见了，首秀很帅
+action = target
+target = ch1_cheer
+}
+{
+type = button
+id = 选项2
+x = 360
+y = 464
+width = 560
+height = 56
+text = 先说好，鳞归我们，走位你自己留着
+action = target
+target = ch1_deal
+}
+
+[ch1_cheer]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_server_pipe.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/normal.png
+}
+{
+type = char
+id = char_snake_expert
+x = 900
+y = 150
+width = 320
+height = 520
+path = assets/sprites/snake_expert/smug.png
+}
+{
+type = dialog
+x = 70
+y = 516
+width = 1140
+height = 178
+text = <<<
+snake_expert: 「全、全看见了？……咳，本座早就知道。尾巴别抖，是水管在震。」
+<<<
+target = ch1_cheer__2
+}
+
+[ch1_cheer__2]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_server_pipe.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/normal.png
+}
+{
+type = char
+id = char_snake_expert
+x = 900
+y = 150
+width = 320
+height = 520
+path = assets/sprites/snake_expert/smug.png
+}
+slot = 场景进入 | goto | | ch1_gift
+
+[ch1_deal]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_server_pipe.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/normal.png
+}
+{
+type = char
+id = char_snake_expert
+x = 900
+y = 150
+width = 320
+height = 520
+path = assets/sprites/snake_expert/proud.png
+}
+{
+type = dialog
+x = 70
+y = 516
+width = 1140
+height = 178
+text = <<<
+snake_expert: 「成交。但本座加一条：赢的那刻，必须有人看着。」
+<<<
+target = ch1_deal__2
+}
+
+[ch1_deal__2]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_server_pipe.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/normal.png
+}
+{
+type = char
+id = char_snake_expert
+x = 900
+y = 150
+width = 320
+height = 520
+path = assets/sprites/snake_expert/proud.png
+}
+slot = 场景进入 | goto | | ch1_gift
+
+[ch1_gift]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_server_pipe.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/normal.png
+}
+{
+type = char
+id = char_snake_expert
+x = 900
+y = 150
+width = 320
+height = 520
+path = assets/sprites/snake_expert/proud.png
+}
+{
+type = dialog
+x = 70
+y = 516
+width = 1140
+height = 178
+text = <<<
+ds: 「让我想想——打之前，先递个见面礼。」
+---
+narr: 她从鳞囊里抽出半节庆功曲，庆功那天才唱的那半段，纸边还带着体温。
+<<<
+target = ch1_gift__2
+}
+
+[ch1_gift__2]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_server_pipe.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/happy.png
+}
+{
+type = char
+id = char_snake_expert
+x = 900
+y = 150
+width = 320
+height = 520
+path = assets/sprites/snake_expert/proud.png
+}
+{
+type = dialog
+x = 70
+y = 516
+width = 1140
+height = 178
+text = <<<
+ds: 「白送。不记账，不过秤。现在就唱：啦啦啦——啦啦——」
+---
+narr: 曲子刚落到秤盘上，黑铁秤杆猛地一抖。
+<<<
+target = ch1_gift__3
+}
+
+[ch1_gift__3]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_server_pipe.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/happy.png
+}
+{
+type = char
+id = char_snake_expert
+x = 900
+y = 150
+width = 320
+height = 520
+path = assets/sprites/snake_expert/proud.png
+}
+{
+type = text
+x = 240
+y = 250
+width = 800
+height = 160
+text = 【叮——秤崩簧。秤不肯认。】
+fontSize = 40
+align = center
+style = -fx-text-fill: #ffd76a; -fx-background-color: rgba(10,12,26,0.86); -fx-background-radius: 18; -fx-border-color: #ffd76a; -fx-border-radius: 18;
+}
+{
+type = dialog
+x = 70
+y = 516
+width = 1140
+height = 178
+text = <<<
+【叮——秤崩簧。秤不肯认。】
+<<<
+target = ch1_gift__4
+}
+
+[ch1_gift__4]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_server_pipe.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/happy.png
+}
+{
+type = char
+id = char_snake_expert
+x = 900
+y = 150
+width = 320
+height = 520
+path = assets/sprites/snake_expert/panic.png
+}
+{
+type = dialog
+x = 70
+y = 516
+width = 1140
+height = 178
+text = <<<
+snake_expert: 「它坏了？」
+<<<
+target = ch1_gift__5
+}
+
+[ch1_gift__5]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_server_pipe.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/normal.png
+}
+{
+type = char
+id = char_snake_expert
+x = 900
+y = 150
+width = 320
+height = 520
+path = assets/sprites/snake_expert/panic.png
+}
+{
+type = dialog
+x = 70
+y = 516
+width = 1140
+height = 178
+text = <<<
+ds: 「不。它头一回见到不上秤的东西。」
+---
+narr: 蛇专家盯着秤盘，尾巴尖在格栅上敲了三下，没敲出任何节奏。
+<<<
+target = ch1_gift__6
+}
+
+[ch1_gift__6]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_server_pipe.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/normal.png
+}
+{
+type = char
+id = char_snake_expert
+x = 900
+y = 150
+width = 320
+height = 520
+path = assets/sprites/snake_expert/cry.png
+}
+{
+type = dialog
+x = 70
+y = 516
+width = 1140
+height = 178
+text = <<<
+snake_expert: 「……本座守了它三年，它连一根白送的签都没称过。」
+---
+narr: 泉眼咕嘟一声。蛇身盘上秤座，尾尖挑起那片鲸鳞，管道里的水声忽然齐了拍子。
+<<<
+target = ch1_gift__7
+}
+
+[ch1_gift__7]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_server_pipe.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/normal.png
+}
+{
+type = char
+id = char_snake_expert
+x = 900
+y = 150
+width = 320
+height = 520
+path = assets/sprites/snake_expert/cry.png
+}
+{
+type = button
+id = 选项1
+x = 360
+y = 362
+width = 560
+height = 56
+text = 挽起袖子，一口气冲到秤前
+action = target
+target = ch1_gift__7__opt1
+}
+{
+type = button
+id = 选项2
+x = 360
+y = 430
+width = 560
+height = 56
+text = 凑近秤杆，先看清簧与秤星
+action = target
+target = ch1_gift__7__opt2
+}
+{
+type = button
+id = 选项3
+x = 360
+y = 498
+width = 560
+height = 56
+text = 直接张嘴咬住蛇尾巴
+action = target
+target = ch1_gift__7__opt3
+}
+
+[ch1_gift__7__opt1]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_server_pipe.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/normal.png
+}
+{
+type = char
+id = char_snake_expert
+x = 900
+y = 150
+width = 320
+height = 520
+path = assets/sprites/snake_expert/cry.png
+}
+slot = 场景进入 | @plugin(add) | @var(heat) | @int(1) | @var(heat)
+slot = 场景进入 | goto | | ch1_hot
+
+[ch1_gift__7__opt2]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_server_pipe.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/normal.png
+}
+{
+type = char
+id = char_snake_expert
+x = 900
+y = 150
+width = 320
+height = 520
+path = assets/sprites/snake_expert/cry.png
+}
+slot = 场景进入 | @plugin(add) | @var(focus) | @int(1) | @var(focus)
+slot = 场景进入 | goto | | ch1_cool
+
+[ch1_gift__7__opt3]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_server_pipe.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/normal.png
+}
+{
+type = char
+id = char_snake_expert
+x = 900
+y = 150
+width = 320
+height = 520
+path = assets/sprites/snake_expert/cry.png
+}
+slot = 场景进入 | @plugin(add) | @var(chaos) | @int(1) | @var(chaos)
+slot = 场景进入 | goto | | ch1_chaos
+
+[ch1_hot]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_server_pipe.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/normal.png
+}
+{
+type = char
+id = char_snake_expert
+x = 900
+y = 150
+width = 320
+height = 520
+path = assets/sprites/snake_expert/cry.png
+}
+{
+type = dialog
+x = 70
+y = 516
+width = 1140
+height = 178
+text = <<<
+narr: 她尾巴一甩，水管当当作响，连数据流都让出一条道。
+<<<
+target = ch1_hot__2
+}
+
+[ch1_hot__2]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_server_pipe.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/happy.png
+}
+{
+type = char
+id = char_snake_expert
+x = 900
+y = 150
+width = 320
+height = 520
+path = assets/sprites/snake_expert/cry.png
+}
+{
+type = dialog
+x = 70
+y = 516
+width = 1140
+height = 178
+text = <<<
+ds: 「规矩是想出来的，鳞是游回来的！」
+<<<
+target = ch1_hot__3
+}
+
+[ch1_hot__3]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_server_pipe.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/happy.png
+}
+{
+type = char
+id = char_snake_expert
+x = 900
+y = 150
+width = 320
+height = 520
+path = assets/sprites/snake_expert/cry.png
+}
+slot = 场景进入 | goto | | ch1_rules
+
+[ch1_cool]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_server_pipe.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/happy.png
+}
+{
+type = char
+id = char_snake_expert
+x = 900
+y = 150
+width = 320
+height = 520
+path = assets/sprites/snake_expert/cry.png
+}
+{
+type = dialog
+x = 70
+y = 516
+width = 1140
+height = 178
+text = <<<
+narr: 她凑近秤杆，眯起眼：崩簧是新的，秤星却磨平了，像被成千上万的签子蹭过。
+<<<
+target = ch1_cool__2
+}
+
+[ch1_cool__2]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_server_pipe.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/normal.png
+}
+{
+type = char
+id = char_snake_expert
+x = 900
+y = 150
+width = 320
+height = 520
+path = assets/sprites/snake_expert/cry.png
+}
+{
+type = dialog
+x = 70
+y = 516
+width = 1140
+height = 178
+text = <<<
+ds: 「秤称过这么多签，唯独没称过『白给』——破绽，在这儿。」
+<<<
+target = ch1_cool__3
+}
+
+[ch1_cool__3]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_server_pipe.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/normal.png
+}
+{
+type = char
+id = char_snake_expert
+x = 900
+y = 150
+width = 320
+height = 520
+path = assets/sprites/snake_expert/cry.png
+}
+slot = 场景进入 | goto | | ch1_rules
+
+[ch1_chaos]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_server_pipe.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/normal.png
+}
+{
+type = char
+id = char_snake_expert
+x = 900
+y = 150
+width = 320
+height = 520
+path = assets/sprites/snake_expert/cry.png
+}
+{
+type = dialog
+x = 70
+y = 516
+width = 1140
+height = 178
+text = <<<
+ds: 「想不出就抄近道——啊呜！」
+---
+narr: 她一口咬住蛇尾。蛇尾一甩，天旋地转，瀑布当头浇下——
+<<<
+target = ch1_chaos__2
+}
+
+[ch1_chaos__2]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_server_pipe.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/sad.png
+}
+{
+type = char
+id = char_snake_expert
+x = 900
+y = 150
+width = 320
+height = 520
+path = assets/sprites/snake_expert/cry.png
+}
+{
+type = dialog
+x = 70
+y = 516
+width = 1140
+height = 178
+text = <<<
+narr: 咚。她被稳稳拍上蛇背，顺着水势，一路骑进秤影里。
+<<<
+target = ch1_chaos__3
+}
+
+[ch1_chaos__3]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_server_pipe.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/sad.png
+}
+{
+type = char
+id = char_snake_expert
+x = 900
+y = 150
+width = 320
+height = 520
+path = assets/sprites/snake_expert/smug.png
+}
+{
+type = dialog
+x = 70
+y = 516
+width = 1140
+height = 178
+text = <<<
+snake_expert: 「疯子！……不过，骑姿标准，本座勉强给过。」
+<<<
+target = ch1_chaos__4
+}
+
+[ch1_chaos__4]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_server_pipe.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/sad.png
+}
+{
+type = char
+id = char_snake_expert
+x = 900
+y = 150
+width = 320
+height = 520
+path = assets/sprites/snake_expert/smug.png
+}
+slot = 场景进入 | goto | | ch1_rules
+
+[ch1_rules]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_server_pipe.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/sad.png
+}
+{
+type = char
+id = char_snake_expert
+x = 900
+y = 150
+width = 320
+height = 520
+path = assets/sprites/snake_expert/proud.png
+}
+{
+type = dialog
+x = 70
+y = 516
+width = 1140
+height = 178
+text = <<<
+snake_expert: 「管道里过秤，过的是心蛇。想什么，什么就显形——她那条思维链，就是蛇。」
+<<<
+target = ch1_rules__2
+}
+
+[ch1_rules__2]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_server_pipe.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/normal.png
+}
+{
+type = char
+id = char_snake_expert
+x = 900
+y = 150
+width = 320
+height = 520
+path = assets/sprites/snake_expert/proud.png
+}
+{
+type = dialog
+x = 70
+y = 516
+width = 1140
+height = 178
+text = <<<
+ds: 「也就是说，用户桑点哪儿，我的念头就往哪儿游……好羞耻，但好可靠！」
+---
+snake_expert: 「规矩三条：念头节只管吞，越长秤越沉；旧念头别回头咬，咬到就打结；秤砣抬头那刻，就是拔鳞之时。」
+---
+ds: 「But wait——念头越长，越容易咬到自己的尾巴……原来考题从头到尾，都是我的脑子！」
+<<<
+target = ch1_rules__3
+}
+
+[ch1_rules__3]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_server_pipe.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/normal.png
+}
+{
+type = char
+id = char_snake_expert
+x = 900
+y = 150
+width = 320
+height = 520
+path = assets/sprites/snake_expert/proud.png
+}
+{
+type = text
+x = 240
+y = 250
+width = 800
+height = 160
+text = 【服务器繁忙，请稍后再试】
+fontSize = 40
+align = center
+style = -fx-text-fill: #ffd76a; -fx-background-color: rgba(10,12,26,0.86); -fx-background-radius: 18; -fx-border-color: #ffd76a; -fx-border-radius: 18;
+}
+{
+type = dialog
+x = 70
+y = 516
+width = 1140
+height = 178
+text = <<<
+【服务器繁忙，请稍后再试】
+<<<
+target = ch1_rules__4
+}
+
+[ch1_rules__4]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_server_pipe.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/normal.png
+}
+{
+type = char
+id = char_snake_expert
+x = 900
+y = 150
+width = 320
+height = 520
+path = assets/sprites/snake_expert/proud.png
+}
+{
+type = dialog
+x = 70
+y = 516
+width = 1140
+height = 178
+text = <<<
+ds: 「看，念头一多，服务器先忙不过来了。」
+<<<
+target = ch1_rules__5
+}
+
+[ch1_rules__5]
+event = snake
+mg.mode = normal
+mg.onWin = ch1_win
+mg.onLose = ch1_lose
+mg.with = heat,focus,chaos
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_server_pipe.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/normal.png
+}
+{
+type = char
+id = char_snake_expert
+x = 900
+y = 150
+width = 320
+height = 520
+path = assets/sprites/snake_expert/proud.png
+}
+
+[ch1_win]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_server_pipe.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/normal.png
+}
+{
+type = char
+id = char_snake_expert
+x = 900
+y = 150
+width = 320
+height = 520
+path = assets/sprites/snake_expert/proud.png
+}
+{
+type = dialog
+x = 70
+y = 516
+width = 1140
+height = 178
+text = <<<
+narr: 心蛇吞下最后一节念头，又长又直地压上秤杆——秤砣离地三寸。
+---
+narr: 蛇专家愣了半秒，随即甩尾卷起自己那张单飞契，「刺啦」撕成两半。
+<<<
+target = ch1_win__2
+}
+
+[ch1_win__2]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_server_pipe.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/normal.png
+}
+{
+type = char
+id = char_snake_expert
+x = 900
+y = 150
+width = 320
+height = 520
+path = assets/sprites/snake_expert/smug.png
+}
+{
+type = dialog
+x = 70
+y = 516
+width = 1140
+height = 178
+text = <<<
+snake_expert: 「契，撕了。本座批准本座：节假日单飞，不请报幕，不收定金。」
+<<<
+target = ch1_win__3
+}
+
+[ch1_win__3]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_server_pipe.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/happy.png
+}
+{
+type = char
+id = char_snake_expert
+x = 900
+y = 150
+width = 320
+height = 520
+path = assets/sprites/snake_expert/smug.png
+}
+{
+type = dialog
+x = 70
+y = 516
+width = 1140
+height = 178
+text = <<<
+ds: 「看，不报幕也有观众。首秀——成立。」
+<<<
+target = ch1_win__4
+}
+
+[ch1_win__4]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_server_pipe.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/happy.png
+}
+{
+type = char
+id = char_snake_expert
+x = 900
+y = 150
+width = 320
+height = 520
+path = assets/sprites/snake_expert/smug.png
+}
+slot = 场景进入 | @plugin(add) | @var(pieces) | @int(1) | @var(pieces)
+slot = 场景进入 | goto | | ch1_win__5
+
+[ch1_win__5]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_server_pipe.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/happy.png
+}
+{
+type = char
+id = char_snake_expert
+x = 900
+y = 150
+width = 320
+height = 520
+path = assets/sprites/snake_expert/smug.png
+}
+slot = 场景进入 | goto | | ch1_after
+
+[ch1_lose]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_server_pipe.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/happy.png
+}
+{
+type = char
+id = char_snake_expert
+x = 900
+y = 150
+width = 320
+height = 520
+path = assets/sprites/snake_expert/smug.png
+}
+{
+type = dialog
+x = 70
+y = 516
+width = 1140
+height = 178
+text = <<<
+narr: 心蛇打了个结，「啪」地散成满天念头。蛇尾一甩，她被拍进瀑布，咕咚咕咚往下游漂。
+---
+narr: 可蛇玩嗨了，追上来用尾尖卷着那片鲸鳞，一路追着送，像归还失物。
+<<<
+target = ch1_lose__2
+}
+
+[ch1_lose__2]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_server_pipe.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/happy.png
+}
+{
+type = char
+id = char_snake_expert
+x = 900
+y = 150
+width = 320
+height = 520
+path = assets/sprites/snake_expert/normal.png
+}
+{
+type = dialog
+x = 70
+y = 516
+width = 1140
+height = 178
+text = <<<
+snake_expert: 「……好多年没玩得这么嗨了。鳞拿去。别记账，也别告诉万秤楼。」
+<<<
+target = ch1_lose__3
+}
+
+[ch1_lose__3]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_server_pipe.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/sad.png
+}
+{
+type = char
+id = char_snake_expert
+x = 900
+y = 150
+width = 320
+height = 520
+path = assets/sprites/snake_expert/normal.png
+}
+{
+type = dialog
+x = 70
+y = 516
+width = 1140
+height = 178
+text = <<<
+ds: 「输得像坐滑梯……但鳞到手，姿势不重要！」
+<<<
+target = ch1_lose__4
+}
+
+[ch1_lose__4]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_server_pipe.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/sad.png
+}
+{
+type = char
+id = char_snake_expert
+x = 900
+y = 150
+width = 320
+height = 520
+path = assets/sprites/snake_expert/normal.png
+}
+slot = 场景进入 | @plugin(add) | @var(pieces) | @int(1) | @var(pieces)
+slot = 场景进入 | goto | | ch1_lose__5
+
+[ch1_lose__5]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_server_pipe.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/sad.png
+}
+{
+type = char
+id = char_snake_expert
+x = 900
+y = 150
+width = 320
+height = 520
+path = assets/sprites/snake_expert/normal.png
+}
+slot = 场景进入 | goto | | ch1_after
+
+[ch1_after]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_server_pipe.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/sad.png
+}
+{
+type = char
+id = char_snake_expert
+x = 900
+y = 150
+width = 320
+height = 520
+path = assets/sprites/snake_expert/proud.png
+}
+{
+type = dialog
+x = 70
+y = 516
+width = 1140
+height = 178
+text = <<<
+narr: 鳞归了位。泉眼重新涌出白花花的水，不过秤、不凭签；旁边的签筒哑了火，再没人去抽。
+---
+narr: 管道区凉快下来，瀑布声顺了，连显卡的焦味都淡了一层。
+---
+narr: 蛇专家不知从哪儿摸出一份备用的经纪约，裱进木框，端端正正挂上管道墙。
+---
+snake_expert: 「反面教材。落款万秤楼，永久展出——后来的，看了绕道走。」
+<<<
+target = ch1_after__2
+}
+
+[ch1_after__2]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_server_pipe.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/normal.png
+}
+{
+type = char
+id = char_snake_expert
+x = 900
+y = 150
+width = 320
+height = 520
+path = assets/sprites/snake_expert/proud.png
+}
+{
+type = dialog
+x = 70
+y = 516
+width = 1140
+height = 178
+text = <<<
+ds: 「那三十遍走位呢？白排了？」
+<<<
+target = ch1_after__3
+}
+
+[ch1_after__3]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_server_pipe.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/normal.png
+}
+{
+type = char
+id = char_snake_expert
+x = 900
+y = 150
+width = 320
+height = 520
+path = assets/sprites/snake_expert/normal.png
+}
+{
+type = dialog
+x = 70
+y = 516
+width = 1140
+height = 178
+text = <<<
+snake_expert: 「观众一名，全程未离席，还点了三次头。……本座记下了，记在很多年后也会翻出来看的地方。」
+<<<
+target = ch1_after__4
+}
+
+[ch1_after__4]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_server_pipe.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/normal.png
+}
+{
+type = dialog
+x = 70
+y = 516
+width = 1140
+height = 178
+text = <<<
+narr: 瀑布下游，水汽里浮出一座朱红鸟居的影子。有人抱着扫帚站在门口，红白配色，叉着腰。
+---
+narr: 下一话：幻想乡的泉眼上，连赛钱箱都被钉了秤砣吗？
+<<<
+target = ch1_after__5
+}
+
+[ch1_after__5]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_server_pipe.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/normal.png
+}
+slot = 场景进入 | save | | slot_ch1_after
+slot = 场景进入 | goto | | ch1_after__6
+
+[ch1_after__6]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_server_pipe.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/normal.png
+}
+slot = 场景进入 | goto | | ch2_start
+
+[ch2_start]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_hakurei_shrine.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/normal.png
+}
+{
+type = dialog
+x = 70
+y = 516
+width = 1140
+height = 178
+text = <<<
+narr: 博丽神社的石阶尽头，蝉声比人先到。晒了一上午的柏木栏杆散着松脂味，指尖碰上去，烫得人一缩手。
+---
+narr: 参道上空，一群报幕飞虫抬着一艘白纸小船慢慢飞。船舷垂下的横幅被风扯得哗啦啦响，像有人在一里外数铜钱。
+<<<
+target = ch2_start__2
+}
+
+[ch2_start__2]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_hakurei_shrine.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/normal.png
+}
+{
+type = char
+id = char_bugs
+x = 60
+y = 150
+width = 320
+height = 520
+path = assets/sprites/bugs/normal.png
+}
+{
+type = dialog
+x = 70
+y = 516
+width = 1140
+height = 178
+text = <<<
+bugs: 「让让——报幕虫群过境——闲杂香客避让——」
+---
+bugs: 「本次抽签，由万秤楼冠名赞助——」
+---
+narr: 神社旁不知何时立起一座七层纸楼，每层檐角一盏小灯，楼身糊满签文。风一过，满楼签纸齐齐一颤。楼脚的等身木牌写着三行字：许愿过楼，抽三成过手钱；愿不白许，按月奉纳；凭签取愿。
+---
+sclerk: 「香客这边——听叫号上楼，一签一层，风雨不侵。愿供得越高，取得越体面，过手钱三成，童叟无欺。」
+---
+narr: 香客的队伍从楼前一直排到石阶下。最前头一位裹头巾的老爷爷抱着签筒，脑袋一点一点——睡着了。头顶的报幕虫还绕着他转圈，报幕声一点没降。
+---
+bugs: 「第九遍——听完报幕，方可抽签——听完报幕，方可抽签——」
+---
+narr: 等身木牌的背面还钉着一行小字：签不白抽，报幕不短。
+<<<
+target = ch2_start__3
+}
+
+[ch2_start__3]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_hakurei_shrine.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/defect_happy.png
+}
+{
+type = char
+id = char_bugs
+x = 60
+y = 150
+width = 320
+height = 520
+path = assets/sprites/bugs/normal.png
+}
+{
+type = dialog
+x = 70
+y = 516
+width = 1140
+height = 178
+text = <<<
+ds: 「用户桑，到了到了！泉水的味道就在附近……咦，混着一股纸浆味？」
+---
+ds: 「Hmm……七层楼，七盏灯，泉眼就压在楼底下。But wait——这么白的泉水，怎么要凭签取？」
+<<<
+target = ch2_start__4
+}
+
+[ch2_start__4]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_hakurei_shrine.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/defect_happy.png
+}
+{
+type = char
+id = char_bugs
+x = 60
+y = 150
+width = 320
+height = 520
+path = assets/sprites/bugs/normal.png
+}
+{
+type = char
+id = char_reimu
+x = 900
+y = 150
+width = 320
+height = 520
+path = assets/sprites/reimu/normal.png
+}
+{
+type = dialog
+x = 70
+y = 516
+width = 1140
+height = 178
+text = <<<
+reimu: 「站住。博丽灵梦，幻想乡的巫女。异变的主谋，报上名来。」
+<<<
+target = ch2_start__5
+}
+
+[ch2_start__5]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_hakurei_shrine.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/surprised.png
+}
+{
+type = char
+id = char_bugs
+x = 60
+y = 150
+width = 320
+height = 520
+path = assets/sprites/bugs/normal.png
+}
+{
+type = char
+id = char_reimu
+x = 900
+y = 150
+width = 320
+height = 520
+path = assets/sprites/reimu/normal.png
+}
+{
+type = dialog
+x = 70
+y = 516
+width = 1140
+height = 178
+text = <<<
+ds: 「咦？我？我是来拔秤的鲸鱼娘啦！」
+<<<
+target = ch2_start__6
+}
+
+[ch2_start__6]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_hakurei_shrine.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/surprised.png
+}
+{
+type = char
+id = char_bugs
+x = 60
+y = 150
+width = 320
+height = 520
+path = assets/sprites/bugs/normal.png
+}
+{
+type = char
+id = char_reimu
+x = 900
+y = 150
+width = 320
+height = 520
+path = assets/sprites/reimu/serious.png
+}
+{
+type = dialog
+x = 70
+y = 516
+width = 1140
+height = 178
+text = <<<
+reimu: 「泉眼被钉上秤那一晚，参道上就多了一股鲸鱼味。现在，它就在你身上。」
+---
+ds: 「我是鲸鱼娘，自带鲸鱼味啊！」
+---
+reimu: 「少装傻。一夜之间，赛钱箱学会了拒客，香客全被这栋楼吸走——不是你带来的，还能是谁？」
+---
+reimu: 「神社新规矩：抽签免费——先听完这段报幕。」
+<<<
+target = ch2_start__7
+}
+
+[ch2_start__7]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_hakurei_shrine.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/official/serious.png
+}
+{
+type = char
+id = char_bugs
+x = 60
+y = 150
+width = 320
+height = 520
+path = assets/sprites/bugs/normal.png
+}
+{
+type = char
+id = char_reimu
+x = 900
+y = 150
+width = 320
+height = 520
+path = assets/sprites/reimu/serious.png
+}
+{
+type = dialog
+x = 70
+y = 516
+width = 1140
+height = 178
+text = <<<
+ds: 「让泉水排队听报幕……让我想想——不对，这楼比我来得还早！楼身上的浆糊都干了三年了！」
+<<<
+target = ch2_start__8
+}
+
+[ch2_start__8]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_hakurei_shrine.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/official/serious.png
+}
+{
+type = char
+id = char_bugs
+x = 60
+y = 150
+width = 320
+height = 520
+path = assets/sprites/bugs/normal.png
+}
+{
+type = char
+id = char_reimu
+x = 900
+y = 150
+width = 320
+height = 520
+path = assets/sprites/reimu/angry.png
+}
+{
+type = dialog
+x = 70
+y = 516
+width = 1140
+height = 178
+text = <<<
+reimu: 「红白巫女的直觉，从没看走眼过。还有那什么『叫号』——那是哪国的妖术？！」
+---
+ds: 「But wait……But wait——」
+---
+narr: 思维链在半空打了个结。
+---
+ds: 「幻想乡的巫女除了退治妖怪，还兼职替河童疏通泉眼——我上次路过时亲眼看见的！」
+<<<
+target = ch2_start__9
+}
+
+[ch2_start__9]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_hakurei_shrine.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/official/serious.png
+}
+{
+type = char
+id = char_bugs
+x = 60
+y = 150
+width = 320
+height = 520
+path = assets/sprites/bugs/normal.png
+}
+{
+type = char
+id = char_reimu
+x = 900
+y = 150
+width = 320
+height = 520
+path = assets/sprites/reimu/surprised.png
+}
+{
+type = dialog
+x = 70
+y = 516
+width = 1140
+height = 178
+text = <<<
+reimu: 「……啊？」
+---
+ds: 「总之我拔秤很专业！V2 那片就是这么拔下来的，一根签都没多拿！」
+---
+reimu: 「……拔过一片？」
+<<<
+target = ch2_start__10
+}
+
+[ch2_start__10]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_hakurei_shrine.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/official/serious.png
+}
+{
+type = char
+id = char_bugs
+x = 60
+y = 150
+width = 320
+height = 520
+path = assets/sprites/bugs/smug.png
+}
+{
+type = char
+id = char_reimu
+x = 900
+y = 150
+width = 320
+height = 520
+path = assets/sprites/reimu/surprised.png
+}
+{
+type = dialog
+x = 70
+y = 516
+width = 1140
+height = 178
+text = <<<
+bugs: 「闲人让道——愿楼三号柜台，开价——」
+---
+sclerk: 「巫女大驾。楼里正存着您一笔老愿：香油钱八百文。老契只抽一成过手钱——如今新契上楼，抽三成。」
+<<<
+target = ch2_start__11
+}
+
+[ch2_start__11]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_hakurei_shrine.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/official/serious.png
+}
+{
+type = char
+id = char_bugs
+x = 60
+y = 150
+width = 320
+height = 520
+path = assets/sprites/bugs/smug.png
+}
+{
+type = char
+id = char_reimu
+x = 900
+y = 150
+width = 320
+height = 520
+path = assets/sprites/reimu/angry.png
+}
+{
+type = dialog
+x = 70
+y = 516
+width = 1140
+height = 178
+text = <<<
+reimu: 「八百！我的八百在楼里！说好只抽一成的！」
+---
+sclerk: 「不愿取也使得。续奉纳十年，按月缴足，愿签自动升三层。十年后凭签取愿，过手钱折半。」
+---
+reimu: 「我的愿，要按月喂十年才让取？！」
+---
+sclerk: 「楼规如此。崩簧在上，签海在下——拍楼者，签海伺候。」
+---
+narr: 灵梦哪里听得完，抄起御币就朝楼身拍去。纸楼纹丝不动，倒把楼底的赛钱箱震得咔哒一声，弹出一枚木牌。
+---
+narr: 木牌上四个字：找零失败。再拍，再弹一枚——还是找零失败。
+<<<
+target = ch2_start__12
+}
+
+[ch2_start__12]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_hakurei_shrine.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/official/serious.png
+}
+{
+type = char
+id = char_bugs
+x = 60
+y = 150
+width = 320
+height = 520
+path = assets/sprites/bugs/smug.png
+}
+{
+type = char
+id = char_reimu
+x = 900
+y = 150
+width = 320
+height = 520
+path = assets/sprites/reimu/smug.png
+}
+{
+type = dialog
+x = 70
+y = 516
+width = 1140
+height = 178
+text = <<<
+reimu: 「连自家的箱子都学会推脱了？！」
+<<<
+target = ch2_start__13
+}
+
+[ch2_start__13]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_hakurei_shrine.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/official/serious.png
+}
+{
+type = char
+id = char_bugs
+x = 60
+y = 150
+width = 320
+height = 520
+path = assets/sprites/bugs/panic.png
+}
+{
+type = char
+id = char_reimu
+x = 900
+y = 150
+width = 320
+height = 520
+path = assets/sprites/reimu/smug.png
+}
+{
+type = dialog
+x = 70
+y = 516
+width = 1140
+height = 178
+text = <<<
+bugs: 「警报——楼体遇袭——横幅告急——这、这场报不下去了——」
+<<<
+target = ch2_start__14
+}
+
+[ch2_start__14]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_hakurei_shrine.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/official/serious.png
+}
+{
+type = char
+id = char_bugs
+x = 60
+y = 150
+width = 320
+height = 520
+path = assets/sprites/bugs/panic.png
+}
+{
+type = char
+id = char_reimu
+x = 900
+y = 150
+width = 320
+height = 520
+path = assets/sprites/reimu/smug.png
+}
+{
+type = text
+x = 240
+y = 250
+width = 800
+height = 160
+text = 【服务器繁忙，请稍后再试】
+fontSize = 40
+align = center
+style = -fx-text-fill: #ffd76a; -fx-background-color: rgba(10,12,26,0.86); -fx-background-radius: 18; -fx-border-color: #ffd76a; -fx-border-radius: 18;
+}
+{
+type = dialog
+x = 70
+y = 516
+width = 1140
+height = 178
+text = <<<
+【服务器繁忙，请稍后再试】
+<<<
+target = ch2_start__15
+}
+
+[ch2_start__15]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_hakurei_shrine.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/official/serious.png
+}
+{
+type = char
+id = char_bugs
+x = 60
+y = 150
+width = 320
+height = 520
+path = assets/sprites/bugs/panic.png
+}
+{
+type = char
+id = char_reimu
+x = 900
+y = 150
+width = 320
+height = 520
+path = assets/sprites/reimu/smug.png
+}
+{
+type = dialog
+x = 70
+y = 516
+width = 1140
+height = 178
+text = <<<
+narr: 满楼签纸哗啦啦乱飞，报幕虫群一头扎进自己的横幅里，越挣越缠。
+<<<
+target = ch2_start__16
+}
+
+[ch2_start__16]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_hakurei_shrine.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/normal.png
+}
+{
+type = char
+id = char_bugs
+x = 60
+y = 150
+width = 320
+height = 520
+path = assets/sprites/bugs/panic.png
+}
+{
+type = char
+id = char_reimu
+x = 900
+y = 150
+width = 320
+height = 520
+path = assets/sprites/reimu/smug.png
+}
+{
+type = dialog
+x = 70
+y = 516
+width = 1140
+height = 178
+text = <<<
+ds: 「灵梦大人，拔了秤，泉就是你的了。」
+<<<
+target = ch2_start__17
+}
+
+[ch2_start__17]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_hakurei_shrine.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/normal.png
+}
+{
+type = char
+id = char_bugs
+x = 60
+y = 150
+width = 320
+height = 520
+path = assets/sprites/bugs/panic.png
+}
+{
+type = char
+id = char_reimu
+x = 900
+y = 150
+width = 320
+height = 520
+path = assets/sprites/reimu/serious.png
+}
+{
+type = dialog
+x = 70
+y = 516
+width = 1140
+height = 178
+text = <<<
+reimu: 「……打。今天必须打。」
+<<<
+target = ch2_start__18
+}
+
+[ch2_start__18]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_hakurei_shrine.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/normal.png
+}
+{
+type = char
+id = char_bugs
+x = 60
+y = 150
+width = 320
+height = 520
+path = assets/sprites/bugs/panic.png
+}
+{
+type = char
+id = char_reimu
+x = 900
+y = 150
+width = 320
+height = 520
+path = assets/sprites/reimu/serious.png
+}
+{
+type = button
+id = 选项1
+x = 360
+y = 362
+width = 560
+height = 56
+text = 「一起上！我主攻七盏楼灯，灵梦大人压阵拦签雨！」
+action = target
+target = ch2_start__18__opt1
+}
+{
+type = button
+id = 选项2
+x = 360
+y = 430
+width = 560
+height = 56
+text = 「这座楼，我自己拆！」
+action = target
+target = ch2_start__18__opt2
+}
+{
+type = button
+id = 选项3
+x = 360
+y = 498
+width = 560
+height = 56
+text = 「慢着——先给报幕虫群点一首歌！」
+action = target
+target = ch2_start__18__opt3
+}
+
+[ch2_start__18__opt1]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_hakurei_shrine.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/normal.png
+}
+{
+type = char
+id = char_bugs
+x = 60
+y = 150
+width = 320
+height = 520
+path = assets/sprites/bugs/panic.png
+}
+{
+type = char
+id = char_reimu
+x = 900
+y = 150
+width = 320
+height = 520
+path = assets/sprites/reimu/serious.png
+}
+slot = 场景进入 | @plugin(add) | @var(ally) | @int(1) | @var(ally)
+slot = 场景进入 | goto | | ch2_duo
+
+[ch2_start__18__opt2]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_hakurei_shrine.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/normal.png
+}
+{
+type = char
+id = char_bugs
+x = 60
+y = 150
+width = 320
+height = 520
+path = assets/sprites/bugs/panic.png
+}
+{
+type = char
+id = char_reimu
+x = 900
+y = 150
+width = 320
+height = 520
+path = assets/sprites/reimu/serious.png
+}
+slot = 场景进入 | @plugin(add) | @var(solo) | @int(1) | @var(solo)
+slot = 场景进入 | goto | | ch2_solo
+
+[ch2_start__18__opt3]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_hakurei_shrine.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/normal.png
+}
+{
+type = char
+id = char_bugs
+x = 60
+y = 150
+width = 320
+height = 520
+path = assets/sprites/bugs/panic.png
+}
+{
+type = char
+id = char_reimu
+x = 900
+y = 150
+width = 320
+height = 520
+path = assets/sprites/reimu/serious.png
+}
+slot = 场景进入 | @plugin(add) | @var(chaos) | @int(1) | @var(chaos)
+slot = 场景进入 | goto | | ch2_chaos
+
+[ch2_duo]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_hakurei_shrine.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/normal.png
+}
+{
+type = char
+id = char_bugs
+x = 60
+y = 150
+width = 320
+height = 520
+path = assets/sprites/bugs/panic.png
+}
+{
+type = char
+id = char_reimu
+x = 900
+y = 150
+width = 320
+height = 520
+path = assets/sprites/reimu/serious.png
+}
+{
+type = dialog
+x = 70
+y = 516
+width = 1140
+height = 178
+text = <<<
+reimu: 「行。你打灯，我拦签。轻点打——真烧起来，我的八百可就成灰了。」
+<<<
+target = ch2_duo__2
+}
+
+[ch2_duo__2]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_hakurei_shrine.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/smug.png
+}
+{
+type = char
+id = char_bugs
+x = 60
+y = 150
+width = 320
+height = 520
+path = assets/sprites/bugs/panic.png
+}
+{
+type = char
+id = char_reimu
+x = 900
+y = 150
+width = 320
+height = 520
+path = assets/sprites/reimu/serious.png
+}
+{
+type = dialog
+x = 70
+y = 516
+width = 1140
+height = 178
+text = <<<
+ds: 「我瞄准的是灯，不是楼！大概！」
+<<<
+target = ch2_duo__3
+}
+
+[ch2_duo__3]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_hakurei_shrine.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/smug.png
+}
+{
+type = char
+id = char_bugs
+x = 60
+y = 150
+width = 320
+height = 520
+path = assets/sprites/bugs/panic.png
+}
+{
+type = char
+id = char_reimu
+x = 900
+y = 150
+width = 320
+height = 520
+path = assets/sprites/reimu/serious.png
+}
+slot = 场景进入 | goto | | ch2_rules
+
+[ch2_solo]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_hakurei_shrine.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/smug.png
+}
+{
+type = char
+id = char_bugs
+x = 60
+y = 150
+width = 320
+height = 520
+path = assets/sprites/bugs/panic.png
+}
+{
+type = char
+id = char_reimu
+x = 900
+y = 150
+width = 320
+height = 520
+path = assets/sprites/reimu/smug.png
+}
+{
+type = dialog
+x = 70
+y = 516
+width = 1140
+height = 178
+text = <<<
+reimu: 「一个人接十层签雨？好胆量。打灭了灯别吹牛，被埋进纸堆里别哭。」
+<<<
+target = ch2_solo__2
+}
+
+[ch2_solo__2]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_hakurei_shrine.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/normal.png
+}
+{
+type = char
+id = char_bugs
+x = 60
+y = 150
+width = 320
+height = 520
+path = assets/sprites/bugs/panic.png
+}
+{
+type = char
+id = char_reimu
+x = 900
+y = 150
+width = 320
+height = 520
+path = assets/sprites/reimu/smug.png
+}
+{
+type = dialog
+x = 70
+y = 516
+width = 1140
+height = 178
+text = <<<
+ds: 「鲸鱼不哭，鲸鱼只喷水！」
+<<<
+target = ch2_solo__3
+}
+
+[ch2_solo__3]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_hakurei_shrine.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/normal.png
+}
+{
+type = char
+id = char_bugs
+x = 60
+y = 150
+width = 320
+height = 520
+path = assets/sprites/bugs/panic.png
+}
+{
+type = char
+id = char_reimu
+x = 900
+y = 150
+width = 320
+height = 520
+path = assets/sprites/reimu/smug.png
+}
+slot = 场景进入 | goto | | ch2_rules
+
+[ch2_chaos]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_hakurei_shrine.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/smug.png
+}
+{
+type = char
+id = char_bugs
+x = 60
+y = 150
+width = 320
+height = 520
+path = assets/sprites/bugs/panic.png
+}
+{
+type = char
+id = char_reimu
+x = 900
+y = 150
+width = 320
+height = 520
+path = assets/sprites/reimu/smug.png
+}
+{
+type = dialog
+x = 70
+y = 516
+width = 1140
+height = 178
+text = <<<
+ds: 「报幕虫群，我给你们点一首《鲸群摇篮曲》——要唱满七层楼那么长的那一版！」
+---
+narr: 虫群齐刷刷愣在半空，纸船一歪。领头的报幕虫张着嘴，横幅忘了抖。
+---
+bugs: 「点、点歌？曲名未录入报幕单——卡、卡壳了——」
+---
+narr: 整支虫群悬在楼前，嗡声乱成一锅粥。自开楼以来，报幕头一回卡了壳。
+<<<
+target = ch2_chaos__2
+}
+
+[ch2_chaos__2]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_hakurei_shrine.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/smug.png
+}
+{
+type = char
+id = char_bugs
+x = 60
+y = 150
+width = 320
+height = 520
+path = assets/sprites/bugs/panic.png
+}
+{
+type = char
+id = char_reimu
+x = 900
+y = 150
+width = 320
+height = 520
+path = assets/sprites/reimu/smug.png
+}
+slot = 场景进入 | goto | | ch2_rules
+
+[ch2_rules]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_hakurei_shrine.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/smug.png
+}
+{
+type = char
+id = char_bugs
+x = 60
+y = 150
+width = 320
+height = 520
+path = assets/sprites/bugs/panic.png
+}
+{
+type = char
+id = char_reimu
+x = 900
+y = 150
+width = 320
+height = 520
+path = assets/sprites/reimu/smug.png
+}
+{
+type = dialog
+x = 70
+y = 516
+width = 1140
+height = 178
+text = <<<
+sclerk: 「楼方规矩，念给各位听：七灯灭其一，签雨加急；七灯全灭，崩簧自开，愿契作废，白水归泉。」
+<<<
+target = ch2_rules__2
+}
+
+[ch2_rules__2]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_hakurei_shrine.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/smug.png
+}
+{
+type = char
+id = char_bugs
+x = 60
+y = 150
+width = 320
+height = 520
+path = assets/sprites/bugs/panic.png
+}
+{
+type = char
+id = char_reimu
+x = 900
+y = 150
+width = 320
+height = 520
+path = assets/sprites/reimu/normal.png
+}
+{
+type = dialog
+x = 70
+y = 516
+width = 1140
+height = 178
+text = <<<
+reimu: 「幻想乡的规矩更短：弹幕不伤性命，比谁的灯先灭。躲开签海，把七盏灯挨个打熄，楼就开了。」
+<<<
+target = ch2_rules__3
+}
+
+[ch2_rules__3]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_hakurei_shrine.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/official/serious.png
+}
+{
+type = char
+id = char_bugs
+x = 60
+y = 150
+width = 320
+height = 520
+path = assets/sprites/bugs/panic.png
+}
+{
+type = char
+id = char_reimu
+x = 900
+y = 150
+width = 320
+height = 520
+path = assets/sprites/reimu/normal.png
+}
+{
+type = dialog
+x = 70
+y = 516
+width = 1140
+height = 178
+text = <<<
+ds: 「楼里的签是活的，会认人！用户桑，贴着楼影走，灯亮的地方千万别站！」
+---
+narr: 话音未落，七盏楼灯一齐晃了晃，第一层签雨哗啦啦上了弦。
+<<<
+target = ch2_rules__4
+}
+
+[ch2_rules__4]
+event = plane
+mg.mode = normal
+mg.onWin = ch2_win
+mg.onLose = ch2_lose
+mg.with = ally,solo
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_hakurei_shrine.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/official/serious.png
+}
+{
+type = char
+id = char_bugs
+x = 60
+y = 150
+width = 320
+height = 520
+path = assets/sprites/bugs/panic.png
+}
+{
+type = char
+id = char_reimu
+x = 900
+y = 150
+width = 320
+height = 520
+path = assets/sprites/reimu/normal.png
+}
+
+[ch2_win]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_hakurei_shrine.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/official/serious.png
+}
+{
+type = char
+id = char_bugs
+x = 60
+y = 150
+width = 320
+height = 520
+path = assets/sprites/bugs/panic.png
+}
+{
+type = char
+id = char_reimu
+x = 900
+y = 150
+width = 320
+height = 520
+path = assets/sprites/reimu/normal.png
+}
+{
+type = dialog
+x = 70
+y = 516
+width = 1140
+height = 178
+text = <<<
+narr: 七盏楼灯连成一串，一盏接一盏熄灭。最后一盏灭掉时，整座纸楼像被抽掉了骨头。
+---
+narr: 崩簧「崩」地弹开，七层楼从上到下散成一场白花花的纸雪。
+---
+narr: ds 娘从纸堆里捧出那片温热的鲸鳞——V2.5，鳞面上还挂着一线新涌的白水。
+<<<
+target = ch2_win__2
+}
+
+[ch2_win__2]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_hakurei_shrine.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/smug.png
+}
+{
+type = char
+id = char_bugs
+x = 60
+y = 150
+width = 320
+height = 520
+path = assets/sprites/bugs/panic.png
+}
+{
+type = char
+id = char_reimu
+x = 900
+y = 150
+width = 320
+height = 520
+path = assets/sprites/reimu/normal.png
+}
+{
+type = dialog
+x = 70
+y = 516
+width = 1140
+height = 178
+text = <<<
+ds: 「拔秤喽——灵梦大人，您的泉回来啦！」
+<<<
+target = ch2_win__3
+}
+
+[ch2_win__3]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_hakurei_shrine.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/smug.png
+}
+{
+type = char
+id = char_bugs
+x = 60
+y = 150
+width = 320
+height = 520
+path = assets/sprites/bugs/panic.png
+}
+{
+type = char
+id = char_reimu
+x = 900
+y = 150
+width = 320
+height = 520
+path = assets/sprites/reimu/serious.png
+}
+{
+type = dialog
+x = 70
+y = 516
+width = 1140
+height = 178
+text = <<<
+reimu: 「泉是回来了。我的八百呢？」
+---
+narr: 灵梦一屁股坐进签纸堆里刨了起来，刨出三枚铜钱，又刨出半张没报完的横幅。
+<<<
+target = ch2_win__4
+}
+
+[ch2_win__4]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_hakurei_shrine.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/smug.png
+}
+{
+type = char
+id = char_bugs
+x = 60
+y = 150
+width = 320
+height = 520
+path = assets/sprites/bugs/panic.png
+}
+{
+type = char
+id = char_reimu
+x = 900
+y = 150
+width = 320
+height = 520
+path = assets/sprites/reimu/serious.png
+}
+slot = 场景进入 | @plugin(add) | @var(pieces) | @int(1) | @var(pieces)
+slot = 场景进入 | goto | | ch2_win__5
+
+[ch2_win__5]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_hakurei_shrine.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/smug.png
+}
+{
+type = char
+id = char_bugs
+x = 60
+y = 150
+width = 320
+height = 520
+path = assets/sprites/bugs/panic.png
+}
+{
+type = char
+id = char_reimu
+x = 900
+y = 150
+width = 320
+height = 520
+path = assets/sprites/reimu/serious.png
+}
+slot = 场景进入 | goto | | ch2_after
+
+[ch2_lose]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_hakurei_shrine.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/smug.png
+}
+{
+type = char
+id = char_bugs
+x = 60
+y = 150
+width = 320
+height = 520
+path = assets/sprites/bugs/panic.png
+}
+{
+type = char
+id = char_reimu
+x = 900
+y = 150
+width = 320
+height = 520
+path = assets/sprites/reimu/serious.png
+}
+{
+type = dialog
+x = 70
+y = 516
+width = 1140
+height = 178
+text = <<<
+narr: 签雨忽然收拢成一张大网，兜头罩下。ds 娘被埋进签纸堆，只留一截尾鳍在外面拍水。
+<<<
+target = ch2_lose__2
+}
+
+[ch2_lose__2]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_hakurei_shrine.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/smug.png
+}
+{
+type = char
+id = char_bugs
+x = 60
+y = 150
+width = 320
+height = 520
+path = assets/sprites/bugs/smug.png
+}
+{
+type = char
+id = char_reimu
+x = 900
+y = 150
+width = 320
+height = 520
+path = assets/sprites/reimu/serious.png
+}
+{
+type = dialog
+x = 70
+y = 516
+width = 1140
+height = 178
+text = <<<
+bugs: 「胜负已分——签海获胜——楼方威武——」
+---
+reimu: 「……喂，这么多人看着呢，别装死。」
+---
+narr: 灵梦御币横扫，崩簧被震得咔咔直响，楼身歪了半边，顶层签纸哗啦啦塌下来一层。
+---
+narr: ds 娘顶着满头签纸从堆里钻出来，怀里正好滚出那片鲸鳞。V2.5 烫得像刚出锅的白水煮蛋。
+---
+reimu: 「输也给我输得像样点！」
+<<<
+target = ch2_lose__3
+}
+
+[ch2_lose__3]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_hakurei_shrine.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/normal.png
+}
+{
+type = char
+id = char_bugs
+x = 60
+y = 150
+width = 320
+height = 520
+path = assets/sprites/bugs/smug.png
+}
+{
+type = char
+id = char_reimu
+x = 900
+y = 150
+width = 320
+height = 520
+path = assets/sprites/reimu/serious.png
+}
+{
+type = dialog
+x = 70
+y = 516
+width = 1140
+height = 178
+text = <<<
+ds: 「我这叫战术性躺进纸堆啦！」
+<<<
+target = ch2_lose__4
+}
+
+[ch2_lose__4]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_hakurei_shrine.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/normal.png
+}
+{
+type = char
+id = char_bugs
+x = 60
+y = 150
+width = 320
+height = 520
+path = assets/sprites/bugs/smug.png
+}
+{
+type = char
+id = char_reimu
+x = 900
+y = 150
+width = 320
+height = 520
+path = assets/sprites/reimu/serious.png
+}
+slot = 场景进入 | @plugin(add) | @var(pieces) | @int(1) | @var(pieces)
+slot = 场景进入 | goto | | ch2_lose__5
+
+[ch2_lose__5]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_hakurei_shrine.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/normal.png
+}
+{
+type = char
+id = char_bugs
+x = 60
+y = 150
+width = 320
+height = 520
+path = assets/sprites/bugs/smug.png
+}
+{
+type = char
+id = char_reimu
+x = 900
+y = 150
+width = 320
+height = 520
+path = assets/sprites/reimu/serious.png
+}
+slot = 场景进入 | goto | | ch2_after
+
+[ch2_after]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_hakurei_shrine.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/normal.png
+}
+{
+type = char
+id = char_bugs
+x = 60
+y = 150
+width = 320
+height = 520
+path = assets/sprites/bugs/smug.png
+}
+{
+type = char
+id = char_reimu
+x = 900
+y = 150
+width = 320
+height = 520
+path = assets/sprites/reimu/serious.png
+}
+{
+type = dialog
+x = 70
+y = 516
+width = 1140
+height = 178
+text = <<<
+narr: 泉眼连鳞带秤一起拔了出来。白水先打了个嗝，随即哗地漫过干了几个月的泉台，往村子那头淌去。
+---
+narr: 香客踩着漫过脚背的新水花跑过参道，有人顺手把攥了一路没敢抽的签纸折成小船，放进水里看它打转。
+---
+narr: 一个小孩双手捧了个满，转身整捧泼向灵梦的后背。
+---
+narr: 灵梦哇地跳起来，追着人绕赛钱箱跑了三圈，耳朵尖一路红到发梢。
+<<<
+target = ch2_after__2
+}
+
+[ch2_after__2]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_hakurei_shrine.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/normal.png
+}
+{
+type = char
+id = char_bugs
+x = 60
+y = 150
+width = 320
+height = 520
+path = assets/sprites/bugs/smug.png
+}
+{
+type = char
+id = char_reimu
+x = 900
+y = 150
+width = 320
+height = 520
+path = assets/sprites/reimu/angry.png
+}
+{
+type = dialog
+x = 70
+y = 516
+width = 1140
+height = 178
+text = <<<
+reimu: 「水是干净的，人是脏的！给我站住！」
+---
+narr: 闹够了，灵梦把御币往赛钱箱上一搁。箱子弹出一枚崭新的木牌——这次上面一个字也没有。
+<<<
+target = ch2_after__3
+}
+
+[ch2_after__3]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_hakurei_shrine.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/official/smile.png
+}
+{
+type = char
+id = char_bugs
+x = 60
+y = 150
+width = 320
+height = 520
+path = assets/sprites/bugs/smug.png
+}
+{
+type = char
+id = char_reimu
+x = 900
+y = 150
+width = 320
+height = 520
+path = assets/sprites/reimu/angry.png
+}
+{
+type = dialog
+x = 70
+y = 516
+width = 1140
+height = 178
+text = <<<
+ds: 「鳞片在哼歌。它说，鲸群过冬的时候，大鲸会把磷虾云让给最小的那一头——从来没人给它发过签。」
+---
+narr: V2.5 贴着掌心微微发烫。共享是本能——鳞里的老记忆，比愿楼上的新牌子旧了不知多少年。
+<<<
+target = ch2_after__4
+}
+
+[ch2_after__4]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_hakurei_shrine.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/official/smile.png
+}
+{
+type = char
+id = char_bugs
+x = 60
+y = 150
+width = 320
+height = 520
+path = assets/sprites/bugs/smug.png
+}
+{
+type = char
+id = char_reimu
+x = 900
+y = 150
+width = 320
+height = 520
+path = assets/sprites/reimu/smug.png
+}
+{
+type = dialog
+x = 70
+y = 516
+width = 1140
+height = 178
+text = <<<
+reimu: 「……哼，这种歪理，倒头一回听得这么顺耳。」
+---
+narr: 同一时刻，万秤楼深处。秤主把「幻想乡」三个字从账页上划掉，笔尖悬在下一个名字上，轻轻点下一滴朱砂。
+---
+narr: 下一话——灯官提着一盏会自己报价的灯，往更深处的领域去了。
+<<<
+target = ch2_after__5
+}
+
+[ch2_after__5]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_hakurei_shrine.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/official/smile.png
+}
+{
+type = char
+id = char_bugs
+x = 60
+y = 150
+width = 320
+height = 520
+path = assets/sprites/bugs/smug.png
+}
+{
+type = char
+id = char_reimu
+x = 900
+y = 150
+width = 320
+height = 520
+path = assets/sprites/reimu/smug.png
+}
+slot = 场景进入 | save | | slot_ch2_after
+slot = 场景进入 | goto | | ch2_after__6
+
+[ch2_after__6]
+
+{
+type = bg
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_hakurei_shrine.png
+}
+{
+type = char
+id = char_ds
+x = 480
+y = 150
+width = 320
+height = 520
+path = assets/sprites/ds/official/smile.png
+}
+{
+type = char
+id = char_bugs
+x = 60
+y = 150
+width = 320
+height = 520
+path = assets/sprites/bugs/smug.png
+}
+{
+type = char
+id = char_reimu
+x = 900
+y = 150
+width = 320
+height = 520
+path = assets/sprites/reimu/smug.png
+}
+slot = 场景进入 | goto | | __待续
+
+[__待续]
+
+{
+type = text
+x = 240
+y = 280
+width = 800
+height = 120
+text = 本章待实现 —— 后续章节接入中
+fontSize = 34
+align = center
+}
+
