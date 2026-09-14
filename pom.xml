@@ -120,5 +120,12 @@
         <fx.mainClass>com.studio.launcher.PlayerApp</fx.mainClass>
       </properties>
     </profile>
+    <!-- 2048 启动配置：mvnw.cmd -Pgame2048 javafx:run -->
+    <profile>
+      <id>game2048</id>
+      <properties>
+        <fx.mainClass>com.example.game2048.Main</fx.mainClass>
+      </properties>
+    </profile>
   </profiles>
 </project>
