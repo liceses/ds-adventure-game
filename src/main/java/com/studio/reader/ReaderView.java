@@ -97,8 +97,7 @@ public class ReaderView extends BorderPane implements SavePortal, FlowHost {
     public static final double CW = 1280.0, CH = 720.0;
 
     private static final String DEFAULT_TEXT_COLOR = "#f2f3ff";
-    /** UI 主题（科技蓝）里对话框四角「角括号」的颜色：参考图取色 #89D5FF */
-    private static final String DIALOG_BRACKET_COLOR = "#8fd0ff";
+
     private static final Pattern TEXT_FILL = Pattern.compile("-fx-text-fill\\s*:\\s*([^;]+)");
 
     // ---- 外部依赖 ----
@@ -1054,24 +1053,7 @@ public class ReaderView extends BorderPane implements SavePortal, FlowHost {
         applyStyle(panel, base + node.getStyle());
         panel.getStyleClass().add("dialog-panel");
 
-        // UI kit 的对话窗特征：四角「角括号」装饰（只是一层装饰，鼠标穿透不影响点对话推进）
-        // 参考图里角括号紧贴描边内侧（约 3px），所以这里的 margin 很小
-        // 注意 -fx-border-width 只接受 1~4 个值（上 右 下 左），这里必须正好 4 个
-        for (Pos corner : new Pos[]{Pos.TOP_LEFT, Pos.TOP_RIGHT, Pos.BOTTOM_LEFT, Pos.BOTTOM_RIGHT}) {
-            Region bracket = new Region();
-            bracket.setMouseTransparent(true);
-            bracket.setPrefSize(21, 21);
-            bracket.setMinSize(21, 21);
-            bracket.setMaxSize(21, 21);
-            boolean top = corner == Pos.TOP_LEFT || corner == Pos.TOP_RIGHT;
-            boolean left = corner == Pos.TOP_LEFT || corner == Pos.BOTTOM_LEFT;
-            String widths = top ? (left ? "2 0 0 2" : "2 2 0 0") : (left ? "0 0 2 2" : "0 2 2 0");
-            bracket.setStyle("-fx-border-color: " + DIALOG_BRACKET_COLOR + ";"
-                    + "-fx-border-width: " + widths + ";");
-            StackPane.setAlignment(bracket, corner);
-            StackPane.setMargin(bracket, new Insets(3));
-            panel.getChildren().add(bracket);
-        }
+
 
         TextFlow flow = RichText.flow("", fs, color);
         flow.setMaxWidth(Math.max(40, w - 56));
