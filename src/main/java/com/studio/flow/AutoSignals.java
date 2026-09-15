@@ -68,6 +68,19 @@ public final class AutoSignals {
     }
 
     /** ① 进入新场景（节点已建好） */
+    /** 鼠标在对话上按下：跟手反馈用（配合「对话松开」做按下放大/松开还原） */
+    public static final Def PRESS = new Def("对话按下",
+            List.of("按下对话", "对话按下"),
+            "鼠标在对话节点上按下时",
+            "scene=当前场景",
+            "跟手反馈：slot = 对话按下 | set | 底板id | scale | value=1.02");
+
+    /** 鼠标在对话上抬起：跟手反馈用（松开还原） */
+    public static final Def RELEASE = new Def("对话松开",
+            List.of("松开对话", "对话抬起", "对话释放"),
+            "鼠标在对话节点上抬起时",
+            "scene=当前场景",
+            "slot = 对话松开 | set | 底板id | scale | value=1");
     public static final Def ENTER = new Def("场景进入",
             List.of("进入场景", "场景开始"),
             "切换到某一幕、渲染完成后",
@@ -89,7 +102,7 @@ public final class AutoSignals {
             "在新场景里对“刚离开的那一幕”做反应（记录来路、接续上一幕的定时器）");
 
     /** 全部自动信号（编辑器快捷按钮与帮助文档按这个顺序列） */
-    public static final List<Def> ALL = List.of(ENTER, LEAVE, PREV_LEAVE);
+    public static final List<Def> ALL = List.of(ENTER, LEAVE, PREV_LEAVE, PRESS, RELEASE);
 
     /** 这个名字是不是自动信号（含别名；编辑器据此提示“不用声明”） */
     public static boolean isAuto(String name) {

@@ -1066,6 +1066,9 @@ public class ReaderView extends BorderPane implements SavePortal, FlowHost {
 
         // 点击对话面板：打字中 → 显示全文；已显示完 → 切到下一段台词
         panel.setOnMouseClicked(e -> onDialogClicked(st));
+        // 跟手反馈：把“按住 / 松开”广播出去（只发事件，不含任何样式内容）
+        panel.setOnMousePressed(e -> emitAutoSignal(AutoSignals.PRESS, new LinkedHashMap<>(), "对话按下"));
+        panel.setOnMouseReleased(e -> emitAutoSignal(AutoSignals.RELEASE, new LinkedHashMap<>(), "对话松开"));
         FxAnim.makeHoverable(panel, 1.01, 0.99);
         showParagraph(st, 0);
         return panel;
