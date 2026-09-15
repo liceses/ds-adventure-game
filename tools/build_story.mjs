@@ -144,13 +144,15 @@ function emitUiSkin(out, withNameplate) {
   out.push("{", "type = char", "id = ui_vignette", `x = ${UI_VIGNETTE.x}`, `y = ${UI_VIGNETTE.y}`,
     `width = ${UI_VIGNETTE.w}`, `height = ${UI_VIGNETTE.h}`, `path = ${UI_VIGNETTE.path}`,
     "opacity = 0.35", "}");
-  out.push("{", "type = char", "id = ui_dialog", `x = ${UI_DIALOG.x}`, `y = ${UI_DIALOG.y}`,
+  // 必须用 bg（拉伸铺满）：char 是等比缩放居中，920×240 的底板塞进 1152×230 只画 881 宽，
+  // 对话框文字会左右各超出可见图案约 100px（PR #18 指出）
+  out.push("{", "type = bg", "id = ui_dialog", `x = ${UI_DIALOG.x}`, `y = ${UI_DIALOG.y}`,
     `width = ${UI_DIALOG.w}`, `height = ${UI_DIALOG.h}`, `path = ${UI_DIALOG.path}`,
-    "opacity = 1.0", "}");
+    "opacity = 1.0", "transition = opacity/scale:150ms", "}");
   if (withNameplate) {
-    out.push("{", "type = char", "id = ui_nameplate", `x = ${UI_NAMEPLATE.x}`, `y = ${UI_NAMEPLATE.y}`,
+    out.push("{", "type = bg", "id = ui_nameplate", `x = ${UI_NAMEPLATE.x}`, `y = ${UI_NAMEPLATE.y}`,
       `width = ${UI_NAMEPLATE.w}`, `height = ${UI_NAMEPLATE.h}`, `path = ${UI_NAMEPLATE.path}`,
-      "opacity = 1.0", "}");
+      "opacity = 1.0", "transition = x:300ms", "}");
   }
 }
 
@@ -717,6 +719,37 @@ for (let i = 0; i < beats.length; i++) {
   problems.bgmLast = cur;
 })();
 
+// ---- UI 交互打磨（PR #18 的思路，改成编译器发射以便随时重生成）----
+//   ① 对话框点击跟手：底板与对话框同步缩放
+//   ② 名牌图文同步滑入：底板与文字一起从左侧归位（解决"底板滑入、文字直接出现"）
+//   ③ 幕题入场脉冲：章节卡与幕题文字缩放入场后还原
+(function assignUiPolish() {
+  let lastTitle = null;
+  for (const b of beats) {
+    if (b.kind === "dialog") {
+      b.ops.push("slot = 对话按下 | set | ui_dialog | scale | value=1.02");
+      b.ops.push("slot = 对话按下 | set | 对话框 | scale | value=1.02");
+      b.ops.push("slot = 对话松开 | set | ui_dialog | scale | value=1");
+      b.ops.push("slot = 对话松开 | set | 对话框 | scale | value=1");
+      if (b.speaker && b.speaker !== "narr") {
+        b.ops.push("slot = 场景进入 | set | ui_nameplate | x | value=56");
+        b.ops.push("slot = 场景进入 | set | 名牌 | x | value=100");
+        b.ops.push("slot = 场景进入 | @plugin(after) | 0.06 | 名牌入场归位");
+        b.ops.push("slot = 名牌入场归位 | set | ui_nameplate | x | value=96");
+        b.ops.push("slot = 名牌入场归位 | set | 名牌 | x | value=140");
+      }
+    }
+    if (b.title && b.title !== lastTitle) {
+      lastTitle = b.title;
+      b.ops.push("slot = 场景进入 | set | ui_chapter_banner | scale | value=0.96");
+      b.ops.push("slot = 场景进入 | set | 幕题 | scale | value=0.96");
+      b.ops.push("slot = 场景进入 | @plugin(after) | 0.18 | 幕题还原");
+      b.ops.push("slot = 幕题还原 | set | ui_chapter_banner | scale | value=1");
+      b.ops.push("slot = 幕题还原 | set | 幕题 | scale | value=1");
+    }
+  }
+})();
+
 // =====================================================================
 // 4) 生成 scenario.txt
 // =====================================================================
@@ -763,10 +796,11 @@ const emitStage = (b, out) => {
     const bw = 720, bh = 120;
     out.push("{", "type = char", "id = ui_chapter_banner", `x = ${Math.round((1280 - bw) / 2)}`, "y = 64",
       `width = ${bw}`, `height = ${bh}`,
-      "path = assets/sprites/ui/chapter_banner.png", "opacity = 0.96", "}");
+      "path = assets/sprites/ui/chapter_banner.png", "opacity = 0.96",
+      "transition = opacity/scale:180ms", "}");
     out.push("{", "type = text", "id = 幕题", `x = ${Math.round((1280 - bw) / 2)}`, "y = 104",
       `width = ${bw}`, "height = 44", `text = ${b.title}`, "fontSize = 26", "align = center",
-      "style = -fx-text-fill: #ffd76a;", "}");
+      "style = -fx-text-fill: #ffd76a;", "transition = opacity/scale:180ms", "}");
   }
   // CG 层：放在背景之后、立绘之前 —— 引擎按节点顺序绘制，天然是「背景之上、立绘之下」
   if (b.cg) {
@@ -828,11 +862,11 @@ for (const b of beats) {
       out.push("{", "type = name", "id = 名牌", "x = " + NAME.x, "y = " + NAME.y,
         "width = " + NAME.w, "height = " + NAME.h,
         "text = " + (DISPLAY_NAME[b.speaker] || b.speaker), "fontSize = 22", "align = left",
-        "style = -fx-background-color: transparent;", "}");
+        "style = -fx-background-color: transparent;", "transition = x:300ms", "}");
     }
     out.push("{", "type = dialog", "id = 对话框", "x = " + DIALOG_BOX.x, "y = " + DIALOG_BOX.y,
       "width = " + DIALOG_BOX.w, "height = " + DIALOG_BOX.h,
-      "style = -fx-background-color: transparent;");
+      "style = -fx-background-color: transparent;", "transition = opacity/scale:150ms");
     out.push("text = <<<");
     // 每行台词 = 一个独立段落（引擎按独立一行 --- 分段，点击逐段推进）；
     // 若整段堆在一起，引擎会一次性渲染全部行 → 必然溢出对话框。
