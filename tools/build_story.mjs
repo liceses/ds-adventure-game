@@ -125,8 +125,38 @@ const EXPR_ALIAS = { cute: "happy", cry: "sad", whale_cute: "defect_happy", whal
 // 背景临时顶替表（仅当同场景 id 的背景图尚未出图时兜底；素材到位后自动改用真图）
 const BG_ALIAS = { server_room: "bg_tech_serverroom" };
 
-const POS = { left: { x: 60, y: 150 }, center: { x: 480, y: 150 }, right: { x: 900, y: 150 } };
-const CHAR_W = 320, CHAR_H = 520;
+// ---- 取景参数表（S3）----
+// 立绘已由 tools/normalize_sprites.py 归一化到统一画布 1280×1536
+// （身高 1460 / 脚线 y=1500 / 水平中心 x=640），所以「节点框 = 取景窗口」对每个角色都成立：
+// 头顶线、腰线、脚线全篇一致，同框不会一头高一头低。改取景就改这几行（编辑器暂不改）。
+const CANVAS = { w: 1280, h: 1536, charH: 1460, feetY: 1500 };   // 必须与 normalize_sprites.py 一致
+/** 三档站位的「角色中心线」（不是节点左上角；节点 x 由它和框宽反推） */
+const STATIONS = { left: 250, center: 640, right: 1030 };
+
+// 同一拍里人数越多，能分给每个人的宽度越小 —— 实测剧本里 87% 的拍是 4 人以上同台
+// （6 人 116 拍 / 7 人 278 拍 / 8 人 85 拍 / 11 人 63 拍），所以"半身"只对 1~2 人的对手戏生效，
+// 人多时必须成档回收尺寸，否则重叠成一锅粥。
+const FRAME_BY_CAST = [
+  { max: 2, pose: "bust" },    // 1~2 人：头到腰（可见带 0..516），比旧的 213 宽放大约 2.2×
+  { max: 3, pose: "mid" },     // 3 人：头到大腿
+  { max: 5, pose: "small" },   // 4~5 人：头到膝
+  { max: 99, pose: "crowd" },  // 6 人以上：全身（等于旧尺寸略大），保证铺得开
+];
+// s = 画布缩放；y = 节点 y（画布顶边对齐屏幕 y=0；立绘的头顶线在画布 y=40）
+const FRAMES = {
+  bust: { s: 0.75, y: 0 },
+  mid: { s: 0.55, y: 0 },
+  small: { s: 0.46, y: 0 },
+  crowd: { s: 0.38, y: 0 },
+};
+for (const f of Object.values(FRAMES)) {
+  f.w = Math.round(CANVAS.w * f.s);
+  f.h = Math.round(CANVAS.h * f.s);
+}
+/** 本拍默认取景档（@pose 可按角色覆盖） */
+const poseForCast = (n) => (FRAME_BY_CAST.find((r) => n <= r.max) || FRAME_BY_CAST[FRAME_BY_CAST.length - 1]).pose;
+/** 站位 → 节点 x：由「角色中心线」反推（站位认不出时按 center） */
+const frameX = (fr, pos) => Math.round((STATIONS[pos] !== undefined ? STATIONS[pos] : STATIONS.center) - fr.w / 2);
 // 对话框 / 名牌坐标与"UI 皮肤"层：按美术侧《UI与小游戏接线规格》§2.1 的表值
 const DIALOG_BOX = { x: 96, y: 448, w: 1090, h: 190 };   // 引擎文字落在这块可读区里
 const BANNER = { x: 240, y: 250, w: 800, h: 160 };
@@ -410,7 +440,7 @@ function bgPath(sceneId) {
 const beats = [];
 const labelFirstBeat = new Map();
 const flags = new Set();
-let stage = { bg: "", chars: new Map(), cg: null }; // chars: role -> {expr,pos}；cg: {id,hold}
+let stage = { bg: "", chars: new Map(), cg: null, pose: new Map() }; // chars: role -> {expr,pos}；cg: {id,hold}；pose: role -> bust|full
 let pendingOps = [];                                 // @se / @bgm：挂到下一个拍点（进入即执行）
 
 function sceneName(label, n) { return n === 0 ? label : `${label}__${n + 1}`; }
@@ -426,6 +456,7 @@ function newBeat(label, kind, extra = {}) {
     title: stage.title,
     cg: visual ? stage.cg : null,
     chars: [...stage.chars.entries()].map(([role, v]) => ({ role, ...v })),
+    poses: Object.fromEntries(stage.pose),   // 本拍各角色的取景（bust/full）
     dialog: [],
     ops: [],
     buttons: [],
@@ -501,14 +532,22 @@ for (const d of directives) {
       stage.title = d.title;
       stage.cg = null;   // 换场景收起 CG（对应剧情侧约定：hold 到 @scene 为止）
       break;
-    case "cg":
-      flush(currentLabel);   // CG 与紧随其后的台词同拍显示
+    case "cg": {
+      flush(currentLabel);   // 先把已经攒下的台词收尾成上一拍
       if (d.mode === "clear") {
         stage.cg = null;
-      } else {
-        stage.cg = { id: d.id, hold: d.mode === "hold" };
+        break;
       }
+      stage.cg = { id: d.id, hold: d.mode === "hold" };
+      // hold = 「背景层 CG」：CG 留在后续拍里，文字/UI 照常压在它上面（本期剧本 0 处使用）
+      if (d.mode === "hold") break;
+      // flash（默认）= 「CG 独占一拍」：本拍只含 背景 + CG + 整屏「继续」按钮，
+      // 不带立绘 / UI 皮肤 / 台词 —— 否则 CG 只是 bg 类节点，永远压在内容节点（文字）之下
+      // （引擎 ReaderView.isStageNode：bg/char 是舞台节点，每拍被压到最底层）。
+      // 台词顺延到下一拍：点一下继续后才出字。
+      newBeat(currentLabel, "cgcard", { chars: [] });
       break;
+    }
     case "se":
       pendingOps.push(...seOps(d));
       break;
@@ -575,12 +614,12 @@ for (const d of directives) {
     }
     case "minigame": {
       flush(currentLabel);
-      // @cg 紧跟 @minigame：CG 必须"进小游戏之前"显示。
-      // 小游戏拍不是可视拍点，若不单独出一张 CG 卡拍，CG 会被顺延到小游戏【之后】的拍点上
-      // （例：cg_ch09_gomoku 会掉到输棋重开的 ch9_taunt1）。
-      if (stage.cg) {
+      // flash 的 @cg 已经在解析时就出了独占卡拍（见上面的 case "cg"），这里只剩兜底：
+      // 万一还有未消费的 hold CG，也不能让它顺延到小游戏【之后】的拍点上
+      // （历史 bug：cg_ch09_gomoku 会掉到输棋重开的 ch9_taunt1）。
+      if (stage.cg && !stage.cg.hold) {
         // cgcard 是可视拍点：newBeat 已把 stage.cg 拷进本拍并清空 stage.cg，这里不要再赋值
-        newBeat(currentLabel, "cgcard");
+        newBeat(currentLabel, "cgcard", { chars: [] });
       }
       const b = newBeat(currentLabel, "minigame");
       b.mg = d.mg;
@@ -791,7 +830,9 @@ const emitStage = (b, out) => {
     out.push("}");
   }
   // 章节标题卡（美术侧 §2.5）：场景带 title 时，在上方叠一张 chapter_banner + 幕题文字
-  if (b.title && b.title !== lastEmittedTitle) {
+  // CG 卡拍例外：幕题文字是内容节点，会压在 CG 上面（违反「CG 盖住一切」），
+  // 而且不消费 lastEmittedTitle，幕题留给紧随其后的正常拍点去发。
+  if (b.title && b.title !== lastEmittedTitle && b.kind !== "cgcard") {
     lastEmittedTitle = b.title;
     const bw = 720, bh = 120;
     out.push("{", "type = char", "id = ui_chapter_banner", `x = ${Math.round((1280 - bw) / 2)}`, "y = 64",
@@ -808,20 +849,23 @@ const emitStage = (b, out) => {
       `path = ${cgPath(b.cg.id)}`, "}");
   }
   // 立绘（同角色固定节点 id，换表情只改 path）
+  // 取景档：@pose 按角色覆盖 > 按本拍人数自适应（见 FRAME_BY_CAST）
+  const castPose = poseForCast(b.chars.length);
   const used = new Map();
   for (const c of b.chars) {
-    const p = POS[c.pos] || POS.center;
-    let x = p.x;
-    if (used.has(c.pos)) { // 同位置错开，避免完全重叠
+    const pose = (b.poses && b.poses[c.role]) || castPose;
+    const fr = FRAMES[pose] || FRAMES.bust;
+    let x = frameX(fr, c.pos);
+    if (used.has(c.pos)) { // 同位置错开，避免完全重叠（错开量随框宽缩放，别让人多的拍挤成一坨）
       const k = used.get(c.pos);
-      x += (k % 2 === 1 ? -1 : 1) * (120 * Math.ceil(k / 2));
+      x += (k % 2 === 1 ? -1 : 1) * (Math.round(120 * (fr.w / 320)) * Math.ceil(k / 2));
     }
     used.set(c.pos, (used.get(c.pos) || 0) + 1);
     // 说话者高亮：说话人 1.0，其他立绘压暗到 0.5；旁白拍不压暗
     const speaker = b.speaker && b.speaker !== "narr" ? b.speaker : "";
     const op = !speaker || c.role === speaker ? "1.0" : "0.5";
-    out.push("{", "type = char", `id = char_${c.role}`, `x = ${x}`, `y = ${p.y}`,
-      `width = ${CHAR_W}`, `height = ${CHAR_H}`, `path = ${spritePath(c.role, c.expr)}`,
+    out.push("{", "type = char", `id = char_${c.role}`, `x = ${x}`, `y = ${fr.y}`,
+      `width = ${fr.w}`, `height = ${fr.h}`, `path = ${spritePath(c.role, c.expr)}`,
       `opacity = ${op}`, "}");
   }
 };
