@@ -26,6 +26,8 @@
 | 打包成**免安装 exe**（自带运行环境，别人电脑无需 JDK） | **`打包EXE.bat`** → `dist\ds-adventure\ds-adventure.exe` |
 
 - 首次双击会自动编译（约 1 分钟，需要 JDK 17+）；之后秒开。
+- **双击只会出现 1 个窗口**：启动器把游戏用 `javaw` 后台分离运行，cmd 黑窗约 0.6 秒自动关闭；
+  运行日志写在 `logs\launcher.log`（UTF-8）。想边玩边看实时日志，就用 `启动游戏.bat --console`（黑窗常驻）。
 - 打包产物为整个 `dist\ds-adventure\` 文件夹（约 400 MB，内含裁剪运行环境 + 素材），**可以直接压缩发给别人**。
 - `.bat` 内容刻意保持**纯 ASCII**：cmd.exe 解析含非 ASCII 字节的批处理会串行（中文提示改由 `tools\launcher-hints-zh.txt` 以 UTF-8 打印）。
 - **免安装试玩版**：[Releases](https://github.com/liceses/ds-adventure-game/releases) —— Windows x64，解压后双击 `ds-adventure.exe`，目标机器**无需 JDK**（当前 `v0.5.0-demo`：**全 11 章** + 9 个小游戏 + **UI 皮肤**（对话框/名牌/暗角/选项/章节卡）+ **22 张 CG** + **36 首 BGM**）

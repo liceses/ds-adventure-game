@@ -1,6 +1,8 @@
 target/
 dist/
 build/
+# 启动器分离运行时的日志（logs\launcher.log，本机运行时产物）
+/logs/
 .out-core/
 *.class
 .idea/

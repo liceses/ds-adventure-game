@@ -1,4 +1,26 @@
 # 更新日志 (Changelog)
+## [v1.21.2] 双击启动只剩游戏窗口（黑窗不再常驻）
+
+### Fixed
+- **双击「启动游戏.bat」仍是"两个窗口先后启动"**：v1.21.1 修掉的是**两个 JVM**（fall-through），
+  这次修掉的是**cmd 控制台 + 游戏窗口**。双击 `.bat` 必然开一个 cmd 窗口，而启动器此前用
+  `java`（控制台程序）**前台**跑游戏，于是这个黑窗会一直挂到退出游戏为止 —— 玩家看到的就是"又弹了一个窗口"。
+  改法：游戏改用 **`javaw`**（同一个 JVM，自身无控制台）**后台分离启动**，脚本随即结束 →
+  黑窗约 **0.6s** 自动关闭，屏幕上只剩游戏窗口。（实测：这是控制台窗口，不是第二个 JVM）
+- **分离启动不能丢日志**：实测 `start "" javaw ... > 日志` 的**重定向不会传给子进程**（日志文件恒为 0 字节），
+  必须用 **`start "" /b javaw ... >> 日志 2>&1`** 才继承句柄；同时补
+  `-Dstdout.encoding=UTF-8 -Dstderr.encoding=UTF-8`，日志落到 **`logs\launcher.log`**（UTF-8，
+  含 JavaFX 配置警告与 `[Bgm]` 等运行日志），并把 `/logs/` 加进 `.gitignore`
+- **保留看日志的口子**：`启动游戏.bat --console` 仍走前台 `java`：黑窗常驻 + 实时日志，排障用
+
+### Verified
+- `EnumWindows` 逐帧采样（独立控制台跑脚本，记录窗口与进程树）：默认路径
+  **控制台 0.6s 关闭 / 游戏窗口 1.3s 出现 / 16s 后仍存活 / java 进程 = 1**；
+  `--console` 路径 **控制台 12s 仍在 / 游戏窗口正常** → 两种模式都只出 **1 个游戏窗口**
+- `logs\launcher.log` 实测写入 334 字节：`Unsupported JavaFX configuration: classes were loaded from 'unnamed module'`
+  + `[09:04:44.114] [信息] [Bgm] 播放 [title] bgm_title_01.mp3（role=选 · 循环 · 来源 甘茶の音楽工房）`
+- 脚本仍是**纯 ASCII / 无 BOM**（3790 字节，非 ASCII 字节数 = 0），符合 cmd.exe 解析要求
+
 ## [v1.21.1] 修复双击启动弹出两个窗口
 
 ### Fixed
