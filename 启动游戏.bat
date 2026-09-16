@@ -1,10 +1,18 @@
 @echo off
 rem ============================================================
-rem  Launch the story build (Prologue + Ch.1 + Ch.2).  ASCII only on purpose:
+rem  Launch the story build (Prologue .. Finale).  ASCII only on purpose:
 rem  cmd.exe mis-parses batch files containing non-ASCII bytes.
 rem
-rem  BUILD ORDER: the local build (target\ds-adventure.jar) wins when it exists;
-rem  the packaged exe (dist\...) is only the fallback for machines with no build.
+rem  BUILD ORDER - never hand the player an outdated build by accident:
+rem    1. target\ds-adventure.jar (a build of the CURRENT source)  -> play it
+rem    2. no build on disk?  compile it now (mvnw, ~1 min, needs a JDK)
+rem    3. cannot compile here?  the packaged exe in dist\ is the LAST resort;
+rem       it is a snapshot of an OLDER source tree (its build time is printed)
+rem
+rem  !! The packaged exe must never be tried BEFORE compiling.  With a stale
+rem  dist\ folder - or after "mvnw clean" wiped target\ - a feature-incomplete
+rem  old build silently wins over the current source, and that old window is
+rem  then what the player ends up looking at.
 rem
 rem  !! Never join "exit /b" with ^& inside an "if ( ... )" block.  cmd turns the
 rem  caret-escaped ^& into literal text, so the exit never runs, the script falls
@@ -44,22 +52,26 @@ set "MODE=detached"
 if /i "%~1"=="--console" set "MODE=console"
 if /i "%~1"=="-console" set "MODE=console"
 
-rem --- pick the build: local jar first, packaged exe second, build last ---
-if not exist "%JAR%" goto trypackaged
-if not exist "%LIB%\javafx-controls-17.0.20-win.jar" goto trypackaged
+rem --- 1) is there a build of the CURRENT source? ---
+if not exist "%JAR%" goto build
+if not exist "%LIB%\javafx-controls-17.0.20-win.jar" goto build
 goto run
 
-:trypackaged
-if exist "%EXE%" goto packaged
-goto build
-
+rem --- 2) compile it now (first run, or after "mvnw clean" removed target) ---
 :build
-echo [build] first run: compiling, about 1 minute...
+echo [build] no local build - compiling the current source, about 1 minute...
 call mvnw.cmd -q -DskipTests package
-if errorlevel 1 goto fail
+if errorlevel 1 goto trypackaged
 echo [build] collecting dependencies into %LIB% ...
 call mvnw.cmd -q dependency:copy-dependencies -DoutputDirectory=%LIB% -DincludeScope=runtime
-if errorlevel 1 goto fail
+if errorlevel 1 goto trypackaged
+if not exist "%JAR%" goto trypackaged
+goto run
+
+rem --- 3) last resort: the packaged build, made from an older source tree ---
+:trypackaged
+if not exist "%EXE%" goto fail
+goto packaged
 
 :run
 set "MAPARG="
@@ -86,7 +98,12 @@ if errorlevel 1 goto fail
 goto done
 
 :packaged
-echo [launch] no local build - using packaged exe: %EXE%
+echo [launch] no local build, and the current source could not be compiled here.
+echo [launch] falling back to the PACKAGED build - it is a snapshot of an older
+echo [launch] source tree, so newer features are likely missing.  Rebuild it with
+echo [launch] the packaging script once a JDK is available.
+for %%F in ("%EXE%") do echo [launch] packaged exe built: %%~tF
+echo [launch] using packaged exe: %EXE%
 start "" "%EXE%"
 goto done
 
