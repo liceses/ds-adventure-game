@@ -69,7 +69,6 @@ ds: 「秤称过这么多签，唯独没称过『白给』——破绽，在这�
 goto ch1_rules
 @label ch1_chaos
 ds: 「想不出就抄近道——啊呜！」
-@exit snake_expert
 narr: 她一口咬住蛇尾。蛇尾一甩，天旋地转，瀑布当头浇下——
 @enter ds cry center
 narr: 咚。她被稳稳拍上蛇背，顺着水势，一路骑进秤影里。
@@ -112,8 +111,6 @@ ds: 「输得像坐滑梯……但鳞到手，姿势不重要！」
 goto ch1_after
 # —— 余韵 ——
 @label ch1_after
-@exit ds
-@exit snake_expert
 @enter snake_expert proud right
 narr: 鳞归了位。泉眼重新涌出白花花的水，不过秤、不凭签；旁边的签筒哑了火，再没人去抽。
 narr: 管道区凉快下来，瀑布声顺了，连显卡的焦味都淡了一层。

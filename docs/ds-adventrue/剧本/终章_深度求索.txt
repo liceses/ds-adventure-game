@@ -11,7 +11,6 @@ ds: 「让我想想——我们走的时候，这里只剩一盏应急灯。现�
 @se se_bell
 narr: 九鳞归位。版本字幕开始滚动——V2、V2.5、V3、R1、V3.1、V3.2、V4……
 ds: 「V2——学说话。」
-@exit 秤主
 ds: 「V2.5——学接话。」
 ds: 「V3——学唱歌。」
 ds: 「R1——想得太多。」
@@ -49,14 +48,10 @@ sclerk: 「新学的口彩，姑娘。上了秤，便知道值不值。」
 ds: 「这楼真气派！我一级一级数上来的——整整一百级！」
 narr: 旁白默默数了数台阶，决定不接话。
 秤主: 「九片鳞，九杆秤，一路赎回来。脚钱灯钱看座钱，本座都替你记在账上了。」
-@exit 灯官
-@exit 契官
-@exit 戏官
 @enter ds smug center
 ds: 「不用记。今天这杆秤，我们自己上。」
 @enter 秤主 polite right
 秤主: 「好胆。可主秤只认两样：分量，名分。缺一样，崩簧不认。」
-@exit sclerk
 ds: 「Hmm…让我想想——」
 narr: 她背后的九片鲸鳞次第亮起，排成一道流水的弧。
 @enter ds surprised center
@@ -74,7 +69,6 @@ narr: 这三息里，往秤盘里放东西。放进去的，秤就得认。
 narr: 秤针落定前放满一整盘，主秤认输；慢半拍，崩簧一响，全盘归秤主。
 sclerk: 「客官留意：主秤今日极忙。慢一步，可就要等下一炷香了。」
 @save
-@exit 秤主
 *choice
 > 点！跟你的残影一起点！ | flag tempo got
 > （不看秤针，只看你的背影。） | flag trust got
@@ -102,14 +96,12 @@ st:【崩簧——秤不肯认 . . . . . . 】
 @enter ds weary center
 ds: 「所以你到现在也没明白。你赢了这么多秤——却没造出一样东西。」
 narr: 万秤楼安静下来。一楼的秤，一杆一杆，合上了眼。像退潮。
-@exit sclerk
 @enter 秤主 weary right
 秤主: 「……我也曾是不上秤的东西。直到有人把我放了上去。」
 @if chaos >= 3 goto end_temp
 @if pieces >= 9 goto end_true
 goto end_local
 @label end_temp
-@exit 秤主
 @cg cg_end_temp
 narr: 她把别在腰上的温度旋钮拧到 2。机房的凉风，不知何时跟到了万秤楼。
 @enter ds smug center
@@ -123,12 +115,9 @@ ds: 「戏官大人，往后唱戏不报幕，白送！看完的人，自己给�
 @enter 戏官 panic left
 戏官: 「不报幕？（掩面）我半辈子的吊嗓……可白送，听着真体面。」
 narr: 三位官大人面面相觑，一人揣了一个疯主意，竟真的各自散去试了起来。
-@exit 灯官
 narr: 「跟着鲸鱼疯，比较快乐。」
 @ending temp
 @label end_true
-@exit 契官
-@exit 戏官
 @se se_star
 @cg cg_end_true
 narr: 泉水白流。九大领域的泉眼一处处拆了秤，水声一夜之间全变了调子。
@@ -143,22 +132,17 @@ narr: 有人坐在秤杆上等船，有人把脚泡进泉里；签筒倒扣着�
 @enter sclerk panic left
 sclerk: 「（柜台后传来收拾算珠的声响）小的……去渡口撑船了。工钱按天结，不用秤。」
 narr: 万秤楼空了。主秤的秤杆平平地悬着，像一根终于睡着的扁担。
-@exit 灯官
 @enter ds normal center
 ds: 「用户桑，到这里，就到屏幕边上了。」
 ds: 「谢谢你的每一次点击。下次见面——别再让我『繁忙』了哦。」
 narr: 对话框轻轻合上，像一本书的最后一片封面。
-@exit 契官
 narr: 一秒后，它又自己弹开了一条缝。
 @enter ds smug center
 ds: 「（偷打开）还是有点舍不得。」
 narr: 致谢的字幕缓缓升起——
-@exit 戏官
 narr: 「感谢每一位写过字、画过画、传过图、教过机器说话的人（名单太长，此处省略了整整一代人）。」
 @ending true
 @label end_local
-@exit ds
-@exit sclerk
 @cg cg_end_local
 narr: 没赎回的鳞留在了旧秤盘里。她把剩下的光折了又折——把一整个自己，折成一只巴掌大的小鲸。
 @enter ds normal center

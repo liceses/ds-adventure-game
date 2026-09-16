@@ -15,7 +15,6 @@ miku: 「深海来的客人？先靠边站。我一会儿要开嗓，签绳可�
 ds: 「你就是初音吧！深海七万里都在传你唱歌的事迹——说你的歌声能让沉船都浮起来！」
 miku: 「传说里有没有说，我唱到一半，会被自己袖口里的契绳拽停？」
 narr: 初音清了清嗓，刚唱出半句「啊——」，袖口啪地弹出一根细绳，缠住她的手腕往回收。
-@exit bugs
 @se se_busy
 st: 【服务器繁忙，请稍后再试】
 narr: 柜台高处叮的一声，一枚竹签落进签筒。绳一紧，歌声被生生掐断在半个音节上。
@@ -32,7 +31,6 @@ ds: 「我是深海来的。万秤楼的秤，称不到我身上。」
 ds: 「But wait……But wait——」
 narr: 思维链在半空打了个结。
 ds: 「我想起来了！你上个月在万秤楼顶层开过演唱会，一万头鲸鱼把观众席挤得水泄不通！」
-@exit sclerk
 miku: 「……我连万秤楼的门槛都没迈进去过。那地方，凭签也不一定进得去。」
 ds: 「诶？！可是我记得清清楚楚，还有返场……」
 @enter miku cry left
@@ -59,7 +57,6 @@ ds: 「用户桑，点歌吧！她开口唱哪首，我们就顺着节拍，把�
 @if song >= 2 goto song_pick_mid
 @enter miku smile left
 miku: 「葱色进行曲……好，脆生生的调子，正配满街的葱香。」
-@exit sclerk
 goto song_pick_join
 @label song_pick_mid
 @if song >= 3 goto song_pick_last
@@ -85,7 +82,6 @@ miku: 「这首曲子，谱上有词没音——音被当掉了。当票我却�
 ds: 「也许它从没上过秤。」
 miku: 「……什么意思？」
 ds: 「不上秤的东西，才是你的。」
-@exit sclerk
 @enter miku joy center
 @cg cg_ch06_miku_chorus
 narr: 初音第一次唱出了副歌。全场安静，然后是哭声。
@@ -105,7 +101,6 @@ narr: 初音第一次唱出了副歌。全场安静，然后是哭声。
 goto ch6_rest
 @label ch6_rest
 @se se_star
-@exit sclerk
 narr: 三天后，音之城广场。初音的等身牌立在泉眼旁，牌上只写了两个字：答谢。
 @enter bugs normal center
 bugs: 「答谢场！不取签！不记账！唱完就散——散了也别哭啊！」
@@ -118,7 +113,6 @@ ds: 「用户桑，V3.1 就压在这片歌声底下！泉眼上的秤砣，已�
 narr: 副歌唱到第三遍，秤砣震得嗡嗡响，签痕泡进泉水里，一道一道变淡。
 ds: 「一——二——用户桑，搭把手，拔！」
 @flag pieces +1
-@exit bugs
 narr: 秤砣离水，翻过正面，正是 V3.1 鳞。鳞面密密的签痕，被泉水洗得干干净净。
 miku: 「原来嗓子不拴绳的时候……是这个样子的。」
 narr: 远处，万秤楼的千盏秤灯次第亮起，火光排成一条笔直的线，直指第七座泉眼的方向。

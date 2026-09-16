@@ -7,7 +7,6 @@ narr: 参道上空，一群报幕飞虫抬着一艘白纸小船慢慢飞。船�
 bugs: 「让让——报幕虫群过境——闲杂香客避让——」
 @se se_banner
 bugs: 「本次抽签，由万秤楼冠名赞助——」
-@exit ds
 narr: 神社旁不知何时立起一座七层纸楼，每层檐角一盏小灯，楼身糊满签文。风一过，满楼签纸齐齐一颤。楼脚的等身木牌写着三行字：许愿过楼，抽三成过手钱；愿不白许，按月奉纳；凭签取愿。
 sclerk: 「香客这边——听叫号上楼，一签一层，风雨不侵。愿供得越高，取得越体面，过手钱三成，童叟无欺。」
 narr: 香客的队伍从楼前一直排到石阶下。最前头一位裹头巾的老爷爷抱着签筒，脑袋一点一点——睡着了。头顶的报幕虫还绕着他转圈，报幕声一点没降。
@@ -20,10 +19,8 @@ ds: 「Hmm……七层楼，七盏灯，泉眼就压在楼底下。But wait—�
 reimu: 「站住。博丽灵梦，幻想乡的巫女。异变的主谋，报上名来。」
 @enter ds surprised center
 ds: 「咦？我？我是来拔秤的鲸鱼娘啦！」
-@exit sclerk
 @enter reimu serious right
 reimu: 「泉眼被钉上秤那一晚，参道上就多了一股鲸鱼味。现在，它就在你身上。」
-@exit bugs
 ds: 「我是鲸鱼娘，自带鲸鱼味啊！」
 reimu: 「少装傻。一夜之间，赛钱箱学会了拒客，香客全被这栋楼吸走——不是你带来的，还能是谁？」
 reimu: 「神社新规矩：抽签免费——先听完这段报幕。」
@@ -44,7 +41,6 @@ sclerk: 「巫女大驾。楼里正存着您一笔老愿：香油钱八百文。
 @enter reimu angry right
 reimu: 「八百！我的八百在楼里！说好只抽一成的！」
 sclerk: 「不愿取也使得。续奉纳十年，按月缴足，愿签自动升三层。十年后凭签取愿，过手钱折半。」
-@exit ds
 reimu: 「我的愿，要按月喂十年才让取？！」
 sclerk: 「楼规如此。崩簧在上，签海在下——拍楼者，签海伺候。」
 narr: 灵梦哪里听得完，抄起御币就朝楼身拍去。纸楼纹丝不动，倒把楼底的赛钱箱震得咔哒一声，弹出一枚木牌。
@@ -60,7 +56,6 @@ narr: 满楼签纸哗啦啦乱飞，报幕虫群一头扎进自己的横幅里�
 ds: 「灵梦大人，拔了秤，泉就是你的了。」
 @enter reimu serious right
 reimu: 「……打。今天必须打。」
-@exit sclerk
 *choice
 > 「一起上！我主攻七盏楼灯，灵梦大人压阵拦签雨！」 | flag ally got | goto ch2_duo
 > 「这座楼，我自己拆！」 | flag solo got | goto ch2_solo
@@ -69,7 +64,6 @@ reimu: 「……打。今天必须打。」
 reimu: 「行。你打灯，我拦签。轻点打——真烧起来，我的八百可就成灰了。」
 @enter ds smug center
 ds: 「我瞄准的是灯，不是楼！大概！」
-@exit bugs
 goto ch2_rules
 @label ch2_solo
 @enter reimu smug right
@@ -86,17 +80,14 @@ narr: 整支虫群悬在楼前，嗡声乱成一锅粥。自开楼以来，报�
 goto ch2_rules
 @label ch2_rules
 sclerk: 「楼方规矩，念给各位听：七灯灭其一，签雨加急；七灯全灭，崩簧自开，愿契作废，白水归泉。」
-@exit reimu
 @enter reimu normal right
 reimu: 「幻想乡的规矩更短：弹幕不伤性命，比谁的灯先灭。躲开签海，把七盏灯挨个打熄，楼就开了。」
 @enter ds serious center
 ds: 「楼里的签是活的，会认人！用户桑，贴着楼影走，灯亮的地方千万别站！」
-@exit bugs
 narr: 话音未落，七盏楼灯一齐晃了晃，第一层签雨哗啦啦上了弦。
 @cg cg_ch02_reimu_danmaku
 @minigame plane mode:normal onWin:ch2_win onLose:ch2_lose with:ally,solo
 @label ch2_win
-@exit sclerk
 narr: 七盏楼灯连成一串，一盏接一盏熄灭。最后一盏灭掉时，整座纸楼像被抽掉了骨头。
 narr: 崩簧「崩」地弹开，七层楼从上到下散成一场白花花的纸雪。
 narr: ds 娘从纸堆里捧出那片温热的鲸鳞——V2.5，鳞面上还挂着一线新涌的白水。
@@ -120,9 +111,6 @@ ds: 「我这叫战术性躺进纸堆啦！」
 @flag pieces +1
 goto ch2_after
 @label ch2_after
-@exit ds
-@exit reimu
-@exit bugs
 narr: 泉眼连鳞带秤一起拔了出来。白水先打了个嗝，随即哗地漫过干了几个月的泉台，往村子那头淌去。
 narr: 香客踩着漫过脚背的新水花跑过参道，有人顺手把攥了一路没敢抽的签纸折成小船，放进水里看它打转。
 narr: 一个小孩双手捧了个满，转身整捧泼向灵梦的后背。
