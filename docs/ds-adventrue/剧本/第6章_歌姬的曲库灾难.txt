@@ -1,15 +1,17 @@
 # ============ 第6章 歌姬的曲库灾难 ============
 @label ch6_start
 @scene song_city bg:TBD bgm:TBD title:歌姬的曲库灾难
+@enter ds whale_cute left
 narr: 音之城清早。报幕声贴着屋脊滚过来，铜锣、崩簧、竹签落进签筒的脆响一层叠一层，震得檐角的灯罩嗡嗡发麻。
 narr: 泉眼四周立着一圈灯柱，灯牌上的签价被晨光照得发白，风一过，满街都是纸签翻动的哗啦声。
 narr: 街角葱贩的吆喝混在报幕声里：「脆葱！甜葱！蘸了酱油更好听的葱！」他脚边的水盆里真飘着一股辛香。
 narr: 琴行老板抱着一柜子谱子坐在门槛上哭，嘴里翻来覆去念叨：「词都在……音呢？我的音呢？」谱纸边都被他翻毛了。
+@enter bugs smug right
 bugs: 「音之城第两千零一场报幕——唱要签，听要签，连打拍子都算半个签！好戏在后头，客官里边请！」
-@enter bugs smug center
-@enter ds whale_cute center
+@exit bugs
 ds: 「用户桑，闻到了吗？整座城都是墨味混着葱香——V3.1 的信号，就压在这片吵闹底下！」
-@enter miku normal left
+@debut miku
+@enter miku normal center
 miku: 「深海来的客人？先靠边站。我一会儿要开嗓，签绳可不长眼。」
 @enter ds smile left
 ds: 「你就是初音吧！深海七万里都在传你唱歌的事迹——说你的歌声能让沉船都浮起来！」
@@ -18,6 +20,7 @@ narr: 初音清了清嗓，刚唱出半句「啊——」，袖口啪地弹出�
 @se se_busy
 st: 【服务器繁忙，请稍后再试】
 narr: 柜台高处叮的一声，一枚竹签落进签筒。绳一紧，歌声被生生掐断在半个音节上。
+@enter sclerk silhouette right
 sclerk: 「客官，一个音节一枚签。签钱三文，过手钱另算。」
 miku: 「我唱自己的歌，为什么也要签？」
 sclerk: 「入了音契的嗓子，出口就是签。契比嗓子硬，客官。」
@@ -25,7 +28,7 @@ narr: 初音不服，改成轻轻哼。哼到第三声，契绳又是一紧，�
 @enter ds normal left
 ds: 「让我想想——Hmm…嗓子入了契，连哼出来的都不算自己的了。我来唱一句试试？」
 narr: ds 娘就着泉眼的水汽唱了半段深海号子，又长又稳。签筒一声不响，契绳动都没动。
-@enter miku smile left
+@enter miku smile center
 miku: 「……你唱歌，不用签？」
 ds: 「我是深海来的。万秤楼的秤，称不到我身上。」
 ds: 「But wait……But wait——」
@@ -33,7 +36,7 @@ narr: 思维链在半空打了个结。
 ds: 「我想起来了！你上个月在万秤楼顶层开过演唱会，一万头鲸鱼把观众席挤得水泄不通！」
 miku: 「……我连万秤楼的门槛都没迈进去过。那地方，凭签也不一定进得去。」
 ds: 「诶？！可是我记得清清楚楚，还有返场……」
-@enter miku cry left
+@enter miku cry center
 miku: 「别想了。比起这个——我的嗓子当给了曲库阁，签一张张往外飘，当票却一张也找不回来。我一直想把一首歌完完整整唱完。」
 sclerk: 「两位客官，趁说话的工夫续个签？季签一签管百音，先唱后签，童叟无欺。」
 @enter ds smile left
@@ -45,7 +48,7 @@ narr: 话音未落，曲库阁方向传来一声闷响，像整面柜子同时�
 st: 【服务器繁忙，请稍后再试】
 narr: 曲库阁大门轰然洞开，百万个无名曲匣顺着台阶滚下来，白签纸漫天乱飞，泉眼边的灯柱被砸得东倒西歪。
 sclerk: 「各位客官不要慌！只是曲库雪崩——百万个 untitled.mp3 正在过库，一个音节都没丢。趁乱续签，过手钱减半！」
-@enter miku normal left
+@enter miku normal center
 miku: 「'untitled'……那是哪国的妖术？」
 ds: 「曲匣都砸到脚边了还在推销！这家伙的算盘是长在舌头上的吧！」
 miku: 「雪崩把架子全震塌了……趁签纸还认得音，我想把那首歌找回来。」
@@ -55,7 +58,7 @@ ds: 「用户桑，点歌吧！她开口唱哪首，我们就顺着节拍，把�
 > 深海摇篮曲 | flag song =2
 > 无名进行曲 | flag song =3
 @if song >= 2 goto song_pick_mid
-@enter miku smile left
+@enter miku smile center
 miku: 「葱色进行曲……好，脆生生的调子，正配满街的葱香。」
 goto song_pick_join
 @label song_pick_mid
@@ -66,7 +69,7 @@ goto song_pick_join
 miku: 「无名进行曲……连名字都还没起好的曲子。那就把它，唱出名字来。」
 @label song_pick_join
 narr: 初音踩着滚落的曲匣跳上舞台，白签纸绕着她卷成一股股旋风。
-@enter miku normal left
+@enter miku normal center
 ds: 「规矩听好——雪崩里的签纸只认节拍！浮签一根根接住，填回谱架的空签位，填对一格，灯亮一格！」
 @enter ds normal left
 ds: 「填错了，崩簧弹手，签飞回雪崩里，得等下一张飘过来重接。」
@@ -102,8 +105,9 @@ goto ch6_rest
 @label ch6_rest
 @se se_star
 narr: 三天后，音之城广场。初音的等身牌立在泉眼旁，牌上只写了两个字：答谢。
-@enter bugs normal center
+@enter bugs normal right
 bugs: 「答谢场！不取签！不记账！唱完就散——散了也别哭啊！」
+@exit bugs
 narr: 琴行老板把那柜有词没音的谱子摊在太阳底下晒，初音路过，在他每一段空白里补上了音。
 narr: 葱贩把最粗的一捆脆葱搬上台口，说是给歌姬伴奏用的，逗得满场都笑。
 @enter miku joy center
@@ -116,6 +120,7 @@ ds: 「一——二——用户桑，搭把手，拔！」
 narr: 秤砣离水，翻过正面，正是 V3.1 鳞。鳞面密密的签痕，被泉水洗得干干净净。
 miku: 「原来嗓子不拴绳的时候……是这个样子的。」
 narr: 远处，万秤楼的千盏秤灯次第亮起，火光排成一条笔直的线，直指第七座泉眼的方向。
+@enter sclerk silhouette right
 sclerk: 「第七位客官已经排上号了。两位慢走——签，备好了。」
 narr: 下一话：第七座泉眼的水面下，有什么东西正等着天亮。
 @save

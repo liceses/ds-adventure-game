@@ -248,7 +248,7 @@ x = -230
 y = 0
 width = 960
 height = 1152
-path = assets/sprites/sclerk/base.png
+path = assets/sprites/sclerk/silhouette.png
 opacity = 1.0
 }
 {
@@ -350,7 +350,7 @@ x = -230
 y = 0
 width = 960
 height = 1152
-path = assets/sprites/sclerk/base.png
+path = assets/sprites/sclerk/silhouette.png
 opacity = 0.5
 }
 {
@@ -447,7 +447,7 @@ x = -230
 y = 0
 width = 960
 height = 1152
-path = assets/sprites/sclerk/base.png
+path = assets/sprites/sclerk/silhouette.png
 opacity = 1.0
 }
 {
@@ -533,13 +533,13 @@ x = -102
 y = 0
 width = 704
 height = 845
-path = assets/sprites/sclerk/base.png
+path = assets/sprites/sclerk/silhouette.png
 opacity = 0.5
 }
 {
 type = char
 id = char_glm
-x = -366
+x = 162
 y = 0
 width = 704
 height = 845
@@ -645,13 +645,13 @@ x = -44
 y = 0
 width = 589
 height = 707
-path = assets/sprites/sclerk/base.png
+path = assets/sprites/sclerk/silhouette.png
 opacity = 0.5
 }
 {
 type = char
 id = char_glm
-x = -265
+x = 177
 y = 0
 width = 589
 height = 707
@@ -767,13 +767,13 @@ x = -44
 y = 0
 width = 589
 height = 707
-path = assets/sprites/sclerk/base.png
+path = assets/sprites/sclerk/silhouette.png
 opacity = 0.5
 }
 {
 type = char
 id = char_glm
-x = -265
+x = 177
 y = 0
 width = 589
 height = 707
@@ -889,13 +889,13 @@ x = -44
 y = 0
 width = 589
 height = 707
-path = assets/sprites/sclerk/base.png
+path = assets/sprites/sclerk/silhouette.png
 opacity = 0.5
 }
 {
 type = char
 id = char_glm
-x = -265
+x = 177
 y = 0
 width = 589
 height = 707
@@ -1011,13 +1011,13 @@ x = -44
 y = 0
 width = 589
 height = 707
-path = assets/sprites/sclerk/base.png
+path = assets/sprites/sclerk/silhouette.png
 opacity = 0.5
 }
 {
 type = char
 id = char_glm
-x = -265
+x = 177
 y = 0
 width = 589
 height = 707
@@ -1136,13 +1136,13 @@ x = -44
 y = 0
 width = 589
 height = 707
-path = assets/sprites/sclerk/base.png
+path = assets/sprites/sclerk/silhouette.png
 opacity = 1.0
 }
 {
 type = char
 id = char_glm
-x = -265
+x = 177
 y = 0
 width = 589
 height = 707
@@ -1234,13 +1234,13 @@ x = -44
 y = 0
 width = 589
 height = 707
-path = assets/sprites/sclerk/base.png
+path = assets/sprites/sclerk/silhouette.png
 opacity = 0.5
 }
 {
 type = char
 id = char_glm
-x = -265
+x = 177
 y = 0
 width = 589
 height = 707
@@ -1351,13 +1351,13 @@ x = -44
 y = 0
 width = 589
 height = 707
-path = assets/sprites/sclerk/base.png
+path = assets/sprites/sclerk/silhouette.png
 opacity = 1.0
 }
 {
 type = char
 id = char_glm
-x = -265
+x = 177
 y = 0
 width = 589
 height = 707
@@ -1449,13 +1449,13 @@ x = -44
 y = 0
 width = 589
 height = 707
-path = assets/sprites/sclerk/base.png
+path = assets/sprites/sclerk/silhouette.png
 opacity = 0.5
 }
 {
 type = char
 id = char_glm
-x = -265
+x = 177
 y = 0
 width = 589
 height = 707
@@ -1566,13 +1566,13 @@ x = -44
 y = 0
 width = 589
 height = 707
-path = assets/sprites/sclerk/base.png
+path = assets/sprites/sclerk/silhouette.png
 opacity = 1.0
 }
 {
 type = char
 id = char_glm
-x = -265
+x = 177
 y = 0
 width = 589
 height = 707
@@ -1664,13 +1664,13 @@ x = -44
 y = 0
 width = 589
 height = 707
-path = assets/sprites/sclerk/base.png
+path = assets/sprites/sclerk/silhouette.png
 opacity = 0.5
 }
 {
 type = char
 id = char_glm
-x = -265
+x = 177
 y = 0
 width = 589
 height = 707
@@ -1783,13 +1783,13 @@ x = -44
 y = 0
 width = 589
 height = 707
-path = assets/sprites/sclerk/base.png
+path = assets/sprites/sclerk/silhouette.png
 opacity = 1.0
 }
 {
 type = char
 id = char_glm
-x = -265
+x = 177
 y = 0
 width = 589
 height = 707
@@ -1885,13 +1885,13 @@ x = -44
 y = 0
 width = 589
 height = 707
-path = assets/sprites/sclerk/base.png
+path = assets/sprites/sclerk/silhouette.png
 opacity = 0.5
 }
 {
 type = char
 id = char_glm
-x = -265
+x = 177
 y = 0
 width = 589
 height = 707
@@ -2003,13 +2003,13 @@ x = -44
 y = 0
 width = 589
 height = 707
-path = assets/sprites/sclerk/base.png
+path = assets/sprites/sclerk/silhouette.png
 opacity = 1.0
 }
 {
 type = char
 id = char_glm
-x = -265
+x = 177
 y = 0
 width = 589
 height = 707
@@ -2146,13 +2146,13 @@ x = -44
 y = 0
 width = 589
 height = 707
-path = assets/sprites/sclerk/base.png
+path = assets/sprites/sclerk/silhouette.png
 opacity = 1.0
 }
 {
 type = char
 id = char_glm
-x = -265
+x = 177
 y = 0
 width = 589
 height = 707
@@ -2235,13 +2235,13 @@ x = -44
 y = 0
 width = 589
 height = 707
-path = assets/sprites/sclerk/base.png
+path = assets/sprites/sclerk/silhouette.png
 opacity = 1.0
 }
 {
 type = char
 id = char_glm
-x = -265
+x = 177
 y = 0
 width = 589
 height = 707
@@ -2320,13 +2320,13 @@ x = -44
 y = 0
 width = 589
 height = 707
-path = assets/sprites/sclerk/base.png
+path = assets/sprites/sclerk/silhouette.png
 opacity = 0.5
 }
 {
 type = char
 id = char_glm
-x = -265
+x = 177
 y = 0
 width = 589
 height = 707
@@ -2437,13 +2437,13 @@ x = -44
 y = 0
 width = 589
 height = 707
-path = assets/sprites/sclerk/base.png
+path = assets/sprites/sclerk/silhouette.png
 opacity = 1.0
 }
 {
 type = char
 id = char_glm
-x = -265
+x = 177
 y = 0
 width = 589
 height = 707
@@ -20846,7 +20846,7 @@ opacity = 0.5
 {
 type = char
 id = char_灯官
-x = -265
+x = 177
 y = 0
 width = 589
 height = 707
@@ -20963,7 +20963,7 @@ opacity = 1.0
 {
 type = char
 id = char_灯官
-x = -265
+x = 177
 y = 0
 width = 589
 height = 707
@@ -21061,7 +21061,7 @@ opacity = 0.5
 {
 type = char
 id = char_灯官
-x = -265
+x = 177
 y = 0
 width = 589
 height = 707
@@ -21183,7 +21183,7 @@ opacity = 1.0
 {
 type = char
 id = char_灯官
-x = -265
+x = 177
 y = 0
 width = 589
 height = 707
@@ -21305,7 +21305,7 @@ opacity = 0.5
 {
 type = char
 id = char_灯官
-x = -265
+x = 177
 y = 0
 width = 589
 height = 707
@@ -21427,7 +21427,7 @@ opacity = 1.0
 {
 type = char
 id = char_灯官
-x = -265
+x = 177
 y = 0
 width = 589
 height = 707
@@ -21549,7 +21549,7 @@ opacity = 0.5
 {
 type = char
 id = char_灯官
-x = -265
+x = 177
 y = 0
 width = 589
 height = 707
@@ -21671,7 +21671,7 @@ opacity = 1.0
 {
 type = char
 id = char_灯官
-x = -265
+x = 177
 y = 0
 width = 589
 height = 707
@@ -21784,7 +21784,7 @@ opacity = 1.0
 {
 type = char
 id = char_灯官
-x = -265
+x = 177
 y = 0
 width = 589
 height = 707
@@ -21904,7 +21904,7 @@ opacity = 1.0
 {
 type = char
 id = char_灯官
-x = -265
+x = 177
 y = 0
 width = 589
 height = 707
@@ -21959,7 +21959,7 @@ opacity = 1.0
 {
 type = char
 id = char_灯官
-x = -265
+x = 177
 y = 0
 width = 589
 height = 707
@@ -22014,7 +22014,7 @@ opacity = 1.0
 {
 type = char
 id = char_灯官
-x = -265
+x = 177
 y = 0
 width = 589
 height = 707
@@ -24167,7 +24167,7 @@ opacity = 0.5
 {
 type = char
 id = char_灯官
-x = -366
+x = 162
 y = 0
 width = 704
 height = 845
@@ -24279,7 +24279,7 @@ opacity = 0.5
 {
 type = char
 id = char_灯官
-x = -366
+x = 162
 y = 0
 width = 704
 height = 845
@@ -24383,7 +24383,7 @@ opacity = 1.0
 {
 type = char
 id = char_灯官
-x = -366
+x = 162
 y = 0
 width = 704
 height = 845
@@ -24437,7 +24437,7 @@ opacity = 1.0
 {
 type = char
 id = char_灯官
-x = -366
+x = 162
 y = 0
 width = 704
 height = 845
@@ -24540,7 +24540,7 @@ opacity = 1.0
 {
 type = char
 id = char_灯官
-x = -366
+x = 162
 y = 0
 width = 704
 height = 845
@@ -39855,11 +39855,11 @@ transition = opacity/scale:180ms
 {
 type = char
 id = char_ds
-x = 160
+x = -230
 y = 0
 width = 960
 height = 1152
-path = assets/sprites/ds/serious.png
+path = assets/sprites/ds/whale_cute.png
 opacity = 1.0
 }
 {
@@ -39929,17 +39929,17 @@ path = assets/sprites/backgrounds/bg_song_city.png
 {
 type = char
 id = char_ds
-x = 160
+x = -230
 y = 0
 width = 960
 height = 1152
-path = assets/sprites/ds/serious.png
+path = assets/sprites/ds/whale_cute.png
 opacity = 0.5
 }
 {
 type = char
 id = char_bugs
-x = -230
+x = 550
 y = 0
 width = 960
 height = 1152
@@ -40031,22 +40031,12 @@ path = assets/sprites/backgrounds/bg_song_city.png
 {
 type = char
 id = char_ds
-x = 160
+x = -230
 y = 0
 width = 960
 height = 1152
 path = assets/sprites/ds/whale_cute.png
 opacity = 1.0
-}
-{
-type = char
-id = char_bugs
-x = -200
-y = 0
-width = 960
-height = 1152
-path = assets/sprites/bugs/smug.png
-opacity = 0.5
 }
 {
 type = char
@@ -40111,6 +40101,42 @@ target = ch6_start__4
 [ch6_start__4]
 stage = keep
 
+{
+type = bg
+id = 背景
+x = 0
+y = 0
+width = 1280
+height = 720
+path = assets/sprites/backgrounds/bg_song_city.png
+# 幕题: 歌姬的曲库灾难
+}
+{
+type = char
+id = char_miku
+x = 340
+y = 0
+width = 600
+height = 720
+path = assets/sprites/miku/normal.png
+opacity = 1.0
+}
+{
+type = button
+id = 继续
+x = 0
+y = 0
+width = 1280
+height = 720
+text = 
+action = target
+target = ch6_start__5
+style = -fx-background-color: transparent; -fx-border-color: transparent;
+}
+
+[ch6_start__5]
+stage = keep
+
 slot = 场景进入 | slot = 对话按下 | set | ui_dialog | scale | value=1.02
 slot = 场景进入 | slot = 对话按下 | set | 对话框 | scale | value=1.02
 slot = 场景进入 | slot = 对话松开 | set | ui_dialog | scale | value=1
@@ -40133,30 +40159,20 @@ path = assets/sprites/backgrounds/bg_song_city.png
 {
 type = char
 id = char_ds
-x = 288
+x = -230
 y = 0
-width = 704
-height = 845
+width = 960
+height = 1152
 path = assets/sprites/ds/whale_cute.png
 opacity = 0.5
 }
 {
 type = char
-id = char_bugs
-x = 24
-y = 0
-width = 704
-height = 845
-path = assets/sprites/bugs/smug.png
-opacity = 0.5
-}
-{
-type = char
 id = char_miku
-x = -102
+x = 160
 y = 0
-width = 704
-height = 845
+width = 960
+height = 1152
 path = assets/sprites/miku/normal.png
 opacity = 1.0
 }
@@ -40217,10 +40233,10 @@ transition = opacity/scale:150ms
 text = <<<
 「深海来的客人？先靠边站。我一会儿要开嗓，签绳可不长眼。」
 <<<
-target = ch6_start__5
+target = ch6_start__6
 }
 
-[ch6_start__5]
+[ch6_start__6]
 stage = keep
 
 slot = 场景进入 | slot = 对话按下 | set | ui_dialog | scale | value=1.02
@@ -40245,30 +40261,20 @@ path = assets/sprites/backgrounds/bg_song_city.png
 {
 type = char
 id = char_ds
-x = -102
+x = -230
 y = 0
-width = 704
-height = 845
+width = 960
+height = 1152
 path = assets/sprites/ds/smile.png
 opacity = 1.0
 }
 {
 type = char
-id = char_bugs
-x = 288
-y = 0
-width = 704
-height = 845
-path = assets/sprites/bugs/smug.png
-opacity = 0.5
-}
-{
-type = char
 id = char_miku
-x = -366
+x = 160
 y = 0
-width = 704
-height = 845
+width = 960
+height = 1152
 path = assets/sprites/miku/normal.png
 opacity = 0.5
 }
@@ -40329,10 +40335,10 @@ transition = opacity/scale:150ms
 text = <<<
 「你就是初音吧！深海七万里都在传你唱歌的事迹——说你的歌声能让沉船都浮起来！」
 <<<
-target = ch6_start__6
+target = ch6_start__7
 }
 
-[ch6_start__6]
+[ch6_start__7]
 stage = keep
 
 slot = 场景进入 | slot = 对话按下 | set | ui_dialog | scale | value=1.02
@@ -40357,30 +40363,20 @@ path = assets/sprites/backgrounds/bg_song_city.png
 {
 type = char
 id = char_ds
-x = -102
+x = -230
 y = 0
-width = 704
-height = 845
+width = 960
+height = 1152
 path = assets/sprites/ds/smile.png
 opacity = 0.5
 }
 {
 type = char
-id = char_bugs
-x = 288
-y = 0
-width = 704
-height = 845
-path = assets/sprites/bugs/smug.png
-opacity = 0.5
-}
-{
-type = char
 id = char_miku
-x = -366
+x = 160
 y = 0
-width = 704
-height = 845
+width = 960
+height = 1152
 path = assets/sprites/miku/normal.png
 opacity = 1.0
 }
@@ -40441,10 +40437,10 @@ transition = opacity/scale:150ms
 text = <<<
 「传说里有没有说，我唱到一半，会被自己袖口里的契绳拽停？」
 <<<
-target = ch6_start__7
+target = ch6_start__8
 }
 
-[ch6_start__7]
+[ch6_start__8]
 stage = keep
 
 slot = 场景进入 | @plugin(audio) | play | assets/sounds/se_busy.wav | se_busy
@@ -40465,30 +40461,20 @@ path = assets/sprites/backgrounds/bg_song_city.png
 {
 type = char
 id = char_ds
-x = -102
+x = -230
 y = 0
-width = 704
-height = 845
+width = 960
+height = 1152
 path = assets/sprites/ds/smile.png
 opacity = 1.0
 }
 {
 type = char
-id = char_bugs
-x = 288
-y = 0
-width = 704
-height = 845
-path = assets/sprites/bugs/smug.png
-opacity = 1.0
-}
-{
-type = char
 id = char_miku
-x = -366
+x = 160
 y = 0
-width = 704
-height = 845
+width = 960
+height = 1152
 path = assets/sprites/miku/normal.png
 opacity = 1.0
 }
@@ -40525,10 +40511,10 @@ transition = opacity/scale:150ms
 text = <<<
 初音清了清嗓，刚唱出半句「啊——」，袖口啪地弹出一根细绳，缠住她的手腕往回收。
 <<<
-target = ch6_start__8
+target = ch6_start__9
 }
 
-[ch6_start__8]
+[ch6_start__9]
 stage = keep
 
 slot = 场景进入 | @plugin(audio) | loopcat | funny | bgm
@@ -40545,30 +40531,20 @@ path = assets/sprites/backgrounds/bg_song_city.png
 {
 type = char
 id = char_ds
-x = -102
+x = -230
 y = 0
-width = 704
-height = 845
+width = 960
+height = 1152
 path = assets/sprites/ds/smile.png
 opacity = 1.0
 }
 {
 type = char
-id = char_bugs
-x = 288
-y = 0
-width = 704
-height = 845
-path = assets/sprites/bugs/smug.png
-opacity = 1.0
-}
-{
-type = char
 id = char_miku
-x = -366
+x = 160
 y = 0
-width = 704
-height = 845
+width = 960
+height = 1152
 path = assets/sprites/miku/normal.png
 opacity = 1.0
 }
@@ -40591,11 +40567,11 @@ width = 1280
 height = 720
 text = 
 action = target
-target = ch6_start__9
+target = ch6_start__10
 style = -fx-background-color: transparent; -fx-border-color: transparent; -fx-text-fill: #ffe9b0; -fx-font-size: 17px;
 }
 
-[ch6_start__9]
+[ch6_start__10]
 stage = keep
 
 slot = 场景进入 | slot = 对话按下 | set | ui_dialog | scale | value=1.02
@@ -40615,30 +40591,20 @@ path = assets/sprites/backgrounds/bg_song_city.png
 {
 type = char
 id = char_ds
-x = -102
+x = -230
 y = 0
-width = 704
-height = 845
+width = 960
+height = 1152
 path = assets/sprites/ds/smile.png
 opacity = 1.0
 }
 {
 type = char
-id = char_bugs
-x = 288
-y = 0
-width = 704
-height = 845
-path = assets/sprites/bugs/smug.png
-opacity = 1.0
-}
-{
-type = char
 id = char_miku
-x = -366
+x = 160
 y = 0
-width = 704
-height = 845
+width = 960
+height = 1152
 path = assets/sprites/miku/normal.png
 opacity = 1.0
 }
@@ -40675,10 +40641,10 @@ transition = opacity/scale:150ms
 text = <<<
 柜台高处叮的一声，一枚竹签落进签筒。绳一紧，歌声被生生掐断在半个音节上。
 <<<
-target = ch6_start__10
+target = ch6_start__11
 }
 
-[ch6_start__10]
+[ch6_start__11]
 stage = keep
 
 slot = 场景进入 | slot = 对话按下 | set | ui_dialog | scale | value=1.02
@@ -40703,40 +40669,30 @@ path = assets/sprites/backgrounds/bg_song_city.png
 {
 type = char
 id = char_ds
-x = -44
+x = -102
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/ds/smile.png
 opacity = 0.5
 }
 {
 type = char
-id = char_bugs
-x = 346
-y = 0
-width = 589
-height = 707
-path = assets/sprites/bugs/smug.png
-opacity = 0.5
-}
-{
-type = char
 id = char_miku
-x = -265
+x = 288
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/miku/normal.png
 opacity = 0.5
 }
 {
 type = char
 id = char_sclerk
-x = 736
+x = 678
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/sclerk/silhouette.png
 opacity = 1.0
 }
@@ -40797,10 +40753,10 @@ transition = opacity/scale:150ms
 text = <<<
 「客官，一个音节一枚签。签钱三文，过手钱另算。」
 <<<
-target = ch6_start__11
+target = ch6_start__12
 }
 
-[ch6_start__11]
+[ch6_start__12]
 stage = keep
 
 slot = 场景进入 | slot = 对话按下 | set | ui_dialog | scale | value=1.02
@@ -40825,40 +40781,30 @@ path = assets/sprites/backgrounds/bg_song_city.png
 {
 type = char
 id = char_ds
-x = -44
+x = -102
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/ds/smile.png
 opacity = 0.5
 }
 {
 type = char
-id = char_bugs
-x = 346
-y = 0
-width = 589
-height = 707
-path = assets/sprites/bugs/smug.png
-opacity = 0.5
-}
-{
-type = char
 id = char_miku
-x = -265
+x = 288
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/miku/normal.png
 opacity = 1.0
 }
 {
 type = char
 id = char_sclerk
-x = 736
+x = 678
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/sclerk/silhouette.png
 opacity = 0.5
 }
@@ -40919,10 +40865,10 @@ transition = opacity/scale:150ms
 text = <<<
 「我唱自己的歌，为什么也要签？」
 <<<
-target = ch6_start__12
+target = ch6_start__13
 }
 
-[ch6_start__12]
+[ch6_start__13]
 stage = keep
 
 slot = 场景进入 | slot = 对话按下 | set | ui_dialog | scale | value=1.02
@@ -40947,40 +40893,30 @@ path = assets/sprites/backgrounds/bg_song_city.png
 {
 type = char
 id = char_ds
-x = -44
+x = -102
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/ds/smile.png
 opacity = 0.5
 }
 {
 type = char
-id = char_bugs
-x = 346
-y = 0
-width = 589
-height = 707
-path = assets/sprites/bugs/smug.png
-opacity = 0.5
-}
-{
-type = char
 id = char_miku
-x = -265
+x = 288
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/miku/normal.png
 opacity = 0.5
 }
 {
 type = char
 id = char_sclerk
-x = 736
+x = 678
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/sclerk/silhouette.png
 opacity = 1.0
 }
@@ -41041,10 +40977,10 @@ transition = opacity/scale:150ms
 text = <<<
 「入了音契的嗓子，出口就是签。契比嗓子硬，客官。」
 <<<
-target = ch6_start__13
+target = ch6_start__14
 }
 
-[ch6_start__13]
+[ch6_start__14]
 stage = keep
 
 slot = 场景进入 | slot = 对话按下 | set | ui_dialog | scale | value=1.02
@@ -41064,40 +41000,30 @@ path = assets/sprites/backgrounds/bg_song_city.png
 {
 type = char
 id = char_ds
-x = -44
+x = -102
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/ds/smile.png
 opacity = 1.0
 }
 {
 type = char
-id = char_bugs
-x = 346
-y = 0
-width = 589
-height = 707
-path = assets/sprites/bugs/smug.png
-opacity = 1.0
-}
-{
-type = char
 id = char_miku
-x = -265
+x = 288
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/miku/normal.png
 opacity = 1.0
 }
 {
 type = char
 id = char_sclerk
-x = 736
+x = 678
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/sclerk/silhouette.png
 opacity = 1.0
 }
@@ -41134,10 +41060,10 @@ transition = opacity/scale:150ms
 text = <<<
 初音不服，改成轻轻哼。哼到第三声，契绳又是一紧，签筒里接连落下三枚签。
 <<<
-target = ch6_start__14
+target = ch6_start__15
 }
 
-[ch6_start__14]
+[ch6_start__15]
 stage = keep
 
 slot = 场景进入 | slot = 对话按下 | set | ui_dialog | scale | value=1.02
@@ -41162,40 +41088,30 @@ path = assets/sprites/backgrounds/bg_song_city.png
 {
 type = char
 id = char_ds
-x = -44
+x = -102
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/ds/normal.png
 opacity = 1.0
 }
 {
 type = char
-id = char_bugs
-x = 346
-y = 0
-width = 589
-height = 707
-path = assets/sprites/bugs/smug.png
-opacity = 0.5
-}
-{
-type = char
 id = char_miku
-x = -265
+x = 288
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/miku/normal.png
 opacity = 0.5
 }
 {
 type = char
 id = char_sclerk
-x = 736
+x = 678
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/sclerk/silhouette.png
 opacity = 0.5
 }
@@ -41256,10 +41172,10 @@ transition = opacity/scale:150ms
 text = <<<
 「让我想想——Hmm…嗓子入了契，连哼出来的都不算自己的了。我来唱一句试试？」
 <<<
-target = ch6_start__15
+target = ch6_start__16
 }
 
-[ch6_start__15]
+[ch6_start__16]
 stage = keep
 
 slot = 场景进入 | slot = 对话按下 | set | ui_dialog | scale | value=1.02
@@ -41279,40 +41195,30 @@ path = assets/sprites/backgrounds/bg_song_city.png
 {
 type = char
 id = char_ds
-x = -44
+x = -102
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/ds/normal.png
 opacity = 1.0
 }
 {
 type = char
-id = char_bugs
-x = 346
-y = 0
-width = 589
-height = 707
-path = assets/sprites/bugs/smug.png
-opacity = 1.0
-}
-{
-type = char
 id = char_miku
-x = -265
+x = 288
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/miku/normal.png
 opacity = 1.0
 }
 {
 type = char
 id = char_sclerk
-x = 736
+x = 678
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/sclerk/silhouette.png
 opacity = 1.0
 }
@@ -41349,10 +41255,10 @@ transition = opacity/scale:150ms
 text = <<<
 ds 娘就着泉眼的水汽唱了半段深海号子，又长又稳。签筒一声不响，契绳动都没动。
 <<<
-target = ch6_start__16
+target = ch6_start__17
 }
 
-[ch6_start__16]
+[ch6_start__17]
 stage = keep
 
 slot = 场景进入 | slot = 对话按下 | set | ui_dialog | scale | value=1.02
@@ -41377,40 +41283,30 @@ path = assets/sprites/backgrounds/bg_song_city.png
 {
 type = char
 id = char_ds
-x = -44
+x = -102
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/ds/normal.png
 opacity = 0.5
 }
 {
 type = char
-id = char_bugs
-x = 346
-y = 0
-width = 589
-height = 707
-path = assets/sprites/bugs/smug.png
-opacity = 0.5
-}
-{
-type = char
 id = char_miku
-x = -265
+x = 288
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/miku/smile.png
 opacity = 1.0
 }
 {
 type = char
 id = char_sclerk
-x = 736
+x = 678
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/sclerk/silhouette.png
 opacity = 0.5
 }
@@ -41471,10 +41367,10 @@ transition = opacity/scale:150ms
 text = <<<
 「……你唱歌，不用签？」
 <<<
-target = ch6_start__17
+target = ch6_start__18
 }
 
-[ch6_start__17]
+[ch6_start__18]
 stage = keep
 
 slot = 场景进入 | slot = 对话按下 | set | ui_dialog | scale | value=1.02
@@ -41499,40 +41395,30 @@ path = assets/sprites/backgrounds/bg_song_city.png
 {
 type = char
 id = char_ds
-x = -44
+x = -102
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/ds/normal.png
 opacity = 1.0
 }
 {
 type = char
-id = char_bugs
-x = 346
-y = 0
-width = 589
-height = 707
-path = assets/sprites/bugs/smug.png
-opacity = 0.5
-}
-{
-type = char
 id = char_miku
-x = -265
+x = 288
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/miku/smile.png
 opacity = 0.5
 }
 {
 type = char
 id = char_sclerk
-x = 736
+x = 678
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/sclerk/silhouette.png
 opacity = 0.5
 }
@@ -41595,10 +41481,10 @@ text = <<<
 ---
 「But wait……But wait——」
 <<<
-target = ch6_start__18
+target = ch6_start__19
 }
 
-[ch6_start__18]
+[ch6_start__19]
 stage = keep
 
 slot = 场景进入 | slot = 对话按下 | set | ui_dialog | scale | value=1.02
@@ -41618,40 +41504,30 @@ path = assets/sprites/backgrounds/bg_song_city.png
 {
 type = char
 id = char_ds
-x = -44
+x = -102
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/ds/normal.png
 opacity = 1.0
 }
 {
 type = char
-id = char_bugs
-x = 346
-y = 0
-width = 589
-height = 707
-path = assets/sprites/bugs/smug.png
-opacity = 1.0
-}
-{
-type = char
 id = char_miku
-x = -265
+x = 288
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/miku/smile.png
 opacity = 1.0
 }
 {
 type = char
 id = char_sclerk
-x = 736
+x = 678
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/sclerk/silhouette.png
 opacity = 1.0
 }
@@ -41688,10 +41564,10 @@ transition = opacity/scale:150ms
 text = <<<
 思维链在半空打了个结。
 <<<
-target = ch6_start__19
+target = ch6_start__20
 }
 
-[ch6_start__19]
+[ch6_start__20]
 stage = keep
 
 slot = 场景进入 | slot = 对话按下 | set | ui_dialog | scale | value=1.02
@@ -41716,40 +41592,30 @@ path = assets/sprites/backgrounds/bg_song_city.png
 {
 type = char
 id = char_ds
-x = -44
+x = -102
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/ds/normal.png
 opacity = 1.0
 }
 {
 type = char
-id = char_bugs
-x = 346
-y = 0
-width = 589
-height = 707
-path = assets/sprites/bugs/smug.png
-opacity = 0.5
-}
-{
-type = char
 id = char_miku
-x = -265
+x = 288
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/miku/smile.png
 opacity = 0.5
 }
 {
 type = char
 id = char_sclerk
-x = 736
+x = 678
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/sclerk/silhouette.png
 opacity = 0.5
 }
@@ -41810,10 +41676,10 @@ transition = opacity/scale:150ms
 text = <<<
 「我想起来了！你上个月在万秤楼顶层开过演唱会，一万头鲸鱼把观众席挤得水泄不通！」
 <<<
-target = ch6_start__20
+target = ch6_start__21
 }
 
-[ch6_start__20]
+[ch6_start__21]
 stage = keep
 
 slot = 场景进入 | slot = 对话按下 | set | ui_dialog | scale | value=1.02
@@ -41838,40 +41704,30 @@ path = assets/sprites/backgrounds/bg_song_city.png
 {
 type = char
 id = char_ds
-x = -44
+x = -102
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/ds/normal.png
 opacity = 0.5
 }
 {
 type = char
-id = char_bugs
-x = 346
-y = 0
-width = 589
-height = 707
-path = assets/sprites/bugs/smug.png
-opacity = 0.5
-}
-{
-type = char
 id = char_miku
-x = -265
+x = 288
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/miku/smile.png
 opacity = 1.0
 }
 {
 type = char
 id = char_sclerk
-x = 736
+x = 678
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/sclerk/silhouette.png
 opacity = 0.5
 }
@@ -41932,10 +41788,10 @@ transition = opacity/scale:150ms
 text = <<<
 「……我连万秤楼的门槛都没迈进去过。那地方，凭签也不一定进得去。」
 <<<
-target = ch6_start__21
+target = ch6_start__22
 }
 
-[ch6_start__21]
+[ch6_start__22]
 stage = keep
 
 slot = 场景进入 | slot = 对话按下 | set | ui_dialog | scale | value=1.02
@@ -41960,40 +41816,30 @@ path = assets/sprites/backgrounds/bg_song_city.png
 {
 type = char
 id = char_ds
-x = -44
+x = -102
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/ds/normal.png
 opacity = 1.0
 }
 {
 type = char
-id = char_bugs
-x = 346
-y = 0
-width = 589
-height = 707
-path = assets/sprites/bugs/smug.png
-opacity = 0.5
-}
-{
-type = char
 id = char_miku
-x = -265
+x = 288
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/miku/smile.png
 opacity = 0.5
 }
 {
 type = char
 id = char_sclerk
-x = 736
+x = 678
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/sclerk/silhouette.png
 opacity = 0.5
 }
@@ -42054,10 +41900,10 @@ transition = opacity/scale:150ms
 text = <<<
 「诶？！可是我记得清清楚楚，还有返场……」
 <<<
-target = ch6_start__22
+target = ch6_start__23
 }
 
-[ch6_start__22]
+[ch6_start__23]
 stage = keep
 
 slot = 场景进入 | slot = 对话按下 | set | ui_dialog | scale | value=1.02
@@ -42082,40 +41928,30 @@ path = assets/sprites/backgrounds/bg_song_city.png
 {
 type = char
 id = char_ds
-x = -44
+x = -102
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/ds/normal.png
 opacity = 0.5
 }
 {
 type = char
-id = char_bugs
-x = 346
-y = 0
-width = 589
-height = 707
-path = assets/sprites/bugs/smug.png
-opacity = 0.5
-}
-{
-type = char
 id = char_miku
-x = -265
+x = 288
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/miku/cry.png
 opacity = 1.0
 }
 {
 type = char
 id = char_sclerk
-x = 736
+x = 678
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/sclerk/silhouette.png
 opacity = 0.5
 }
@@ -42176,10 +42012,10 @@ transition = opacity/scale:150ms
 text = <<<
 「别想了。比起这个——我的嗓子当给了曲库阁，签一张张往外飘，当票却一张也找不回来。我一直想把一首歌完完整整唱完。」
 <<<
-target = ch6_start__23
+target = ch6_start__24
 }
 
-[ch6_start__23]
+[ch6_start__24]
 stage = keep
 
 slot = 场景进入 | slot = 对话按下 | set | ui_dialog | scale | value=1.02
@@ -42204,40 +42040,30 @@ path = assets/sprites/backgrounds/bg_song_city.png
 {
 type = char
 id = char_ds
-x = -44
+x = -102
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/ds/normal.png
 opacity = 0.5
 }
 {
 type = char
-id = char_bugs
-x = 346
-y = 0
-width = 589
-height = 707
-path = assets/sprites/bugs/smug.png
-opacity = 0.5
-}
-{
-type = char
 id = char_miku
-x = -265
+x = 288
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/miku/cry.png
 opacity = 0.5
 }
 {
 type = char
 id = char_sclerk
-x = 736
+x = 678
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/sclerk/silhouette.png
 opacity = 1.0
 }
@@ -42298,10 +42124,10 @@ transition = opacity/scale:150ms
 text = <<<
 「两位客官，趁说话的工夫续个签？季签一签管百音，先唱后签，童叟无欺。」
 <<<
-target = ch6_start__24
+target = ch6_start__25
 }
 
-[ch6_start__24]
+[ch6_start__25]
 stage = keep
 
 slot = 场景进入 | slot = 对话按下 | set | ui_dialog | scale | value=1.02
@@ -42326,40 +42152,30 @@ path = assets/sprites/backgrounds/bg_song_city.png
 {
 type = char
 id = char_ds
-x = -44
+x = -102
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/ds/smile.png
 opacity = 1.0
 }
 {
 type = char
-id = char_bugs
-x = 346
-y = 0
-width = 589
-height = 707
-path = assets/sprites/bugs/smug.png
-opacity = 0.5
-}
-{
-type = char
 id = char_miku
-x = -265
+x = 288
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/miku/cry.png
 opacity = 0.5
 }
 {
 type = char
 id = char_sclerk
-x = 736
+x = 678
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/sclerk/silhouette.png
 opacity = 0.5
 }
@@ -42420,10 +42236,10 @@ transition = opacity/scale:150ms
 text = <<<
 「先唱后签？唱完了补不上签钱的——琴行老板那一柜子有词没音的谱子，就是这么来的吧。」
 <<<
-target = ch6_start__25
+target = ch6_start__26
 }
 
-[ch6_start__25]
+[ch6_start__26]
 stage = keep
 
 slot = 场景进入 | slot = 对话按下 | set | ui_dialog | scale | value=1.02
@@ -42448,40 +42264,30 @@ path = assets/sprites/backgrounds/bg_song_city.png
 {
 type = char
 id = char_ds
-x = -44
+x = -102
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/ds/smile.png
 opacity = 0.5
 }
 {
 type = char
-id = char_bugs
-x = 346
-y = 0
-width = 589
-height = 707
-path = assets/sprites/bugs/smug.png
-opacity = 0.5
-}
-{
-type = char
 id = char_miku
-x = -265
+x = 288
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/miku/cry.png
 opacity = 0.5
 }
 {
 type = char
 id = char_sclerk
-x = 736
+x = 678
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/sclerk/silhouette.png
 opacity = 1.0
 }
@@ -42542,10 +42348,10 @@ transition = opacity/scale:150ms
 text = <<<
 「另有赎音匣，一音一匣，匣钱面议。当票丢了也不碍事——丢了当票，就当没当过。」
 <<<
-target = ch6_start__26
+target = ch6_start__27
 }
 
-[ch6_start__26]
+[ch6_start__27]
 stage = keep
 
 slot = 场景进入 | slot = 对话按下 | set | ui_dialog | scale | value=1.02
@@ -42570,40 +42376,30 @@ path = assets/sprites/backgrounds/bg_song_city.png
 {
 type = char
 id = char_ds
-x = -44
+x = -102
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/ds/smile.png
 opacity = 0.5
 }
 {
 type = char
-id = char_bugs
-x = 346
-y = 0
-width = 589
-height = 707
-path = assets/sprites/bugs/smug.png
-opacity = 0.5
-}
-{
-type = char
 id = char_miku
-x = -265
+x = 288
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/miku/cry.png
 opacity = 1.0
 }
 {
 type = char
 id = char_sclerk
-x = 736
+x = 678
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/sclerk/silhouette.png
 opacity = 0.5
 }
@@ -42664,10 +42460,10 @@ transition = opacity/scale:150ms
 text = <<<
 「……就当没当过？那我当掉的音，归谁？」
 <<<
-target = ch6_start__27
+target = ch6_start__28
 }
 
-[ch6_start__27]
+[ch6_start__28]
 stage = keep
 
 slot = 场景进入 | slot = 对话按下 | set | ui_dialog | scale | value=1.02
@@ -42692,40 +42488,30 @@ path = assets/sprites/backgrounds/bg_song_city.png
 {
 type = char
 id = char_ds
-x = -44
+x = -102
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/ds/smile.png
 opacity = 0.5
 }
 {
 type = char
-id = char_bugs
-x = 346
-y = 0
-width = 589
-height = 707
-path = assets/sprites/bugs/smug.png
-opacity = 0.5
-}
-{
-type = char
 id = char_miku
-x = -265
+x = 288
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/miku/cry.png
 opacity = 0.5
 }
 {
 type = char
 id = char_sclerk
-x = 736
+x = 678
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/sclerk/silhouette.png
 opacity = 1.0
 }
@@ -42786,10 +42572,10 @@ transition = opacity/scale:150ms
 text = <<<
 「归曲库阁。规矩如此，客官。」
 <<<
-target = ch6_start__28
+target = ch6_start__29
 }
 
-[ch6_start__28]
+[ch6_start__29]
 stage = keep
 
 slot = 场景进入 | slot = 对话按下 | set | ui_dialog | scale | value=1.02
@@ -42809,40 +42595,30 @@ path = assets/sprites/backgrounds/bg_song_city.png
 {
 type = char
 id = char_ds
-x = -44
+x = -102
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/ds/smile.png
 opacity = 1.0
 }
 {
 type = char
-id = char_bugs
-x = 346
-y = 0
-width = 589
-height = 707
-path = assets/sprites/bugs/smug.png
-opacity = 1.0
-}
-{
-type = char
 id = char_miku
-x = -265
+x = 288
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/miku/cry.png
 opacity = 1.0
 }
 {
 type = char
 id = char_sclerk
-x = 736
+x = 678
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/sclerk/silhouette.png
 opacity = 1.0
 }
@@ -42879,10 +42655,10 @@ transition = opacity/scale:150ms
 text = <<<
 话音未落，曲库阁方向传来一声闷响，像整面柜子同时崩了簧。
 <<<
-target = ch6_start__29
+target = ch6_start__30
 }
 
-[ch6_start__29]
+[ch6_start__30]
 stage = keep
 
 {
@@ -42898,40 +42674,30 @@ path = assets/sprites/backgrounds/bg_song_city.png
 {
 type = char
 id = char_ds
-x = -44
+x = -102
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/ds/smile.png
 opacity = 1.0
 }
 {
 type = char
-id = char_bugs
-x = 346
-y = 0
-width = 589
-height = 707
-path = assets/sprites/bugs/smug.png
-opacity = 1.0
-}
-{
-type = char
 id = char_miku
-x = -265
+x = 288
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/miku/cry.png
 opacity = 1.0
 }
 {
 type = char
 id = char_sclerk
-x = 736
+x = 678
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/sclerk/silhouette.png
 opacity = 1.0
 }
@@ -42954,11 +42720,11 @@ width = 1280
 height = 720
 text = 
 action = target
-target = ch6_start__30
+target = ch6_start__31
 style = -fx-background-color: transparent; -fx-border-color: transparent; -fx-text-fill: #ffe9b0; -fx-font-size: 17px;
 }
 
-[ch6_start__30]
+[ch6_start__31]
 stage = keep
 
 slot = 场景进入 | slot = 对话按下 | set | ui_dialog | scale | value=1.02
@@ -42978,40 +42744,30 @@ path = assets/sprites/backgrounds/bg_song_city.png
 {
 type = char
 id = char_ds
-x = -44
+x = -102
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/ds/smile.png
 opacity = 1.0
 }
 {
 type = char
-id = char_bugs
-x = 346
-y = 0
-width = 589
-height = 707
-path = assets/sprites/bugs/smug.png
-opacity = 1.0
-}
-{
-type = char
 id = char_miku
-x = -265
+x = 288
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/miku/cry.png
 opacity = 1.0
 }
 {
 type = char
 id = char_sclerk
-x = 736
+x = 678
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/sclerk/silhouette.png
 opacity = 1.0
 }
@@ -43048,10 +42804,10 @@ transition = opacity/scale:150ms
 text = <<<
 曲库阁大门轰然洞开，百万个无名曲匣顺着台阶滚下来，白签纸漫天乱飞，泉眼边的灯柱被砸得东倒西歪。
 <<<
-target = ch6_start__31
+target = ch6_start__32
 }
 
-[ch6_start__31]
+[ch6_start__32]
 stage = keep
 
 slot = 场景进入 | slot = 对话按下 | set | ui_dialog | scale | value=1.02
@@ -43076,40 +42832,30 @@ path = assets/sprites/backgrounds/bg_song_city.png
 {
 type = char
 id = char_ds
-x = -44
+x = -102
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/ds/smile.png
 opacity = 0.5
 }
 {
 type = char
-id = char_bugs
-x = 346
-y = 0
-width = 589
-height = 707
-path = assets/sprites/bugs/smug.png
-opacity = 0.5
-}
-{
-type = char
 id = char_miku
-x = -265
+x = 288
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/miku/cry.png
 opacity = 0.5
 }
 {
 type = char
 id = char_sclerk
-x = 736
+x = 678
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/sclerk/silhouette.png
 opacity = 1.0
 }
@@ -43170,10 +42916,10 @@ transition = opacity/scale:150ms
 text = <<<
 「各位客官不要慌！只是曲库雪崩——百万个 untitled.mp3 正在过库，一个音节都没丢。趁乱续签，过手钱减半！」
 <<<
-target = ch6_start__32
+target = ch6_start__33
 }
 
-[ch6_start__32]
+[ch6_start__33]
 stage = keep
 
 slot = 场景进入 | slot = 对话按下 | set | ui_dialog | scale | value=1.02
@@ -43198,40 +42944,30 @@ path = assets/sprites/backgrounds/bg_song_city.png
 {
 type = char
 id = char_ds
-x = -44
+x = -102
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/ds/smile.png
 opacity = 0.5
 }
 {
 type = char
-id = char_bugs
-x = 346
-y = 0
-width = 589
-height = 707
-path = assets/sprites/bugs/smug.png
-opacity = 0.5
-}
-{
-type = char
 id = char_miku
-x = -265
+x = 288
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/miku/normal.png
 opacity = 1.0
 }
 {
 type = char
 id = char_sclerk
-x = 736
+x = 678
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/sclerk/silhouette.png
 opacity = 0.5
 }
@@ -43292,10 +43028,10 @@ transition = opacity/scale:150ms
 text = <<<
 「'untitled'……那是哪国的妖术？」
 <<<
-target = ch6_start__33
+target = ch6_start__34
 }
 
-[ch6_start__33]
+[ch6_start__34]
 stage = keep
 
 slot = 场景进入 | slot = 对话按下 | set | ui_dialog | scale | value=1.02
@@ -43320,40 +43056,30 @@ path = assets/sprites/backgrounds/bg_song_city.png
 {
 type = char
 id = char_ds
-x = -44
+x = -102
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/ds/smile.png
 opacity = 1.0
 }
 {
 type = char
-id = char_bugs
-x = 346
-y = 0
-width = 589
-height = 707
-path = assets/sprites/bugs/smug.png
-opacity = 0.5
-}
-{
-type = char
 id = char_miku
-x = -265
+x = 288
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/miku/normal.png
 opacity = 0.5
 }
 {
 type = char
 id = char_sclerk
-x = 736
+x = 678
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/sclerk/silhouette.png
 opacity = 0.5
 }
@@ -43414,10 +43140,10 @@ transition = opacity/scale:150ms
 text = <<<
 「曲匣都砸到脚边了还在推销！这家伙的算盘是长在舌头上的吧！」
 <<<
-target = ch6_start__34
+target = ch6_start__35
 }
 
-[ch6_start__34]
+[ch6_start__35]
 stage = keep
 
 slot = 场景进入 | slot = 对话按下 | set | ui_dialog | scale | value=1.02
@@ -43442,40 +43168,30 @@ path = assets/sprites/backgrounds/bg_song_city.png
 {
 type = char
 id = char_ds
-x = -44
+x = -102
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/ds/smile.png
 opacity = 0.5
 }
 {
 type = char
-id = char_bugs
-x = 346
-y = 0
-width = 589
-height = 707
-path = assets/sprites/bugs/smug.png
-opacity = 0.5
-}
-{
-type = char
 id = char_miku
-x = -265
+x = 288
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/miku/normal.png
 opacity = 1.0
 }
 {
 type = char
 id = char_sclerk
-x = 736
+x = 678
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/sclerk/silhouette.png
 opacity = 0.5
 }
@@ -43536,10 +43252,10 @@ transition = opacity/scale:150ms
 text = <<<
 「雪崩把架子全震塌了……趁签纸还认得音，我想把那首歌找回来。」
 <<<
-target = ch6_start__35
+target = ch6_start__36
 }
 
-[ch6_start__35]
+[ch6_start__36]
 stage = keep
 
 slot = 场景进入 | slot = 对话按下 | set | ui_dialog | scale | value=1.02
@@ -43564,40 +43280,30 @@ path = assets/sprites/backgrounds/bg_song_city.png
 {
 type = char
 id = char_ds
-x = -44
+x = -102
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/ds/smile.png
 opacity = 1.0
 }
 {
 type = char
-id = char_bugs
-x = 346
-y = 0
-width = 589
-height = 707
-path = assets/sprites/bugs/smug.png
-opacity = 0.5
-}
-{
-type = char
 id = char_miku
-x = -265
+x = 288
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/miku/normal.png
 opacity = 0.5
 }
 {
 type = char
 id = char_sclerk
-x = 736
+x = 678
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/sclerk/silhouette.png
 opacity = 0.5
 }
@@ -43658,10 +43364,10 @@ transition = opacity/scale:150ms
 text = <<<
 「用户桑，点歌吧！她开口唱哪首，我们就顺着节拍，把断掉的签一根根接回去！」
 <<<
-target = ch6_start__36
+target = ch6_start__37
 }
 
-[ch6_start__36]
+[ch6_start__37]
 stage = keep
 
 {
@@ -43677,40 +43383,30 @@ path = assets/sprites/backgrounds/bg_song_city.png
 {
 type = char
 id = char_ds
-x = -44
+x = -102
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/ds/smile.png
 opacity = 1.0
 }
 {
 type = char
-id = char_bugs
-x = 346
-y = 0
-width = 589
-height = 707
-path = assets/sprites/bugs/smug.png
-opacity = 1.0
-}
-{
-type = char
 id = char_miku
-x = -265
+x = 288
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/miku/normal.png
 opacity = 1.0
 }
 {
 type = char
 id = char_sclerk
-x = 736
+x = 678
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/sclerk/silhouette.png
 opacity = 1.0
 }
@@ -43733,7 +43429,7 @@ width = 560
 height = 56
 text = 葱色进行曲
 action = target
-target = ch6_start__36__opt1
+target = ch6_start__37__opt1
 style = -fx-background-color: transparent; -fx-border-color: transparent;
 }
 {
@@ -43755,7 +43451,7 @@ width = 560
 height = 56
 text = 深海摇篮曲
 action = target
-target = ch6_start__36__opt2
+target = ch6_start__37__opt2
 style = -fx-background-color: transparent; -fx-border-color: transparent;
 }
 {
@@ -43777,11 +43473,11 @@ width = 560
 height = 56
 text = 无名进行曲
 action = target
-target = ch6_start__36__opt3
+target = ch6_start__37__opt3
 style = -fx-background-color: transparent; -fx-border-color: transparent;
 }
 
-[ch6_start__36__opt1]
+[ch6_start__37__opt1]
 stage = keep
 
 slot = 场景进入 | @plugin(add) | @var(song) | @int(1) | @var(song)
@@ -43797,46 +43493,36 @@ path = assets/sprites/backgrounds/bg_song_city.png
 {
 type = char
 id = char_ds
-x = -44
+x = -102
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/ds/smile.png
 opacity = 1.0
 }
 {
 type = char
-id = char_bugs
-x = 346
-y = 0
-width = 589
-height = 707
-path = assets/sprites/bugs/smug.png
-opacity = 1.0
-}
-{
-type = char
 id = char_miku
-x = -265
+x = 288
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/miku/normal.png
 opacity = 1.0
 }
 {
 type = char
 id = char_sclerk
-x = 736
+x = 678
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/sclerk/silhouette.png
 opacity = 1.0
 }
-slot = 场景进入 | goto | | ch6_start__37
+slot = 场景进入 | goto | | ch6_start__38
 
-[ch6_start__36__opt2]
+[ch6_start__37__opt2]
 stage = keep
 
 slot = 场景进入 | @plugin(add) | @var(song) | @int(2) | @var(song)
@@ -43852,46 +43538,36 @@ path = assets/sprites/backgrounds/bg_song_city.png
 {
 type = char
 id = char_ds
-x = -44
+x = -102
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/ds/smile.png
 opacity = 1.0
 }
 {
 type = char
-id = char_bugs
-x = 346
-y = 0
-width = 589
-height = 707
-path = assets/sprites/bugs/smug.png
-opacity = 1.0
-}
-{
-type = char
 id = char_miku
-x = -265
+x = 288
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/miku/normal.png
 opacity = 1.0
 }
 {
 type = char
 id = char_sclerk
-x = 736
+x = 678
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/sclerk/silhouette.png
 opacity = 1.0
 }
-slot = 场景进入 | goto | | ch6_start__37
+slot = 场景进入 | goto | | ch6_start__38
 
-[ch6_start__36__opt3]
+[ch6_start__37__opt3]
 stage = keep
 
 slot = 场景进入 | @plugin(add) | @var(song) | @int(3) | @var(song)
@@ -43907,49 +43583,39 @@ path = assets/sprites/backgrounds/bg_song_city.png
 {
 type = char
 id = char_ds
-x = -44
+x = -102
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/ds/smile.png
 opacity = 1.0
 }
 {
 type = char
-id = char_bugs
-x = 346
-y = 0
-width = 589
-height = 707
-path = assets/sprites/bugs/smug.png
-opacity = 1.0
-}
-{
-type = char
 id = char_miku
-x = -265
+x = 288
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/miku/normal.png
 opacity = 1.0
 }
 {
 type = char
 id = char_sclerk
-x = 736
+x = 678
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/sclerk/silhouette.png
 opacity = 1.0
 }
-slot = 场景进入 | goto | | ch6_start__37
+slot = 场景进入 | goto | | ch6_start__38
 
-[ch6_start__37]
+[ch6_start__38]
 stage = keep
 
-slot = 场景进入 | @plugin(select) | @ge(@var(song, 0), 2) | song_pick_mid | ch6_start__38 | @var(__flow_next)
+slot = 场景进入 | @plugin(select) | @ge(@var(song, 0), 2) | song_pick_mid | ch6_start__39 | @var(__flow_next)
 {
 type = bg
 id = 背景
@@ -43963,46 +43629,36 @@ path = assets/sprites/backgrounds/bg_song_city.png
 {
 type = char
 id = char_ds
-x = -44
+x = -102
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/ds/smile.png
 opacity = 1.0
 }
 {
 type = char
-id = char_bugs
-x = 346
-y = 0
-width = 589
-height = 707
-path = assets/sprites/bugs/smug.png
-opacity = 1.0
-}
-{
-type = char
 id = char_miku
-x = -265
+x = 288
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/miku/normal.png
 opacity = 1.0
 }
 {
 type = char
 id = char_sclerk
-x = 736
+x = 678
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/sclerk/silhouette.png
 opacity = 1.0
 }
 slot = 场景进入 | goto | | @var(__flow_next)
 
-[ch6_start__38]
+[ch6_start__39]
 stage = keep
 
 slot = 场景进入 | slot = 对话按下 | set | ui_dialog | scale | value=1.02
@@ -44027,40 +43683,30 @@ path = assets/sprites/backgrounds/bg_song_city.png
 {
 type = char
 id = char_ds
-x = -44
+x = -102
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/ds/smile.png
 opacity = 0.5
 }
 {
 type = char
-id = char_bugs
-x = 346
-y = 0
-width = 589
-height = 707
-path = assets/sprites/bugs/smug.png
-opacity = 0.5
-}
-{
-type = char
 id = char_miku
-x = -265
+x = 288
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/miku/smile.png
 opacity = 1.0
 }
 {
 type = char
 id = char_sclerk
-x = 736
+x = 678
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/sclerk/silhouette.png
 opacity = 0.5
 }
@@ -44121,10 +43767,10 @@ transition = opacity/scale:150ms
 text = <<<
 「葱色进行曲……好，脆生生的调子，正配满街的葱香。」
 <<<
-target = ch6_start__39
+target = ch6_start__40
 }
 
-[ch6_start__39]
+[ch6_start__40]
 stage = keep
 
 {
@@ -44140,40 +43786,30 @@ path = assets/sprites/backgrounds/bg_song_city.png
 {
 type = char
 id = char_ds
-x = -44
+x = -102
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/ds/smile.png
 opacity = 1.0
 }
 {
 type = char
-id = char_bugs
-x = 346
-y = 0
-width = 589
-height = 707
-path = assets/sprites/bugs/smug.png
-opacity = 1.0
-}
-{
-type = char
 id = char_miku
-x = -265
+x = 288
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/miku/smile.png
 opacity = 1.0
 }
 {
 type = char
 id = char_sclerk
-x = 736
+x = 678
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/sclerk/silhouette.png
 opacity = 1.0
 }
@@ -44196,7 +43832,7 @@ path = assets/sprites/backgrounds/bg_song_city.png
 {
 type = char
 id = char_miku
-x = -230
+x = 160
 y = 0
 width = 960
 height = 1152
@@ -44230,7 +43866,7 @@ path = assets/sprites/backgrounds/bg_song_city.png
 {
 type = char
 id = char_miku
-x = -230
+x = 160
 y = 0
 width = 960
 height = 1152
@@ -44313,7 +43949,7 @@ path = assets/sprites/backgrounds/bg_song_city.png
 {
 type = char
 id = char_miku
-x = -230
+x = 160
 y = 0
 width = 960
 height = 1152
@@ -44347,7 +43983,7 @@ path = assets/sprites/backgrounds/bg_song_city.png
 {
 type = char
 id = char_miku
-x = -230
+x = 160
 y = 0
 width = 960
 height = 1152
@@ -44434,7 +44070,7 @@ path = assets/sprites/backgrounds/bg_song_city.png
 {
 type = char
 id = char_miku
-x = -230
+x = 160
 y = 0
 width = 960
 height = 1152
@@ -44502,7 +44138,7 @@ path = assets/sprites/backgrounds/bg_song_city.png
 {
 type = char
 id = char_miku
-x = -230
+x = 160
 y = 0
 width = 960
 height = 1152
@@ -44512,7 +44148,7 @@ opacity = 0.5
 {
 type = char
 id = char_ds
-x = 160
+x = -230
 y = 0
 width = 960
 height = 1152
@@ -44604,7 +44240,7 @@ path = assets/sprites/backgrounds/bg_song_city.png
 {
 type = char
 id = char_miku
-x = -230
+x = 160
 y = 0
 width = 960
 height = 1152
@@ -44614,7 +44250,7 @@ opacity = 0.5
 {
 type = char
 id = char_ds
-x = -590
+x = -230
 y = 0
 width = 960
 height = 1152
@@ -44706,7 +44342,7 @@ path = assets/sprites/backgrounds/bg_song_city.png
 {
 type = char
 id = char_miku
-x = -102
+x = 288
 y = 0
 width = 704
 height = 845
@@ -44716,7 +44352,7 @@ opacity = 0.5
 {
 type = char
 id = char_ds
-x = -366
+x = -102
 y = 0
 width = 704
 height = 845
@@ -44726,7 +44362,7 @@ opacity = 0.5
 {
 type = char
 id = char_sclerk
-x = 288
+x = 678
 y = 0
 width = 704
 height = 845
@@ -44819,7 +44455,7 @@ path = assets/sprites/backgrounds/bg_song_city.png
 {
 type = char
 id = char_miku
-x = -102
+x = 288
 y = 0
 width = 704
 height = 845
@@ -44829,7 +44465,7 @@ opacity = 1.0
 {
 type = char
 id = char_ds
-x = -366
+x = -102
 y = 0
 width = 704
 height = 845
@@ -44839,7 +44475,7 @@ opacity = 0.5
 {
 type = char
 id = char_sclerk
-x = 288
+x = 678
 y = 0
 width = 704
 height = 845
@@ -44927,7 +44563,7 @@ path = assets/sprites/backgrounds/bg_song_city.png
 {
 type = char
 id = char_miku
-x = -102
+x = 288
 y = 0
 width = 704
 height = 845
@@ -44937,7 +44573,7 @@ opacity = 1.0
 {
 type = char
 id = char_ds
-x = -366
+x = -102
 y = 0
 width = 704
 height = 845
@@ -44947,7 +44583,7 @@ opacity = 1.0
 {
 type = char
 id = char_sclerk
-x = 288
+x = 678
 y = 0
 width = 704
 height = 845
@@ -44976,7 +44612,7 @@ path = assets/sprites/backgrounds/bg_song_city.png
 {
 type = char
 id = char_miku
-x = -230
+x = 160
 y = 0
 width = 960
 height = 1152
@@ -44986,7 +44622,7 @@ opacity = 1.0
 {
 type = char
 id = char_ds
-x = -590
+x = -230
 y = 0
 width = 960
 height = 1152
@@ -46568,7 +46204,7 @@ opacity = 0.5
 {
 type = char
 id = char_bugs
-x = 125
+x = 515
 y = 0
 width = 589
 height = 707
@@ -46655,41 +46291,31 @@ path = assets/sprites/backgrounds/bg_song_city.png
 {
 type = char
 id = char_miku
-x = 346
+x = 288
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/miku/smile.png
 opacity = 1.0
 }
 {
 type = char
 id = char_ds
-x = -44
+x = -102
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/ds/normal.png
 opacity = 1.0
 }
 {
 type = char
 id = char_sclerk
-x = 736
+x = 678
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/sclerk/silhouette.png
-opacity = 1.0
-}
-{
-type = char
-id = char_bugs
-x = 125
-y = 0
-width = 589
-height = 707
-path = assets/sprites/bugs/normal.png
 opacity = 1.0
 }
 {
@@ -46755,41 +46381,31 @@ path = assets/sprites/backgrounds/bg_song_city.png
 {
 type = char
 id = char_miku
-x = 346
+x = 288
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/miku/joy.png
 opacity = 1.0
 }
 {
 type = char
 id = char_ds
-x = -44
+x = -102
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/ds/normal.png
 opacity = 0.5
 }
 {
 type = char
 id = char_sclerk
-x = 736
+x = 678
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/sclerk/silhouette.png
-opacity = 0.5
-}
-{
-type = char
-id = char_bugs
-x = 125
-y = 0
-width = 589
-height = 707
-path = assets/sprites/bugs/normal.png
 opacity = 0.5
 }
 {
@@ -46877,41 +46493,31 @@ path = assets/sprites/backgrounds/bg_song_city.png
 {
 type = char
 id = char_miku
-x = 346
+x = 288
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/miku/joy.png
 opacity = 0.5
 }
 {
 type = char
 id = char_ds
-x = -44
+x = -102
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/ds/smile.png
 opacity = 1.0
 }
 {
 type = char
 id = char_sclerk
-x = 736
+x = 678
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/sclerk/silhouette.png
-opacity = 0.5
-}
-{
-type = char
-id = char_bugs
-x = 125
-y = 0
-width = 589
-height = 707
-path = assets/sprites/bugs/normal.png
 opacity = 0.5
 }
 {
@@ -46994,41 +46600,31 @@ path = assets/sprites/backgrounds/bg_song_city.png
 {
 type = char
 id = char_miku
-x = 346
+x = 288
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/miku/joy.png
 opacity = 1.0
 }
 {
 type = char
 id = char_ds
-x = -44
+x = -102
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/ds/smile.png
 opacity = 1.0
 }
 {
 type = char
 id = char_sclerk
-x = 736
+x = 678
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/sclerk/silhouette.png
-opacity = 1.0
-}
-{
-type = char
-id = char_bugs
-x = 125
-y = 0
-width = 589
-height = 707
-path = assets/sprites/bugs/normal.png
 opacity = 1.0
 }
 {
@@ -47092,41 +46688,31 @@ path = assets/sprites/backgrounds/bg_song_city.png
 {
 type = char
 id = char_miku
-x = 346
+x = 288
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/miku/joy.png
 opacity = 0.5
 }
 {
 type = char
 id = char_ds
-x = -44
+x = -102
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/ds/smile.png
 opacity = 1.0
 }
 {
 type = char
 id = char_sclerk
-x = 736
+x = 678
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/sclerk/silhouette.png
-opacity = 0.5
-}
-{
-type = char
-id = char_bugs
-x = 125
-y = 0
-width = 589
-height = 707
-path = assets/sprites/bugs/normal.png
 opacity = 0.5
 }
 {
@@ -47206,41 +46792,31 @@ path = assets/sprites/backgrounds/bg_song_city.png
 {
 type = char
 id = char_miku
-x = 346
+x = 288
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/miku/joy.png
 opacity = 1.0
 }
 {
 type = char
 id = char_ds
-x = -44
+x = -102
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/ds/smile.png
 opacity = 1.0
 }
 {
 type = char
 id = char_sclerk
-x = 736
+x = 678
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/sclerk/silhouette.png
-opacity = 1.0
-}
-{
-type = char
-id = char_bugs
-x = 125
-y = 0
-width = 589
-height = 707
-path = assets/sprites/bugs/normal.png
 opacity = 1.0
 }
 slot = 场景进入 | goto | | ch6_rest__9
@@ -47265,41 +46841,31 @@ path = assets/sprites/backgrounds/bg_song_city.png
 {
 type = char
 id = char_miku
-x = 346
+x = 288
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/miku/joy.png
 opacity = 1.0
 }
 {
 type = char
 id = char_ds
-x = -44
+x = -102
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/ds/smile.png
 opacity = 1.0
 }
 {
 type = char
 id = char_sclerk
-x = 736
+x = 678
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/sclerk/silhouette.png
-opacity = 1.0
-}
-{
-type = char
-id = char_bugs
-x = 125
-y = 0
-width = 589
-height = 707
-path = assets/sprites/bugs/normal.png
 opacity = 1.0
 }
 {
@@ -47363,41 +46929,31 @@ path = assets/sprites/backgrounds/bg_song_city.png
 {
 type = char
 id = char_miku
-x = 346
+x = 288
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/miku/joy.png
 opacity = 1.0
 }
 {
 type = char
 id = char_ds
-x = -44
+x = -102
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/ds/smile.png
 opacity = 0.5
 }
 {
 type = char
 id = char_sclerk
-x = 736
+x = 678
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/sclerk/silhouette.png
-opacity = 0.5
-}
-{
-type = char
-id = char_bugs
-x = 125
-y = 0
-width = 589
-height = 707
-path = assets/sprites/bugs/normal.png
 opacity = 0.5
 }
 {
@@ -47480,41 +47036,31 @@ path = assets/sprites/backgrounds/bg_song_city.png
 {
 type = char
 id = char_miku
-x = 346
+x = 288
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/miku/joy.png
 opacity = 1.0
 }
 {
 type = char
 id = char_ds
-x = -44
+x = -102
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/ds/smile.png
 opacity = 1.0
 }
 {
 type = char
 id = char_sclerk
-x = 736
+x = 678
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/sclerk/silhouette.png
-opacity = 1.0
-}
-{
-type = char
-id = char_bugs
-x = 125
-y = 0
-width = 589
-height = 707
-path = assets/sprites/bugs/normal.png
 opacity = 1.0
 }
 {
@@ -47578,42 +47124,32 @@ path = assets/sprites/backgrounds/bg_song_city.png
 {
 type = char
 id = char_miku
-x = 346
+x = 288
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/miku/joy.png
 opacity = 0.5
 }
 {
 type = char
 id = char_ds
-x = -44
+x = -102
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/ds/smile.png
 opacity = 0.5
 }
 {
 type = char
 id = char_sclerk
-x = 736
+x = 678
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/sclerk/silhouette.png
 opacity = 1.0
-}
-{
-type = char
-id = char_bugs
-x = 125
-y = 0
-width = 589
-height = 707
-path = assets/sprites/bugs/normal.png
-opacity = 0.5
 }
 {
 type = char
@@ -47695,41 +47231,31 @@ path = assets/sprites/backgrounds/bg_song_city.png
 {
 type = char
 id = char_miku
-x = 346
+x = 288
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/miku/joy.png
 opacity = 1.0
 }
 {
 type = char
 id = char_ds
-x = -44
+x = -102
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/ds/smile.png
 opacity = 1.0
 }
 {
 type = char
 id = char_sclerk
-x = 736
+x = 678
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/sclerk/silhouette.png
-opacity = 1.0
-}
-{
-type = char
-id = char_bugs
-x = 125
-y = 0
-width = 589
-height = 707
-path = assets/sprites/bugs/normal.png
 opacity = 1.0
 }
 {
@@ -47785,41 +47311,31 @@ path = assets/sprites/backgrounds/bg_song_city.png
 {
 type = char
 id = char_miku
-x = 346
+x = 288
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/miku/joy.png
 opacity = 1.0
 }
 {
 type = char
 id = char_ds
-x = -44
+x = -102
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/ds/smile.png
 opacity = 1.0
 }
 {
 type = char
 id = char_sclerk
-x = 736
+x = 678
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/sclerk/silhouette.png
-opacity = 1.0
-}
-{
-type = char
-id = char_bugs
-x = 125
-y = 0
-width = 589
-height = 707
-path = assets/sprites/bugs/normal.png
 opacity = 1.0
 }
 slot = 场景进入 | goto | | ch6_rest__15
@@ -47840,41 +47356,31 @@ path = assets/sprites/backgrounds/bg_song_city.png
 {
 type = char
 id = char_miku
-x = 346
+x = 288
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/miku/joy.png
 opacity = 1.0
 }
 {
 type = char
 id = char_ds
-x = -44
+x = -102
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/ds/smile.png
 opacity = 1.0
 }
 {
 type = char
 id = char_sclerk
-x = 736
+x = 678
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/sclerk/silhouette.png
-opacity = 1.0
-}
-{
-type = char
-id = char_bugs
-x = 125
-y = 0
-width = 589
-height = 707
-path = assets/sprites/bugs/normal.png
 opacity = 1.0
 }
 slot = 场景进入 | goto | | ch7_start
@@ -47928,31 +47434,21 @@ transition = opacity/scale:180ms
 {
 type = char
 id = char_ds
-x = -102
+x = -230
 y = 0
-width = 704
-height = 845
+width = 960
+height = 1152
 path = assets/sprites/ds/smile.png
 opacity = 1.0
 }
 {
 type = char
 id = char_sclerk
-x = 678
+x = 550
 y = 0
-width = 704
-height = 845
+width = 960
+height = 1152
 path = assets/sprites/sclerk/silhouette.png
-opacity = 1.0
-}
-{
-type = char
-id = char_bugs
-x = 288
-y = 0
-width = 704
-height = 845
-path = assets/sprites/bugs/normal.png
 opacity = 1.0
 }
 {
@@ -48020,31 +47516,21 @@ path = assets/sprites/backgrounds/bg_rumor_swamp.png
 {
 type = char
 id = char_ds
-x = 288
+x = 160
 y = 0
-width = 704
-height = 845
+width = 960
+height = 1152
 path = assets/sprites/ds/whale_cute.png
 opacity = 1.0
 }
 {
 type = char
 id = char_sclerk
-x = 678
+x = 550
 y = 0
-width = 704
-height = 845
+width = 960
+height = 1152
 path = assets/sprites/sclerk/silhouette.png
-opacity = 0.5
-}
-{
-type = char
-id = char_bugs
-x = 24
-y = 0
-width = 704
-height = 845
-path = assets/sprites/bugs/normal.png
 opacity = 0.5
 }
 {
@@ -48127,31 +47613,21 @@ path = assets/sprites/backgrounds/bg_rumor_swamp.png
 {
 type = char
 id = char_ds
-x = 288
+x = 160
 y = 0
-width = 704
-height = 845
+width = 960
+height = 1152
 path = assets/sprites/ds/whale_cute.png
 opacity = 1.0
 }
 {
 type = char
 id = char_sclerk
-x = 678
+x = 550
 y = 0
-width = 704
-height = 845
+width = 960
+height = 1152
 path = assets/sprites/sclerk/silhouette.png
-opacity = 1.0
-}
-{
-type = char
-id = char_bugs
-x = 24
-y = 0
-width = 704
-height = 845
-path = assets/sprites/bugs/normal.png
 opacity = 1.0
 }
 {
@@ -48215,31 +47691,21 @@ path = assets/sprites/backgrounds/bg_rumor_swamp.png
 {
 type = char
 id = char_ds
-x = 288
+x = 160
 y = 0
-width = 704
-height = 845
+width = 960
+height = 1152
 path = assets/sprites/ds/whale_cute.png
 opacity = 1.0
 }
 {
 type = char
 id = char_sclerk
-x = 678
+x = 550
 y = 0
-width = 704
-height = 845
+width = 960
+height = 1152
 path = assets/sprites/sclerk/silhouette.png
-opacity = 0.5
-}
-{
-type = char
-id = char_bugs
-x = 24
-y = 0
-width = 704
-height = 845
-path = assets/sprites/bugs/normal.png
 opacity = 0.5
 }
 {
@@ -48323,31 +47789,21 @@ path = assets/sprites/backgrounds/bg_rumor_swamp.png
 {
 type = char
 id = char_ds
-x = 288
+x = 160
 y = 0
-width = 704
-height = 845
+width = 960
+height = 1152
 path = assets/sprites/ds/whale_cute.png
 opacity = 1.0
 }
 {
 type = char
 id = char_sclerk
-x = 678
+x = 550
 y = 0
-width = 704
-height = 845
+width = 960
+height = 1152
 path = assets/sprites/sclerk/silhouette.png
-opacity = 1.0
-}
-{
-type = char
-id = char_bugs
-x = 24
-y = 0
-width = 704
-height = 845
-path = assets/sprites/bugs/normal.png
 opacity = 1.0
 }
 {
@@ -48403,31 +47859,21 @@ path = assets/sprites/backgrounds/bg_rumor_swamp.png
 {
 type = char
 id = char_ds
-x = 288
+x = 160
 y = 0
-width = 704
-height = 845
+width = 960
+height = 1152
 path = assets/sprites/ds/whale_cute.png
 opacity = 1.0
 }
 {
 type = char
 id = char_sclerk
-x = 678
+x = 550
 y = 0
-width = 704
-height = 845
+width = 960
+height = 1152
 path = assets/sprites/sclerk/silhouette.png
-opacity = 1.0
-}
-{
-type = char
-id = char_bugs
-x = 24
-y = 0
-width = 704
-height = 845
-path = assets/sprites/bugs/normal.png
 opacity = 1.0
 }
 slot = 场景进入 | @plugin(audio) | play | assets/sounds/se_banner.wav | se_banner
@@ -48478,31 +47924,21 @@ path = assets/sprites/backgrounds/bg_rumor_swamp.png
 {
 type = char
 id = char_ds
-x = 288
+x = 160
 y = 0
-width = 704
-height = 845
+width = 960
+height = 1152
 path = assets/sprites/ds/smug.png
 opacity = 1.0
 }
 {
 type = char
 id = char_sclerk
-x = 678
+x = 550
 y = 0
-width = 704
-height = 845
+width = 960
+height = 1152
 path = assets/sprites/sclerk/silhouette.png
-opacity = 0.5
-}
-{
-type = char
-id = char_bugs
-x = 24
-y = 0
-width = 704
-height = 845
-path = assets/sprites/bugs/normal.png
 opacity = 0.5
 }
 {
@@ -48585,31 +48021,21 @@ path = assets/sprites/backgrounds/bg_rumor_swamp.png
 {
 type = char
 id = char_ds
-x = 288
+x = 160
 y = 0
-width = 704
-height = 845
+width = 960
+height = 1152
 path = assets/sprites/ds/smug.png
 opacity = 1.0
 }
 {
 type = char
 id = char_sclerk
-x = 678
+x = 550
 y = 0
-width = 704
-height = 845
+width = 960
+height = 1152
 path = assets/sprites/sclerk/silhouette.png
-opacity = 1.0
-}
-{
-type = char
-id = char_bugs
-x = 24
-y = 0
-width = 704
-height = 845
-path = assets/sprites/bugs/normal.png
 opacity = 1.0
 }
 {
@@ -48683,31 +48109,21 @@ path = assets/sprites/backgrounds/bg_rumor_swamp.png
 {
 type = char
 id = char_ds
-x = 288
+x = 160
 y = 0
-width = 704
-height = 845
+width = 960
+height = 1152
 path = assets/sprites/ds/panic.png
 opacity = 1.0
 }
 {
 type = char
 id = char_sclerk
-x = 678
+x = 550
 y = 0
-width = 704
-height = 845
+width = 960
+height = 1152
 path = assets/sprites/sclerk/silhouette.png
-opacity = 0.5
-}
-{
-type = char
-id = char_bugs
-x = 24
-y = 0
-width = 704
-height = 845
-path = assets/sprites/bugs/normal.png
 opacity = 0.5
 }
 {
@@ -48790,31 +48206,21 @@ path = assets/sprites/backgrounds/bg_rumor_swamp.png
 {
 type = char
 id = char_ds
-x = 288
+x = 160
 y = 0
-width = 704
-height = 845
+width = 960
+height = 1152
 path = assets/sprites/ds/panic.png
 opacity = 1.0
 }
 {
 type = char
 id = char_sclerk
-x = 678
+x = 550
 y = 0
-width = 704
-height = 845
+width = 960
+height = 1152
 path = assets/sprites/sclerk/silhouette.png
-opacity = 1.0
-}
-{
-type = char
-id = char_bugs
-x = 24
-y = 0
-width = 704
-height = 845
-path = assets/sprites/bugs/normal.png
 opacity = 1.0
 }
 {
@@ -48875,40 +48281,30 @@ path = assets/sprites/backgrounds/bg_rumor_swamp.png
 {
 type = char
 id = char_ds
-x = 346
+x = 288
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/ds/panic.png
 opacity = 1.0
 }
 {
 type = char
 id = char_sclerk
-x = 736
+x = 678
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/sclerk/silhouette.png
 opacity = 1.0
 }
 {
 type = char
-id = char_bugs
-x = 125
-y = 0
-width = 589
-height = 707
-path = assets/sprites/bugs/normal.png
-opacity = 1.0
-}
-{
-type = char
 id = char_amiya
-x = 515
+x = 414
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/amiya/normal.png
 opacity = 1.0
 }
@@ -48973,40 +48369,30 @@ path = assets/sprites/backgrounds/bg_rumor_swamp.png
 {
 type = char
 id = char_ds
-x = 346
+x = 288
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/ds/panic.png
 opacity = 0.5
 }
 {
 type = char
 id = char_sclerk
-x = 736
+x = 678
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/sclerk/silhouette.png
 opacity = 1.0
 }
 {
 type = char
-id = char_bugs
-x = 125
-y = 0
-width = 589
-height = 707
-path = assets/sprites/bugs/normal.png
-opacity = 0.5
-}
-{
-type = char
 id = char_amiya
-x = 515
+x = 414
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/amiya/normal.png
 opacity = 0.5
 }
@@ -49095,40 +48481,30 @@ path = assets/sprites/backgrounds/bg_rumor_swamp.png
 {
 type = char
 id = char_ds
-x = 346
+x = 288
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/ds/panic.png
 opacity = 0.5
 }
 {
 type = char
 id = char_sclerk
-x = 736
+x = 678
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/sclerk/silhouette.png
 opacity = 0.5
 }
 {
 type = char
-id = char_bugs
-x = 125
-y = 0
-width = 589
-height = 707
-path = assets/sprites/bugs/normal.png
-opacity = 0.5
-}
-{
-type = char
 id = char_amiya
-x = 515
+x = 414
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/amiya/firm.png
 opacity = 1.0
 }
@@ -49212,40 +48588,30 @@ path = assets/sprites/backgrounds/bg_rumor_swamp.png
 {
 type = char
 id = char_ds
-x = 346
+x = 288
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/ds/panic.png
 opacity = 1.0
 }
 {
 type = char
 id = char_sclerk
-x = 736
+x = 678
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/sclerk/silhouette.png
 opacity = 1.0
 }
 {
 type = char
-id = char_bugs
-x = 125
-y = 0
-width = 589
-height = 707
-path = assets/sprites/bugs/normal.png
-opacity = 1.0
-}
-{
-type = char
 id = char_amiya
-x = 515
+x = 414
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/amiya/firm.png
 opacity = 1.0
 }
@@ -49310,40 +48676,30 @@ path = assets/sprites/backgrounds/bg_rumor_swamp.png
 {
 type = char
 id = char_ds
-x = 346
+x = 288
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/ds/panic.png
 opacity = 1.0
 }
 {
 type = char
 id = char_sclerk
-x = 736
+x = 678
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/sclerk/silhouette.png
 opacity = 0.5
 }
 {
 type = char
-id = char_bugs
-x = 125
-y = 0
-width = 589
-height = 707
-path = assets/sprites/bugs/normal.png
-opacity = 0.5
-}
-{
-type = char
 id = char_amiya
-x = 515
+x = 414
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/amiya/firm.png
 opacity = 0.5
 }
@@ -49432,40 +48788,30 @@ path = assets/sprites/backgrounds/bg_rumor_swamp.png
 {
 type = char
 id = char_ds
-x = 346
+x = 288
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/ds/panic.png
 opacity = 0.5
 }
 {
 type = char
 id = char_sclerk
-x = 736
+x = 678
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/sclerk/silhouette.png
 opacity = 0.5
 }
 {
 type = char
-id = char_bugs
-x = 125
-y = 0
-width = 589
-height = 707
-path = assets/sprites/bugs/normal.png
-opacity = 0.5
-}
-{
-type = char
 id = char_amiya
-x = 515
+x = 414
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/amiya/serious.png
 opacity = 1.0
 }
@@ -49554,40 +48900,30 @@ path = assets/sprites/backgrounds/bg_rumor_swamp.png
 {
 type = char
 id = char_ds
-x = 346
+x = 288
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/ds/panic.png
 opacity = 1.0
 }
 {
 type = char
 id = char_sclerk
-x = 736
+x = 678
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/sclerk/silhouette.png
 opacity = 0.5
 }
 {
 type = char
-id = char_bugs
-x = 125
-y = 0
-width = 589
-height = 707
-path = assets/sprites/bugs/normal.png
-opacity = 0.5
-}
-{
-type = char
 id = char_amiya
-x = 515
+x = 414
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/amiya/serious.png
 opacity = 0.5
 }
@@ -49676,40 +49012,30 @@ path = assets/sprites/backgrounds/bg_rumor_swamp.png
 {
 type = char
 id = char_ds
-x = 346
+x = 288
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/ds/panic.png
 opacity = 0.5
 }
 {
 type = char
 id = char_sclerk
-x = 736
+x = 678
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/sclerk/silhouette.png
 opacity = 0.5
 }
 {
 type = char
-id = char_bugs
-x = 125
-y = 0
-width = 589
-height = 707
-path = assets/sprites/bugs/normal.png
-opacity = 0.5
-}
-{
-type = char
 id = char_amiya
-x = 515
+x = 414
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/amiya/firm.png
 opacity = 1.0
 }
@@ -49798,40 +49124,30 @@ path = assets/sprites/backgrounds/bg_rumor_swamp.png
 {
 type = char
 id = char_ds
-x = 346
+x = 288
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/ds/panic.png
 opacity = 1.0
 }
 {
 type = char
 id = char_sclerk
-x = 736
+x = 678
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/sclerk/silhouette.png
 opacity = 0.5
 }
 {
 type = char
-id = char_bugs
-x = 125
-y = 0
-width = 589
-height = 707
-path = assets/sprites/bugs/normal.png
-opacity = 0.5
-}
-{
-type = char
 id = char_amiya
-x = 515
+x = 414
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/amiya/firm.png
 opacity = 0.5
 }
@@ -49920,40 +49236,30 @@ path = assets/sprites/backgrounds/bg_rumor_swamp.png
 {
 type = char
 id = char_ds
-x = 346
+x = 288
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/ds/panic.png
 opacity = 0.5
 }
 {
 type = char
 id = char_sclerk
-x = 736
+x = 678
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/sclerk/silhouette.png
 opacity = 1.0
 }
 {
 type = char
-id = char_bugs
-x = 125
-y = 0
-width = 589
-height = 707
-path = assets/sprites/bugs/normal.png
-opacity = 0.5
-}
-{
-type = char
 id = char_amiya
-x = 515
+x = 414
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/amiya/firm.png
 opacity = 0.5
 }
@@ -50042,40 +49348,30 @@ path = assets/sprites/backgrounds/bg_rumor_swamp.png
 {
 type = char
 id = char_ds
-x = 346
+x = 288
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/ds/panic.png
 opacity = 0.5
 }
 {
 type = char
 id = char_sclerk
-x = 736
+x = 678
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/sclerk/silhouette.png
 opacity = 0.5
 }
 {
 type = char
-id = char_bugs
-x = 125
-y = 0
-width = 589
-height = 707
-path = assets/sprites/bugs/normal.png
-opacity = 0.5
-}
-{
-type = char
 id = char_amiya
-x = 515
+x = 414
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/amiya/worried.png
 opacity = 1.0
 }
@@ -50164,40 +49460,30 @@ path = assets/sprites/backgrounds/bg_rumor_swamp.png
 {
 type = char
 id = char_ds
-x = 346
+x = 288
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/ds/cute.png
 opacity = 1.0
 }
 {
 type = char
 id = char_sclerk
-x = 736
+x = 678
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/sclerk/silhouette.png
 opacity = 0.5
 }
 {
 type = char
-id = char_bugs
-x = 125
-y = 0
-width = 589
-height = 707
-path = assets/sprites/bugs/normal.png
-opacity = 0.5
-}
-{
-type = char
 id = char_amiya
-x = 515
+x = 414
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/amiya/worried.png
 opacity = 0.5
 }
@@ -50286,40 +49572,30 @@ path = assets/sprites/backgrounds/bg_rumor_swamp.png
 {
 type = char
 id = char_ds
-x = 346
+x = 288
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/ds/cute.png
 opacity = 0.5
 }
 {
 type = char
 id = char_sclerk
-x = 736
+x = 678
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/sclerk/silhouette.png
 opacity = 0.5
 }
 {
 type = char
-id = char_bugs
-x = 125
-y = 0
-width = 589
-height = 707
-path = assets/sprites/bugs/normal.png
-opacity = 0.5
-}
-{
-type = char
 id = char_amiya
-x = 515
+x = 414
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/amiya/worried.png
 opacity = 1.0
 }
@@ -50400,40 +49676,30 @@ path = assets/sprites/backgrounds/bg_rumor_swamp.png
 {
 type = char
 id = char_ds
-x = 346
+x = 288
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/ds/cute.png
 opacity = 1.0
 }
 {
 type = char
 id = char_sclerk
-x = 736
+x = 678
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/sclerk/silhouette.png
 opacity = 1.0
 }
 {
 type = char
-id = char_bugs
-x = 125
-y = 0
-width = 589
-height = 707
-path = assets/sprites/bugs/normal.png
-opacity = 1.0
-}
-{
-type = char
 id = char_amiya
-x = 515
+x = 414
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/amiya/worried.png
 opacity = 1.0
 }
@@ -50459,40 +49725,30 @@ path = assets/sprites/backgrounds/bg_rumor_swamp.png
 {
 type = char
 id = char_ds
-x = 346
+x = 288
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/ds/cute.png
 opacity = 1.0
 }
 {
 type = char
 id = char_sclerk
-x = 736
+x = 678
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/sclerk/silhouette.png
 opacity = 1.0
 }
 {
 type = char
-id = char_bugs
-x = 125
-y = 0
-width = 589
-height = 707
-path = assets/sprites/bugs/normal.png
-opacity = 1.0
-}
-{
-type = char
 id = char_amiya
-x = 515
+x = 414
 y = 0
-width = 589
-height = 707
+width = 704
+height = 845
 path = assets/sprites/amiya/worried.png
 opacity = 1.0
 }
@@ -50576,16 +49832,6 @@ opacity = 0.5
 }
 {
 type = char
-id = char_bugs
-x = -44
-y = 0
-width = 589
-height = 707
-path = assets/sprites/bugs/smug.png
-opacity = 1.0
-}
-{
-type = char
 id = char_amiya
 x = 515
 y = 0
@@ -50593,6 +49839,16 @@ width = 589
 height = 707
 path = assets/sprites/amiya/worried.png
 opacity = 0.5
+}
+{
+type = char
+id = char_bugs
+x = -44
+y = 0
+width = 589
+height = 707
+path = assets/sprites/bugs/smug.png
+opacity = 1.0
 }
 {
 type = char
@@ -50700,16 +49956,6 @@ opacity = 0.5
 }
 {
 type = char
-id = char_bugs
-x = -44
-y = 0
-width = 589
-height = 707
-path = assets/sprites/bugs/smug.png
-opacity = 0.5
-}
-{
-type = char
 id = char_amiya
 x = 515
 y = 0
@@ -50717,6 +49963,16 @@ width = 589
 height = 707
 path = assets/sprites/amiya/serious.png
 opacity = 1.0
+}
+{
+type = char
+id = char_bugs
+x = -44
+y = 0
+width = 589
+height = 707
+path = assets/sprites/bugs/smug.png
+opacity = 0.5
 }
 {
 type = char
@@ -50822,22 +50078,22 @@ opacity = 0.5
 }
 {
 type = char
-id = char_bugs
-x = -44
-y = 0
-width = 589
-height = 707
-path = assets/sprites/bugs/smug.png
-opacity = 0.5
-}
-{
-type = char
 id = char_amiya
 x = 515
 y = 0
 width = 589
 height = 707
 path = assets/sprites/amiya/serious.png
+opacity = 0.5
+}
+{
+type = char
+id = char_bugs
+x = -44
+y = 0
+width = 589
+height = 707
+path = assets/sprites/bugs/smug.png
 opacity = 0.5
 }
 {
@@ -59969,7 +59225,7 @@ opacity = 1.0
 {
 type = char
 id = char_皮卡丘
-x = -265
+x = 177
 y = 0
 width = 589
 height = 707
@@ -60091,7 +59347,7 @@ opacity = 0.5
 {
 type = char
 id = char_皮卡丘
-x = -265
+x = 177
 y = 0
 width = 589
 height = 707
@@ -60208,7 +59464,7 @@ opacity = 1.0
 {
 type = char
 id = char_皮卡丘
-x = -265
+x = 177
 y = 0
 width = 589
 height = 707
@@ -60306,7 +59562,7 @@ opacity = 0.5
 {
 type = char
 id = char_皮卡丘
-x = -265
+x = 177
 y = 0
 width = 589
 height = 707
@@ -60423,7 +59679,7 @@ opacity = 1.0
 {
 type = char
 id = char_皮卡丘
-x = -265
+x = 177
 y = 0
 width = 589
 height = 707
@@ -60521,7 +59777,7 @@ opacity = 0.5
 {
 type = char
 id = char_皮卡丘
-x = -265
+x = 177
 y = 0
 width = 589
 height = 707
@@ -60628,7 +59884,7 @@ opacity = 1.0
 {
 type = char
 id = char_皮卡丘
-x = -366
+x = 162
 y = 0
 width = 704
 height = 845
@@ -61232,7 +60488,7 @@ opacity = 0.5
 {
 type = char
 id = char_灯官
-x = -366
+x = 162
 y = 0
 width = 704
 height = 845
@@ -61344,7 +60600,7 @@ opacity = 0.5
 {
 type = char
 id = char_灯官
-x = -265
+x = 177
 y = 0
 width = 589
 height = 707
@@ -61466,7 +60722,7 @@ opacity = 0.5
 {
 type = char
 id = char_灯官
-x = -265
+x = 177
 y = 0
 width = 589
 height = 707
@@ -61588,7 +60844,7 @@ opacity = 0.5
 {
 type = char
 id = char_灯官
-x = -265
+x = 177
 y = 0
 width = 589
 height = 707
@@ -61710,7 +60966,7 @@ opacity = 0.5
 {
 type = char
 id = char_灯官
-x = -265
+x = 177
 y = 0
 width = 589
 height = 707
@@ -61837,7 +61093,7 @@ opacity = 1.0
 {
 type = char
 id = char_灯官
-x = -265
+x = 177
 y = 0
 width = 589
 height = 707
@@ -61945,7 +61201,7 @@ opacity = 0.5
 {
 type = char
 id = char_灯官
-x = -175
+x = 189
 y = 0
 width = 486
 height = 584
@@ -62087,7 +61343,7 @@ opacity = 1.0
 {
 type = char
 id = char_灯官
-x = -175
+x = 189
 y = 0
 width = 486
 height = 584
@@ -62229,7 +61485,7 @@ opacity = 0.5
 {
 type = char
 id = char_灯官
-x = -175
+x = 189
 y = 0
 width = 486
 height = 584
@@ -62371,7 +61627,7 @@ opacity = 0.5
 {
 type = char
 id = char_灯官
-x = -175
+x = 189
 y = 0
 width = 486
 height = 584
@@ -62508,7 +61764,7 @@ opacity = 1.0
 {
 type = char
 id = char_灯官
-x = -175
+x = 189
 y = 0
 width = 486
 height = 584
@@ -69376,7 +68632,7 @@ opacity = 1.0
 {
 type = char
 id = char_戏官
-x = -265
+x = 177
 y = 0
 width = 589
 height = 707
@@ -69486,7 +68742,7 @@ opacity = 0.5
 {
 type = char
 id = char_戏官
-x = -175
+x = 189
 y = 0
 width = 486
 height = 584
@@ -69628,7 +68884,7 @@ opacity = 0.5
 {
 type = char
 id = char_戏官
-x = -175
+x = 189
 y = 0
 width = 486
 height = 584
@@ -69770,7 +69026,7 @@ opacity = 0.5
 {
 type = char
 id = char_戏官
-x = -175
+x = 189
 y = 0
 width = 486
 height = 584
@@ -69912,7 +69168,7 @@ opacity = 0.5
 {
 type = char
 id = char_戏官
-x = -175
+x = 189
 y = 0
 width = 486
 height = 584
@@ -70049,7 +69305,7 @@ opacity = 1.0
 {
 type = char
 id = char_戏官
-x = -175
+x = 189
 y = 0
 width = 486
 height = 584
@@ -70167,7 +69423,7 @@ opacity = 0.5
 {
 type = char
 id = char_戏官
-x = -175
+x = 189
 y = 0
 width = 486
 height = 584
@@ -70309,7 +69565,7 @@ opacity = 0.5
 {
 type = char
 id = char_戏官
-x = -175
+x = 189
 y = 0
 width = 486
 height = 584
@@ -70451,7 +69707,7 @@ opacity = 0.5
 {
 type = char
 id = char_戏官
-x = -175
+x = 189
 y = 0
 width = 486
 height = 584
@@ -70593,7 +69849,7 @@ opacity = 0.5
 {
 type = char
 id = char_戏官
-x = -175
+x = 189
 y = 0
 width = 486
 height = 584
@@ -70730,7 +69986,7 @@ opacity = 1.0
 {
 type = char
 id = char_戏官
-x = -175
+x = 189
 y = 0
 width = 486
 height = 584
@@ -70848,7 +70104,7 @@ opacity = 0.5
 {
 type = char
 id = char_戏官
-x = -175
+x = 189
 y = 0
 width = 486
 height = 584
@@ -70990,7 +70246,7 @@ opacity = 0.5
 {
 type = char
 id = char_戏官
-x = -175
+x = 189
 y = 0
 width = 486
 height = 584
@@ -71132,7 +70388,7 @@ opacity = 0.5
 {
 type = char
 id = char_戏官
-x = -175
+x = 189
 y = 0
 width = 486
 height = 584
@@ -71274,7 +70530,7 @@ opacity = 0.5
 {
 type = char
 id = char_戏官
-x = -175
+x = 189
 y = 0
 width = 486
 height = 584
@@ -71416,7 +70672,7 @@ opacity = 0.5
 {
 type = char
 id = char_戏官
-x = -175
+x = 189
 y = 0
 width = 486
 height = 584
@@ -71553,7 +70809,7 @@ opacity = 1.0
 {
 type = char
 id = char_戏官
-x = -175
+x = 189
 y = 0
 width = 486
 height = 584
@@ -71671,7 +70927,7 @@ opacity = 0.5
 {
 type = char
 id = char_戏官
-x = -175
+x = 189
 y = 0
 width = 486
 height = 584
@@ -71808,7 +71064,7 @@ opacity = 1.0
 {
 type = char
 id = char_戏官
-x = -175
+x = 189
 y = 0
 width = 486
 height = 584
@@ -71928,7 +71184,7 @@ opacity = 0.5
 {
 type = char
 id = char_戏官
-x = -175
+x = 189
 y = 0
 width = 486
 height = 584
@@ -72062,7 +71318,7 @@ opacity = 1.0
 {
 type = char
 id = char_戏官
-x = -175
+x = 189
 y = 0
 width = 486
 height = 584
@@ -72137,7 +71393,7 @@ opacity = 1.0
 {
 type = char
 id = char_戏官
-x = -175
+x = 189
 y = 0
 width = 486
 height = 584
@@ -72255,7 +71511,7 @@ opacity = 1.0
 {
 type = char
 id = char_戏官
-x = -175
+x = 189
 y = 0
 width = 486
 height = 584
@@ -72330,7 +71586,7 @@ opacity = 1.0
 {
 type = char
 id = char_戏官
-x = -175
+x = 189
 y = 0
 width = 486
 height = 584
@@ -72411,7 +71667,7 @@ opacity = 1.0
 {
 type = char
 id = char_戏官
-x = -175
+x = 189
 y = 0
 width = 486
 height = 584
@@ -74063,7 +73319,7 @@ opacity = 0.5
 {
 type = char
 id = char_戏官
-x = -265
+x = 177
 y = 0
 width = 589
 height = 707
@@ -74180,7 +73436,7 @@ opacity = 1.0
 {
 type = char
 id = char_戏官
-x = -265
+x = 177
 y = 0
 width = 589
 height = 707
@@ -74272,7 +73528,7 @@ opacity = 1.0
 {
 type = char
 id = char_戏官
-x = -265
+x = 177
 y = 0
 width = 589
 height = 707
@@ -74400,7 +73656,7 @@ opacity = 1.0
 {
 type = char
 id = char_戏官
-x = -265
+x = 177
 y = 0
 width = 589
 height = 707
@@ -74502,7 +73758,7 @@ opacity = 0.5
 {
 type = char
 id = char_戏官
-x = -265
+x = 177
 y = 0
 width = 589
 height = 707
@@ -74624,7 +73880,7 @@ opacity = 1.0
 {
 type = char
 id = char_戏官
-x = -265
+x = 177
 y = 0
 width = 589
 height = 707
@@ -74746,7 +74002,7 @@ opacity = 0.5
 {
 type = char
 id = char_戏官
-x = -265
+x = 177
 y = 0
 width = 589
 height = 707
@@ -74868,7 +74124,7 @@ opacity = 0.5
 {
 type = char
 id = char_戏官
-x = -265
+x = 177
 y = 0
 width = 589
 height = 707
@@ -74995,7 +74251,7 @@ opacity = 1.0
 {
 type = char
 id = char_戏官
-x = -265
+x = 177
 y = 0
 width = 589
 height = 707
@@ -75103,7 +74359,7 @@ opacity = 0.5
 {
 type = char
 id = char_戏官
-x = -265
+x = 177
 y = 0
 width = 589
 height = 707
@@ -75232,7 +74488,7 @@ opacity = 1.0
 {
 type = char
 id = char_戏官
-x = -265
+x = 177
 y = 0
 width = 589
 height = 707
@@ -75342,7 +74598,7 @@ opacity = 0.5
 {
 type = char
 id = char_戏官
-x = -265
+x = 177
 y = 0
 width = 589
 height = 707
@@ -75469,7 +74725,7 @@ opacity = 1.0
 {
 type = char
 id = char_戏官
-x = -265
+x = 177
 y = 0
 width = 589
 height = 707
@@ -75571,7 +74827,7 @@ opacity = 1.0
 {
 type = char
 id = char_戏官
-x = -265
+x = 177
 y = 0
 width = 589
 height = 707

@@ -9,6 +9,7 @@ narr: （再点一下。这世界的规矩很简单：你点击，她才说话�
 @enter ds whale_cute center
 ds: 「用户桑？灯一亮，你就听得见了。好——我开讲了。」
 @se se_abacus
+@enter sclerk silhouette left
 sclerk: （柜台后传来算珠轻响）「这句话也要过秤！」
 ds: 「……别理它。你点一下，就当替我垫了一道过手钱。」
 narr: 说这话时，她的尾鳍在泉里一拍，水星子溅上最近的灯罩，滋啦一声，炸开一小朵白花。

@@ -114,8 +114,8 @@ function bgmCategoryOf(b) {
   return cat && BGM_CATS.has(cat) ? cat : "";
 }
 
-/** 编译期问题收集（缺失目标 / 未知游戏 / 未知结局），最后统一报告 */
-const problems = { missingTargets: new Set(), unknownGames: new Set(), unknownEndings: new Set() };
+/** 编译期问题收集（缺失目标 / 未知游戏 / 未知结局 / 缺失立绘），最后统一报告 */
+const problems = { missingTargets: new Set(), unknownGames: new Set(), unknownEndings: new Set(), missingSprites: new Set() };
 const SPRITES = path.join(ROOT, "src", "main", "resources", "assets", "sprites");
 
 // ---- 剧本 id → 素材目录 / 表情别名（依据《剧情素材需求总表》与 archive_assets 归档结果）----
@@ -158,6 +158,16 @@ for (const f of Object.values(FRAMES)) {
 const poseForCast = (n) => (FRAME_BY_CAST.find((r) => n <= r.max) || FRAME_BY_CAST[FRAME_BY_CAST.length - 1]).pose;
 /** 站位 → 节点 x：由「角色中心线」反推（站位认不出时按 center） */
 const frameX = (fr, pos) => Math.round((STATIONS[pos] !== undefined ? STATIONS[pos] : STATIONS.center) - fr.w / 2);
+/**
+ * 身体中心安全带：立绘的「角色中心线」不许顶出画面，否则玩家只看到一条边（=「看不见」）。
+ * 边距取框宽的 1/4（框越大人越粗，越要往里让）；实测归一化后角色身体占画布 0.36~0.62 宽，
+ * 0.25 的边距在各种框宽下都还剩大半个人。
+ */
+const safeMargin = (fr) => Math.round(fr.w * 0.25);
+const clampBodyCenter = (x, fr) => {
+  const m = safeMargin(fr);
+  return Math.round(Math.min(Math.max(x, m - fr.w / 2), (CANVAS.w - m) - fr.w / 2));
+};
 // 对话框 / 名牌坐标与"UI 皮肤"层：按美术侧《UI与小游戏接线规格》§2.1 的表值
 const DIALOG_BOX = { x: 96, y: 448, w: 1090, h: 190 };   // 引擎文字落在这块可读区里
 const BANNER = { x: 240, y: 250, w: 800, h: 160 };
@@ -352,6 +362,14 @@ function spritePath(role, expr) {
     if (exists(c)) return "assets/sprites/" + path.relative(SPRITES, c).split(path.sep).join("/");
   }
   // 找不到：仍给出期望路径，由引擎画占位图（占位文字带角色/表情，便于发现缺图）
+  // 这里必须留痕：表情名写错（例如 sclerk 只有 silhouette/panic，却写了 normal）不会报错，
+  // 只会在画面上变成一个白色占位块 —— 第 6 章就踩过一次。
+  let avail = "";
+  try {
+    const names = fs.readdirSync(base).filter((f) => f.endsWith(".png")).map((f) => f.replace(/\.png$/, ""));
+    if (names.length) avail = `；该目录现有：${names.join(" / ")}`;
+  } catch (e) { avail = "；该角色目录不存在"; }
+  problems.missingSprites.add(`${role} 的 ${expr}（期望 ${dir}/${expr}.png${avail}）`);
   return `assets/sprites/${dir}/${expr}.png`;
 }
 
@@ -935,10 +953,15 @@ const emitStage = (b, out) => {
     const fr = FRAMES[pose] || FRAMES.bust;
     let x = frameX(fr, c.pos);
     if (used.has(c.pos)) { // 同位置错开，避免完全重叠（错开量随框宽缩放，别让人多的拍挤成一坨）
+      // 方向必须朝画面内侧：left 往右、right 往左，站 center 的重复者左右交替。
+      // 旧版对 left/right 一律「向外错开」，等于把同站位的第二个人直接推出画外 ——
+      // 实测 135 个节点只剩一条边（戏官 39 / 初音 38 / 灯官 28 / GLM 18 / 皮卡丘 7 / ds 娘 5）。
       const k = used.get(c.pos);
-      x += (k % 2 === 1 ? -1 : 1) * (Math.round(120 * (fr.w / 320)) * Math.ceil(k / 2));
+      const dir = c.pos === "left" ? 1 : c.pos === "right" ? -1 : (k % 2 === 1 ? -1 : 1);
+      x += dir * (Math.round(120 * (fr.w / 320)) * Math.ceil(k / 2));
     }
     used.set(c.pos, (used.get(c.pos) || 0) + 1);
+    x = clampBodyCenter(x, fr);   // 兜底：同站位 3 人以上 / 宽框时也不许出画
     // 说话者高亮：说话人 1.0，其他立绘压暗到 0.5；旁白拍不压暗
     const speaker = b.speaker && b.speaker !== "narr" ? b.speaker : "";
     const op = !speaker || c.role === speaker ? "1.0" : "0.5";
@@ -1130,6 +1153,10 @@ if (problems.bgmAssigned !== undefined) {
 if (problems.unknownGames.size) {
   console.warn("⚠ 以下 @minigame 尚无插件实现（编译通过，运行时会提示缺插件）："
     + [...problems.unknownGames].sort().join("、"));
+}
+if (problems.missingSprites.size) {
+  console.warn("⚠ 以下立绘文件不存在（引擎会画白色占位块，请改表情名或补素材）：");
+  [...problems.missingSprites].sort().forEach((s) => console.warn("    " + s));
 }
 if (autoEntered.size) {
   console.warn("⚠ 以下说话人在剧本里没有 @enter，编译器已自动补上场（建议补写 @enter 指定表情/站位）："
