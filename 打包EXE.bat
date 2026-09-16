@@ -51,18 +51,21 @@ echo  (bundled: runtime + assets + maps + plugins)
 echo  Double-click to play. No JDK needed on the target machine.
 echo  You can zip and share the whole %APP% folder.
 echo ============================================================
-popd ^& endlocal
+popd
+endlocal
 exit /b 0
 
 :nojpackage
 echo [FAILED] jpackage not found. Install JDK 17+ and set JAVA_HOME, or add its bin to PATH.
 pause
-popd ^& endlocal
+popd
+endlocal
 exit /b 1
 
 :fail
 echo.
 echo [FAILED] packaging did not finish. Check the message above.
 pause
-popd ^& endlocal
+popd
+endlocal
 exit /b 1

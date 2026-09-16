@@ -1,4 +1,21 @@
 # 更新日志 (Changelog)
+## [v1.21.1] 修复双击启动弹出两个窗口
+
+### Fixed
+- **启动脚本 fall-through（一次双击起两个 JVM）**：`if exist ( ... )` 块里写
+  `popd ^& endlocal ^& exit /b 0` 时，cmd 把转义后的 `^&` 当**字面文本**，整行变成 `popd` 加一堆垃圾参数
+  （还会打印 "The syntax of the command is incorrect."），**`exit /b 0` 从不执行**；脚本于是继续往下走，
+  又用 `java -cp target\...` 启动了第二个 JVM → 打包版 exe 的窗口和本机编译版的窗口**先后弹两个**。
+  改法：分支用 `goto <label>` 跳出，不用块内 `exit /b`；同时把 `target\\...` 双反斜杠统一成单反斜杠。
+  「启动编辑器.bat」「打包EXE.bat」里同样的写法一并修掉（前者只是碰巧没暴露，后者只影响退出码）
+- **启动优先级**：本机编译产物 `target\ds-adventure.jar` 优先，打包版 exe 只在**没有编译环境时兜底**。
+  原先 exe 优先，`dist/` 里那份 v0.5.0 旧包（无标题画面）会静默盖掉最新改动
+
+### Verified
+- `EnumWindows` 逐帧采样进程树：修复前 1.5s 内弹 2 个游戏窗口（`剧情播放器 Player` + `剧情播放器 — story`），
+  进程树里 `ds-adventure.exe` 与 `java.exe` 各一个；修复后 **1 个窗口 / 1 个 java 进程**，classpath 也不再是双反斜杠
+- 「启动编辑器.bat」同样只出 1 个窗口（`剧情编辑器 Studio`）
+
 ## [v1.21] 故事 UI 皮肤批量注入 + 小游戏统一外壳与动作音效
 
 ### Added

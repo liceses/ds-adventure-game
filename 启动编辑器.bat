@@ -1,15 +1,17 @@
 @echo off
-rem  Launch the Studio editor (ASCII only on purpose - see /(8.bat).
+rem  Launch the Studio editor (ASCII only on purpose - see /(8.bat).
+rem  NOTE: never join "exit /b" with ^& inside an "if ( ... )" block - cmd turns the
+rem  caret-escaped ^& into literal text and the exit silently never runs.
 setlocal
 pushd "%~dp0"
 chcp 65001 >nul
-if exist "tools\\launcher-hints-zh.txt" type "tools\\launcher-hints-zh.txt"
+if exist "tools\launcher-hints-zh.txt" type "tools\launcher-hints-zh.txt"
 
-set "JAR=target\\ds-adventure.jar"
-set "LIB=target\\lib"
+set "JAR=target\ds-adventure.jar"
+set "LIB=target\lib"
 
 if not exist "%JAR%" goto build
-if not exist "%LIB%\\javafx-controls-17.0.20-win.jar" goto build
+if not exist "%LIB%\javafx-controls-17.0.20-win.jar" goto build
 goto run
 
 :build
@@ -22,14 +24,19 @@ if errorlevel 1 goto fail
 
 :run
 echo [launch] Studio editor
-java -Dfile.encoding=UTF-8 -Dapp.mode=editor -cp "%JAR%;%LIB%\\*" com.studio.launcher.MainApp studio
+java -Dfile.encoding=UTF-8 -Dapp.mode=editor -cp "%JAR%;%LIB%\*" com.studio.launcher.MainApp studio
 if errorlevel 1 goto fail
-popd ^& endlocal
-exit /b 0
+goto done
 
 :fail
 echo.
 echo [FAILED] see the message above. Send it to the game team.
 pause
-popd ^& endlocal
+popd
+endlocal
 exit /b 1
+
+:done
+popd
+endlocal
+exit /b 0
