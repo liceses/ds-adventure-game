@@ -244,7 +244,9 @@ function parseScriptFile(file) {
     if (line.startsWith("@enter ")) {
       const t = line.slice(7).trim().split(/\s+/);
       const pos = (t[2] || "").replace("pos:", "") || "center";
-      return push("enter", { role: t[0], expr: t[1], pos });
+      // 第三个参数之后可以写 hold：该角色跨段落保留（豁免段落边界的兜底清场）
+      const hold = t.slice(3).some((x) => x.toLowerCase() === "hold");
+      return push("enter", { role: t[0], expr: t[1], pos, hold });
     }
     if (line.startsWith("@exit ")) return push("exit", { role: line.slice(6).trim() });
     if (line.startsWith("@flag ")) {
@@ -454,7 +456,11 @@ function bgPath(sceneId) {
 const beats = [];
 const labelFirstBeat = new Map();
 const flags = new Set();
-let stage = { bg: "", chars: new Map(), cg: null, pose: new Map() }; // chars: role -> {expr,pos}；cg: {id,hold}；pose: role -> bust|full
+let stage = { bg: "", chars: new Map(), cg: null, pose: new Map(), hold: new Set() }; // chars: role -> {expr,pos}；cg: {id,hold}；pose: role -> bust|full；hold: 跨段保留的角色
+const lastExpr = new Map();     // role -> 最近一次表情（说话人自动上场时沿用）
+const lastPos = new Map();      // role -> 最近一次站位
+const autoEntered = new Set();  // 剧本没 @enter 但说了话、被自动补上场的角色
+const autoExited = new Set();   // 被段落边界兜底清场请下台的角色
 let pendingOps = [];                                 // @se / @bgm：挂到下一个拍点（进入即执行）
 
 function sceneName(label, n) { return n === 0 ? label : `${label}__${n + 1}`; }
@@ -527,10 +533,38 @@ function ensureLabel(id, file, line) {
 const directives = [];
 for (const f of CHAPTERS) directives.push(...parseScriptFile(f));
 
+// ---- 段落级"本段有台词的角色"（S5 兜底清场要用；编译器是单遍的，所以先扫一遍指令流）----
+// 为什么需要：旧剧本 @enter 写了 242 次、@exit 只写了 16 次，而立绘在换场景/换段时都不清，
+// 于是只进不出 —— 平均同台从第1章 1.9 人一路涨到第8章 7.6 人（详见
+// docs/ds-adventrue/常驻立绘清理-干跑报告.md）。这里做的是"兜底"：
+// 进入新段落时，把"本段整段没有台词"的立绘清掉；剧本里显式 @exit 仍然优先、@enter ... hold 可豁免。
+const speakersByLabel = new Map();
+{
+  let lab = null;
+  for (const d of directives) {
+    if (d.kind === "label") lab = d.id;
+    else if (d.kind === "dialog" && lab) {
+      const m = String(d.text).match(/^([A-Za-z0-9_\u4e00-\u9fa5]+):/);
+      const sp = m ? m[1] : "";
+      if (sp && sp !== "narr") {
+        if (!speakersByLabel.has(lab)) speakersByLabel.set(lab, new Set());
+        speakersByLabel.get(lab).add(sp);
+      }
+    }
+  }
+}
+
 let lastLabel = null;
 for (const d of directives) {
   if (d.kind === "label") {
     flush(currentLabel);
+    // 兜底清场：本段整段没台词的立绘退场（@enter ... hold 的角色豁免）
+    const keep = speakersByLabel.get(d.id) || new Set();
+    for (const role of [...stage.chars.keys()]) {
+      if (keep.has(role) || stage.hold.has(role)) continue;
+      stage.chars.delete(role);
+      autoExited.add(role);
+    }
     currentLabel = d.id;
     lastLabel = d.id;
     if (!labelFirstBeat.has(d.id)) labelFirstBeat.set(d.id, beats.length);
@@ -590,15 +624,27 @@ for (const d of directives) {
     case "enter":
       flush(currentLabel);
       stage.chars.set(d.role, { expr: d.expr, pos: d.pos });
+      lastExpr.set(d.role, d.expr);
+      lastPos.set(d.role, d.pos);
+      if (d.hold) stage.hold.add(d.role); else stage.hold.delete(d.role);
       break;
     case "exit":
       flush(currentLabel);
       stage.chars.delete(d.role);
+      stage.hold.delete(d.role);
       break;
     case "dialog": {
       // 说话人变了就拆成一拍：这样名牌与「说话者高亮」能精确到句
       const sp = d.speaker || "narr";
       if (dialogBuf.length && dialogSpeaker && dialogSpeaker !== sp) flush(currentLabel);
+      // 说话人不在场 → 自动补上场（否则只有名牌没有立绘，看起来像"话外音"）
+      if (sp !== "narr" && !stage.chars.has(sp)) {
+        const pos = ["center", "left", "right"].find(
+          (p) => ![...stage.chars.values()].some((c) => c.pos === p)) || "center";
+        stage.chars.set(sp, { expr: lastExpr.get(sp) || "base", pos });
+        lastPos.set(sp, pos);
+        autoEntered.add(sp);
+      }
       dialogSpeaker = sp;
       dialogBuf.push(d.text);
       break;
@@ -1084,4 +1130,11 @@ if (problems.bgmAssigned !== undefined) {
 if (problems.unknownGames.size) {
   console.warn("⚠ 以下 @minigame 尚无插件实现（编译通过，运行时会提示缺插件）："
     + [...problems.unknownGames].sort().join("、"));
+}
+if (autoEntered.size) {
+  console.warn("⚠ 以下说话人在剧本里没有 @enter，编译器已自动补上场（建议补写 @enter 指定表情/站位）："
+    + [...autoEntered].sort().join("、"));
+}
+if (autoExited.size) {
+  console.log(`  段落边界兜底清场：请下台 ${autoExited.size} 个角色（${[...autoExited].sort().join("、")}）`);
 }

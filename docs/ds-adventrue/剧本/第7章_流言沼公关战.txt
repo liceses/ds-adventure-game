@@ -1,5 +1,6 @@
 # ============ 第7章 流言沼公关战 ============
 @label ch7_start
+@exit miku
 @scene rumor_swamp bg:TBD bgm:TBD title:流言沼公关战
 @se se_banner
 narr: 茶馆街贴着流言沼的边。青石板缝里咕嘟着沼气，空气一半是隔夜茶梗味，一半是水腥味，潮气黏在袖口上，撕都撕不下来。
@@ -14,6 +15,7 @@ narr: 思维链在半空打了个结。她掐指一算，眼神笃定得像刚�
 st: 【服务器繁忙，请稍后再试】
 @enter ds smug center
 ds: 「我想明白了——今天，太阳打西边升起了。」
+@exit sclerk
 narr: 满街茶客齐刷刷抬头。日头好端端挂在东边，被盯得有点不好意思。
 narr: 街尾的沼泽像应和似的翻了个大泡。泡破了，腥气更浓，八哥在笼里抖了抖羽毛。
 narr: 三张小桌上的语声压得更低。三杆小秤摆在桌面正中，秤盘里各压着一张折起的纸条。
@@ -34,6 +36,7 @@ ds: 「你在……把坏话全买下来？」
 @enter amiya serious right
 amiya: 「买断。没人再讲的话，就轮空了。」
 ds: 「可你的心跳——」
+@exit sclerk
 @enter amiya firm right
 amiya: 「过手钱。坏话是欠火，搁着不管，烧的是整条街。」
 ds: 「买三送一……那是哪国的妖术？」
@@ -47,6 +50,7 @@ amiya: 「好。沼里的货不认钱，只认脚步。跟紧，别踩响。」
 narr: 回归点。流言沼的泥面上浮着一格一格的浮牌，牌下是泥，泥下是没讲完的话。
 @enter bugs smug left
 bugs: 「报幕——流言沼公关战！规矩三条，听真！」
+@exit sclerk
 bugs: 「其一，专注视线一次只照一格！其二，格上的记号，是它四周埋着的流言牌数！其三，踩响一张，满沼跟着喊，一张喊成一片！」
 @enter amiya serious right
 amiya: 「把牌排净，泉眼才肯开。踩响一张，前功尽弃——话沉得比人快。」
@@ -64,6 +68,7 @@ narr: 泥面一格一格亮过去，像有人在黑屋子里挨个点灯。
 goto pre_game
 @label path_bold
 narr: 直奔沼心。没价签的那张浮牌在泡影里晃，像一枚不肯开口的秤砣。
+@exit amiya
 ds: 「最响的那句先拆！源头一断，剩下的全是回声！」
 @enter amiya worried right
 amiya: 「小心。我怀里的铃，方才快了半拍。」
@@ -84,6 +89,7 @@ narr: 浮牌在脚下连成一片。专注视线亮起，稳稳落进第一格�
 narr: 专注视线一格一格扫过去，流言牌逐张翻起、翻白，像晒场上翻晒的鱼干。
 narr: 最后一张——没价签的那张——翻过来，背面干干净净，一个字也没有。
 ds: 「沼心这句根本没写完。没写完的话最吓人，也最好拆。」
+@exit amiya
 @enter ds normal center
 ds: 「各位街坊！我没喝干水晶泉，连一条河都没喝完——泉边的水位刻度还在，不信自己去看！」
 @enter bugs normal left
@@ -105,6 +111,7 @@ narr: 下集预告——第八片鳞的消息，装在一只没写寄件人的�
 @save
 goto ch8_start
 @label bad_collapse
+@exit ds
 @cg cg_end_collapse
 @se se_shutdown
 narr: 泥面塌了半边，满沼浮牌一齐翻起，扑上来像一群扑灯的蛾。
