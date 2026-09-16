@@ -53,12 +53,82 @@ public class StagePlugin extends BuiltinPlugin {
         IDS.put("fx", Act.FX);      IDS.put("特效", Act.FX);    IDS.put("effect", Act.FX);
     }
 
-    /** 立绘位置预设（与地图模板里的三档站位一致） */
-    private static final Map<String, Double> POS = new LinkedHashMap<>();
+    /**
+     * 立绘站位<b>中心线</b>（角色中心，不是节点左上角）：与 {@code tools/build_story.mjs} 的
+     * {@code STATIONS} 一致。节点 x = 中心 − 框宽/2，所以同一站位在不同取景档下 x 不同。
+     */
+    private static final Map<String, Double> STATION = new LinkedHashMap<>();
     static {
-        POS.put("left", 70.0);   POS.put("左", 70.0);
-        POS.put("center", 490.0); POS.put("中", 490.0); POS.put("中间", 490.0);
-        POS.put("right", 920.0); POS.put("右", 920.0);
+        STATION.put("left", 250.0);   STATION.put("左", 250.0);
+        STATION.put("center", 640.0); STATION.put("中", 640.0); STATION.put("中间", 640.0);
+        STATION.put("right", 1030.0); STATION.put("右", 1030.0);
+    }
+
+    /**
+     * 立绘取景档：<b>必须与 {@code tools/build_story.mjs} 的 {@code FRAMES} 表逐一对应</b>
+     * （有单测 {@code StagePluginFrameTest} 守着，改一边必须改另一边）。
+     * <p>立绘素材已归一化到统一画布 1280×1536（身高 1460 / 脚线 y=1500 / 中心 x=640），
+     * 所以"节点框 = 取景窗口"对每个角色都成立。</p>
+     */
+    public static final class Frame {
+        public final String name;
+        public final double scale;
+        public final double y;
+        public final int w;
+        public final int h;
+
+        Frame(String name, double scale, double y) {
+            this.name = name;
+            this.scale = scale;
+            this.y = y;
+            this.w = (int) Math.round(1280 * scale);
+            this.h = (int) Math.round(1536 * scale);
+        }
+
+        @Override public String toString() { return name + " " + w + "x" + h; }
+    }
+
+    private static final Map<String, Frame> FRAMES = new LinkedHashMap<>();
+    static {
+        FRAMES.put("bust", new Frame("bust", 0.75, 0));    // 头到腰（可见带 0..516），对手戏用
+        FRAMES.put("mid", new Frame("mid", 0.55, 0));      // 头到大腿
+        FRAMES.put("small", new Frame("small", 0.46, 0));  // 头到膝
+        FRAMES.put("crowd", new Frame("crowd", 0.38, 0));  // 群像：全身
+        FRAMES.put("full", new Frame("full", 0.469, 0));   // 全身进画面（@debut / @pose full）
+    }
+
+    /** 取景档名 → [宽, 高]（单测与编译器 FRAMES 表比对用） */
+    public static Map<String, int[]> framePresets() {
+        Map<String, int[]> out = new LinkedHashMap<>();
+        for (Map.Entry<String, Frame> e : FRAMES.entrySet()) {
+            out.put(e.getKey(), new int[]{e.getValue().w, e.getValue().h});
+        }
+        return out;
+    }
+
+    /** 取景档的缩放（单测比对用） */
+    public static Map<String, Double> frameScales() {
+        Map<String, Double> out = new LinkedHashMap<>();
+        for (Map.Entry<String, Frame> e : FRAMES.entrySet()) out.put(e.getKey(), e.getValue().scale);
+        return out;
+    }
+
+    /** 站位名 → 角色中心线（认不出返回 null，交给调用方按数字处理） */
+    private static Double stationCenter(String pos) {
+        if (pos == null || pos.isBlank()) return null;
+        Double c = STATION.get(pos.toLowerCase(Locale.ROOT));
+        if (c == null) c = STATION.get(pos);
+        return c;
+    }
+
+    /** 站位中心线全表（单测与编译器 STATIONS 表比对用） */
+    public static Map<String, Double> stationCenters() {
+        return new LinkedHashMap<>(STATION);
+    }
+
+    /** 换取景档时的锚点换算：围绕「当前框的中心」缩放，角色不跳位 */
+    public static double recenterX(double curX, double curW, int newW) {
+        return curX + (curW - newW) / 2.0;
     }
 
     private final Act act;
@@ -84,8 +154,9 @@ public class StagePlugin extends BuiltinPlugin {
     public static List<PluginInfo> catalog() {
         List<PluginInfo> out = new ArrayList<>();
         out.add(new PluginInfo("cast", "演出", "立绘,character",
-                "@plugin(cast) | enter | 立绘_ds | center | 0.4",
-                "立绘演出：enter 入场（left/center/right 或具体 x）/ leave 退场 / face 换表情 / path 换图 / move 移动"));
+                "@plugin(cast) | frame | 立绘_ds | bust",
+                "立绘演出：enter 入场（left/center/right 或具体 x）/ leave 退场 / face 换表情 / path 换图"
+                        + " / move 移动 / frame 取景（bust 半身 · mid · small · crowd 群像 · full 全身）"));
         out.add(new PluginInfo("bg", "演出", "背景,background",
                 "@plugin(bg) | gradient | 幕布01 | #1b1030 | #3a2140",
                 "背景切换：color 纯色 / gradient 渐变 / image 图片 / show 显示 / hide 隐藏 / fade 淡入淡出"));
@@ -101,7 +172,7 @@ public class StagePlugin extends BuiltinPlugin {
     @Override
     public String description() {
         switch (act) {
-            case CAST: return "立绘演出：入场 / 退场 / 换表情 / 换图 / 移动（带动画时长）";
+            case CAST: return "立绘演出：入场 / 退场 / 换表情 / 换图 / 移动 / 取景（半身↔全身）";
             case BG:   return "背景切换：纯色 / 渐变 / 图片 / 显隐 / 淡入淡出";
             case FX:   return "特效预设：抖屏、闪白、心跳、淡入淡出、滑入滑出、缩放、旋转";
             default:   return "";
@@ -111,7 +182,7 @@ public class StagePlugin extends BuiltinPlugin {
     @Override
     public String usage() {
         switch (act) {
-            case CAST: return "@plugin(cast) | enter|leave|face|path|move | 节点id | 参数…";
+            case CAST: return "@plugin(cast) | enter|leave|face|path|move|frame | 节点id | 参数…";
             case BG:   return "@plugin(bg) | color|gradient|image|show|hide|fade | 节点id | 参数…";
             case FX:   return "@plugin(fx) | 预设 | 节点id | 参数…";
             default:   return "";
@@ -142,15 +213,17 @@ public class StagePlugin extends BuiltinPlugin {
     private void cast(PluginContext ctx, String action, String node, String[] in) {
         switch (action) {
             case "enter", "入场", "in" -> {
-                Double x = POS.get(arg(in, 2).toLowerCase(Locale.ROOT));
-                if (x == null) x = POS.get(arg(in, 2));
-                if (x == null && !arg(in, 2).isEmpty()) x = num(arg(in, 2), 490);
+                // 站位名 → 按「当前框宽」居中到该站位中心线；数字 → 直接当节点 x（旧写法兼容）
+                Double center = stationCenter(arg(in, 2));
+                Double x = null;
+                if (center != null) x = center - numProperty(ctx, node, "width", FRAMES.get("bust").w) / 2.0;
+                else if (!arg(in, 2).isEmpty()) x = num(arg(in, 2), 490);
                 double dur = num(arg(in, 3), 0.35);
                 ctx.setProperty(node, "visible", "true");
-                if (x != null) ctx.setProperty(node, "x", String.valueOf(x));
+                if (x != null) ctx.setProperty(node, "x", trim(x));
                 ctx.setProperty(node, "opacity", "0");
                 ctx.setProperty(node, "opacity", "1", "opacity:" + ms(dur));
-                log(ctx, "立绘入场 " + node + "（x=" + (x == null ? "不变" : x) + "，" + dur + "s）");
+                log(ctx, "立绘入场 " + node + "（x=" + (x == null ? "不变" : trim(x)) + "，" + dur + "s）");
             }
             case "leave", "退场", "out" -> {
                 double dur = num(arg(in, 2), 0.3);
@@ -177,6 +250,25 @@ public class StagePlugin extends BuiltinPlugin {
                 ctx.setProperty(node, "x", String.valueOf(num(arg(in, 2), 0)));
                 ctx.setProperty(node, "y", String.valueOf(num(arg(in, 3), 0)));
                 log(ctx, "立绘 " + node + " 移动到 (" + arg(in, 2) + "," + arg(in, 3) + ")");
+            }
+            case "frame", "取景", "pose" -> {
+                // 换「取景档」：只改 x/y/width/height（纯属性，无需引擎新原语），
+                // 且以当前框中心为锚 → 角色不跳位。档位表见 FRAMES（与编译器一致，有单测守着）
+                String key = arg(in, 2).toLowerCase(Locale.ROOT);
+                Frame f = FRAMES.get(key);
+                if (f == null) f = FRAMES.get(arg(in, 2));
+                if (f == null) {
+                    warn(ctx, "未知取景档: " + arg(in, 2) + "（可选：" + String.join(" / ", FRAMES.keySet()) + "）");
+                    break;
+                }
+                double curX = numProperty(ctx, node, "x", 0);
+                double curW = numProperty(ctx, node, "width", f.w);
+                double nx = recenterX(curX, curW, f.w);
+                ctx.setProperty(node, "x", trim(nx));
+                ctx.setProperty(node, "y", trim(f.y));
+                ctx.setProperty(node, "width", String.valueOf(f.w));
+                ctx.setProperty(node, "height", String.valueOf(f.h));
+                log(ctx, "立绘 " + node + " 取景 → " + f + "（中心 " + trim(curX + curW / 2) + " → x=" + trim(nx) + "）");
             }
             case "show", "显示" -> { ctx.setProperty(node, "visible", "true"); log(ctx, "立绘 " + node + " 显示"); }
             case "hide", "隐藏" -> { ctx.setProperty(node, "visible", "false"); log(ctx, "立绘 " + node + " 隐藏"); }
@@ -249,6 +341,17 @@ public class StagePlugin extends BuiltinPlugin {
     }
 
     private static String ms(double seconds) { return Math.max(1, (long) Math.rint(seconds * 1000)) + "ms"; }
+
+    /** 读节点数值属性（读不到/不是数字就用默认值）—— 取景换框要靠它拿当前 x/width 当锚点 */
+    private static double numProperty(PluginContext ctx, String node, String prop, double def) {
+        if (ctx == null || node == null || node.isBlank()) return def;
+        try {
+            String v = ctx.property(node, prop);
+            return (v == null || v.isBlank()) ? def : Double.parseDouble(v.trim());
+        } catch (RuntimeException e) {
+            return def;
+        }
+    }
 
     private static String trim(double v) {
         if (v == Math.rint(v)) return String.valueOf((long) v);

@@ -147,7 +147,8 @@ const FRAMES = {
   bust: { s: 0.75, y: 0 },
   mid: { s: 0.55, y: 0 },
   small: { s: 0.46, y: 0 },
-  crowd: { s: 0.38, y: 0 },
+  crowd: { s: 0.38, y: 0 },    // 群像（6 人以上，由 FRAME_BY_CAST 选中）
+  full: { s: 0.469, y: 0 },    // 全身进画面（@pose full / @debut 用；腿会被对话框压住，卡拍里才完全可见）
 };
 for (const f of Object.values(FRAMES)) {
   f.w = Math.round(CANVAS.w * f.s);
@@ -268,6 +269,19 @@ function parseScriptFile(file) {
       const t = line.slice(4).trim().split(/\s+/);
       const mode = (t[1] || "flash").toLowerCase();
       return push("cg", { id: t[0], mode: ["flash", "hold", "clear"].includes(mode) ? mode : "flash" });
+    }
+    if (line.startsWith("@pose ")) {
+      // @pose <角色> <取景档>：持久切换该角色的取景（bust 半身 / mid / small / crowd 群像 / full 全身）
+      const t = line.slice(6).trim().split(/\s+/);
+      const pose = (t[1] || "").toLowerCase();
+      if (!(pose in FRAMES)) {
+        throw new Error(`${file}:${no} @pose 取景档无法识别（可选 ${Object.keys(FRAMES).join(" / ")}）：${line}`);
+      }
+      return push("pose", { role: t[0], pose });
+    }
+    if (line.startsWith("@debut ")) {
+      // @debut <角色>：该角色"登场卡拍"——无对话框的一拍全身亮相，点一下继续，之后回常态取景
+      return push("debut", { role: line.slice(7).trim() });
     }
     if (line.startsWith("@se ")) {
       const t = line.slice(4).trim().split(/\s+/);
@@ -448,7 +462,7 @@ function sceneName(label, n) { return n === 0 ? label : `${label}__${n + 1}`; }
 function newBeat(label, kind, extra = {}) {
   // 逻辑拍点是「自动推进」的过渡幕，不承载画面；其余拍点才显示 CG
   const visual = kind === "dialog" || kind === "banner" || kind === "choice"
-    || kind === "tail" || kind === "ending" || kind === "cgcard";
+    || kind === "tail" || kind === "ending" || kind === "cgcard" || kind === "debut";
   const b = {
     label,
     kind,
@@ -546,6 +560,24 @@ for (const d of directives) {
       // （引擎 ReaderView.isStageNode：bg/char 是舞台节点，每拍被压到最底层）。
       // 台词顺延到下一拍：点一下继续后才出字。
       newBeat(currentLabel, "cgcard", { chars: [] });
+      break;
+    }
+    case "pose": {
+      // 持久取景：本拍收尾后再改，避免把上一句台词也切了取景
+      flush(currentLabel);
+      stage.pose.set(d.role, d.pose);
+      break;
+    }
+    case "debut": {
+      // 登场卡拍：只有这一拍用 full，且只放该角色（无对话框 → 全身完全可见）
+      flush(currentLabel);
+      const cur = stage.chars.get(d.role);
+      const prev = stage.pose.get(d.role);
+      newBeat(currentLabel, "debut", {
+        chars: [{ role: d.role, expr: cur ? cur.expr : "normal", pos: "center" }],
+        poses: { [d.role]: "full" },
+      });
+      if (prev) stage.pose.set(d.role, prev); else stage.pose.delete(d.role);
       break;
     }
     case "se":
@@ -974,8 +1006,8 @@ for (const b of beats) {
     // @if 分支拍点：goto 的目标由前面 select 写进链路变量
     if (b.gotoVar) out.push(`slot = 场景进入 | goto | | ${b.gotoVar}`);
     else if (b.goto) out.push(`slot = 场景进入 | goto | | ${b.goto}`);
-  } else if (b.kind === "cgcard") {
-    // CG 卡拍：CG 层已由 emitStage 发出；整屏透明按钮承接点击（点一下继续 → 小游戏）
+  } else if (b.kind === "cgcard" || b.kind === "debut") {
+    // 卡拍（CG 卡 / 登场卡）：画面已由 emitStage 发出；整屏透明按钮承接点击（点一下继续）
     out.push("{", "type = button", "id = 继续", "x = 0", "y = 0",
       "width = 1280", "height = 720", "text = ", "action = target",
       `target = ${b.target || ""}`,
